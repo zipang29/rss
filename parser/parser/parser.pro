@@ -1,4 +1,4 @@
-QT += core
+QT += core xml
 QT -= gui
 
 TARGET = parser
@@ -7,5 +7,9 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    Parser.cpp
+
+HEADERS += \
+    Parser.h
 
