@@ -1,4 +1,4 @@
-QT += core xml
+QT += core xml network
 QT -= gui
 
 TARGET = parser

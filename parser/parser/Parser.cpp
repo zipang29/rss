@@ -1,11 +1,18 @@
 #include "Parser.h"
 
-Parser::Parser()
+Parser::Parser(QUrl url)
 {
-    start("http://www.france24.com/en/timeline/rss");
+    parse(url);
 }
 
-void Parser::parse(QUrl url)
+void Parser::requestFeed(QUrl url)
+{
+    QNetworkAccessManager * manager = new QNetworkAccessManager;
+    manager->get(QNetworkRequest(url));
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(getSrcRss()));
+}
+
+void Parser::parseFeed()
 {
 
 }
@@ -13,4 +20,10 @@ void Parser::parse(QUrl url)
 void Parser::readItem(const QDomElement & item)
 {
 
+}
+
+void Parser::readFeed(QNetworkReply * reply)
+{
+    this->src = reply->readAll();
+    //this->
 }
