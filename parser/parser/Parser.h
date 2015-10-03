@@ -5,8 +5,9 @@
 #include <QUrl>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <iostream>
 
-class Parser
+class Parser : QObject
 {
     Q_OBJECT
 
@@ -14,16 +15,16 @@ class Parser
         Parser(QUrl url);
         void requestFeed(QUrl url);
         void readItem(const QDomElement & item);
-        void parseFeed();
 
     public slots:
-        void readFeed(QNetworkReply * reply);
+        void readFeed();
+        void parseFeed();
 
     private:
         QString src;
 
     signals:
-        void
+        void feedRecovered();
 };
 
 #endif // PARSER_H
