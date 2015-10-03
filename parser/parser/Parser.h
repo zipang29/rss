@@ -17,13 +17,13 @@ class Parser : QObject
 
     public:
         Parser(QUrl url);
-        void requestFeed();
 
     public slots:
         void readFeed();
         void parseFeed();
 
     private:
+        void requestFeed();
         void readItem(QDomElement & elements);
 
         QUrl url;

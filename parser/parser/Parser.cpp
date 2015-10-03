@@ -1,11 +1,18 @@
 #include "Parser.h"
 
+/**
+ * Constructeur
+ * @param url L'URL du flux RSS à traiter
+ */
 Parser::Parser(QUrl url)
 {
     this->url = url;
     requestFeed();
 }
 
+/**
+ * Permet de débuter la récupération du code source de l'URL spécifié au constructeur
+ */
 void Parser::requestFeed()
 {
     QNetworkAccessManager * manager = new QNetworkAccessManager;
@@ -14,6 +21,9 @@ void Parser::requestFeed()
     connect(this, SIGNAL(feedRecovered()), this, SLOT(parseFeed()));
 }
 
+/**
+ * Parse le flux RSS qui aura été précédement récupéré
+ */
 void Parser::parseFeed()
 {
     cout << "[*] Recreation du document de source : " << this->url.toString().toStdString() << endl;
@@ -63,6 +73,10 @@ void Parser::parseFeed()
     cout << "[*] Fin parsing" << endl;
 }
 
+/**
+ * Parse un item du flux RSS
+ * @param elements Les éléments de l'item
+ */
 void Parser::readItem(QDomElement & elements)
 {
     Item item;
@@ -112,6 +126,11 @@ void Parser::readItem(QDomElement & elements)
     }
 }
 
+/**
+ * Slot déclenché lorsque la requête déclenché par requestFeed() aboutit
+ * Enregistrement du résultat de la requête dans this->src
+ * Emission d'un signal feedRecovered() spécifiant que l'on peut débuter le traitement.
+ */
 void Parser::readFeed()
 {
     QNetworkReply * reply = qobject_cast<QNetworkReply*>(sender());
