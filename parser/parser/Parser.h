@@ -7,20 +7,26 @@
 #include <QNetworkReply>
 #include <iostream>
 
+#include "Item.h"
+
+using namespace std;
+
 class Parser : QObject
 {
     Q_OBJECT
 
     public:
         Parser(QUrl url);
-        void requestFeed(QUrl url);
-        void readItem(const QDomElement & item);
+        void requestFeed();
 
     public slots:
         void readFeed();
         void parseFeed();
 
     private:
+        void readItem(QDomElement & elements);
+
+        QUrl url;
         QString src;
 
     signals:
