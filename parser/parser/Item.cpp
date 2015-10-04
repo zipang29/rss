@@ -1,4 +1,6 @@
 #include "Item.h"
+#include <QString>
+#include <QDateTime>
 
 Item::Item()
 {
@@ -57,7 +59,7 @@ QString Item::get_langue(){
   return langue;
 } 
 
-void Item::set_langue(Qstring l){
+void Item::set_langue(QString l){
   langue = l;
 }
 
