@@ -3,16 +3,34 @@
 
 #include <QDomElement>
 #include <QUrl>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <iostream>
 
-class Parser
+#include "Item.h"
+
+using namespace std;
+
+class Parser : QObject
 {
+    Q_OBJECT
+
     public:
-        Parser();
-        void parse(QUrl url);
-        void readItem(const QDomElement & item);
+        Parser(QUrl url);
+
+    public slots:
+        void readFeed();
+        void parseFeed();
 
     private:
+        void requestFeed();
+        void readItem(QDomElement & elements);
 
+        QUrl url;
+        QString src;
+
+    signals:
+        void feedRecovered();
 };
 
 #endif // PARSER_H
