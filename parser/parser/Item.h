@@ -18,13 +18,13 @@ public:
 	QString get_langue();
 	QDateTime get_date();
 	
-	void set_id(Qstring i);
-	void set_url_du_flux(Qstring udf);
-	void set_url_de_la_page(Qstring udp);
-	void set_titre(Qstring t);
-	void set_description(Qstring des);
-	void set_resume(Qstring r);
-	void set_langue(Qstring l);
+	void set_id(QString i);
+	void set_url_du_flux(QString udf);
+	void set_url_de_la_page(QString udp);
+	void set_titre(QString t);
+	void set_description(QString des);
+	void set_resume(QString r);
+	void set_langue(QString l);
 	void set_date(QDateTime d);
 
 private:
