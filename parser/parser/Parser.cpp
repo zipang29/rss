@@ -80,6 +80,7 @@ void Parser::parseFeed()
 void Parser::readItem(QDomElement & elements)
 {
     Item item;
+    QString langue = "";
     while(!elements.isNull())
     {
         if (elements.tagName() == "title")
@@ -89,7 +90,7 @@ void Parser::readItem(QDomElement & elements)
         /*else if (elements.tagName() == "category")
         {
 
-        }
+        }*/
         else if (elements.tagName() == "link")
         {
             item.set_url_du_flux(elements.text());
@@ -125,8 +126,18 @@ void Parser::readItem(QDomElement & elements)
         {
             cout << "Auteur: " << elements.text().toStdString() << endl;
         }
+        else if (elements.tagName() == "language")
+        {
+            langue = elements.text();
+        }
+
         elements = elements.nextSiblingElement();
+
     }
+    cout << "[*] Détection de la langue" << endl;
+    this->detectLanguage(item, langue);
+    cout << "[*] Génération de l'identifiant pour l'item" << endl;
+
 }
 
 /**
