@@ -1,5 +1,9 @@
 #include "Item.h"
 
+/**
+ * Constructeur
+ */
+
 Item::Item()
 {
 	
@@ -9,6 +13,8 @@ Item::~Item()
 {
 	
 }
+
+//Getters et setters
 
 QString Item::get_id(){
   return id;
@@ -53,12 +59,21 @@ QString Item::get_resume(){
 void Item::set_resume(QString r){
   resume = r;
 }
+
 QString Item::get_langue(){
   return langue;
 } 
 
 void Item::set_langue(QString l){
   langue = l;
+}
+
+QString Item::get_category(){
+  return category;
+}
+
+void Item::set_category(QString c){
+  category = c;
 }
 
 QDateTime Item::get_date(){

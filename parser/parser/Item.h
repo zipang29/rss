@@ -16,6 +16,7 @@ public:
 	QString get_description();
 	QString get_resume();
 	QString get_langue();
+    QString get_category();
 	QDateTime get_date();
 	
 	void set_id(QString i);
@@ -25,10 +26,11 @@ public:
 	void set_description(QString des);
 	void set_resume(QString r);
 	void set_langue(QString l);
+    void set_category(QString c);
 	void set_date(QDateTime d);
 
 private:
-    QString url_du_flux, url_de_la_page, titre, description, resume, langue;
+    QString url_du_flux, url_de_la_page, titre, description, resume, langue, category;
     QDateTime date;
     QString id;
 };
