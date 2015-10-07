@@ -82,23 +82,23 @@ void Parser::readItem(QDomElement & elements)
     Item item;
     while(!elements.isNull())
     {
-        if (elements.tagName() == "category")
+        if (elements.tagName() == "title")
+        {
+            item.set_titre(elements.text());
+        }
+        /*else if (elements.tagName() == "category")
         {
 
-        }
-        else if (elements.tagName() == "title")
-        {
-            cout << "Titre: " << elements.text().toStdString() << endl;
         }
         else if (elements.tagName() == "link")
         {
-
+            item.set_url_du_flux(elements.text());
         }
         else if (elements.tagName() == "description")
         {
-
+            item.set_description(elements.text());
         }
-        else if (elements.tagName() == "thumbnail")
+        /*else if (elements.tagName() == "thumbnail")
         {
 
         }
@@ -109,14 +109,17 @@ void Parser::readItem(QDomElement & elements)
         else if (elements.tagName() == "guid")
         {
 
-        }
+        }*/
         else if (elements.tagName() == "pubDate")
         {
-
+            QLocale locale(QLocale::English, QLocale::UnitedKingdom);
+            QDateTime date = locale.toDateTime(elements.text(), "ddd, dd MMM yyyy hh:mm:ss");
+            date.setTimeSpec(Qt::UTC);
+            item.set_date(date);
         }
         else if (elements.tagName() == "source")
         {
-
+            item.set_url_de_la_page(elements.attribute("url"));
         }
         else if (elements.tagName() == "author")
         {
