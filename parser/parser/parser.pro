@@ -9,8 +9,10 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     Item.cpp \
-    Parser.cpp
+    Parser.cpp \
+    ListItems.cpp
 
 HEADERS += \
     Item.h \
-    Parser.h
+    Parser.h \
+    ListItems.h
