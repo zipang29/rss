@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "Item.h"
+#include <QDebug>
 
 using namespace std;
 

@@ -134,10 +134,13 @@ void Parser::readItem(QDomElement & elements)
         elements = elements.nextSiblingElement();
 
     }
-    cout << "[*] Détection de la langue" << endl;
-    this->detectLanguage(item, langue);
-    cout << "[*] Génération de l'identifiant pour l'item" << endl;
-
+    cout << "[*] Detection de la langue" << endl;
+    //this->detectLanguage(item, langue);
+    cout << "[*] Generation de l'identifiant pour l'item" << endl;
+    QString stringHash = item.get_titre() + item.get_description() + item.get_url_de_la_page();
+    QByteArray hash = QCryptographicHash::hash(stringHash.toUtf8(), QCryptographicHash::Md5);
+    item.set_id(hash);
+    qDebug() << "Hash genere : " << hash;
 }
 
 /**
