@@ -7,6 +7,9 @@
 Parser::Parser(QUrl url)
 {
     this->url = url;
+    tika = Tika::getInstance();
+    connect(tika, SIGNAL(completed(Item*)), this, SIGNAL(itemProcessed(Item*)));
+
     requestFeed();
 }
 
@@ -79,13 +82,13 @@ void Parser::parseFeed()
  */
 void Parser::readItem(QDomElement & elements)
 {
-    Item item;
+    Item* item = new Item();
     QString langue = "";
     while(!elements.isNull())
     {
         if (elements.tagName() == TITLE)
         {
-            item.set_titre(elements.text());
+            item->set_titre(elements.text());
         }
         /*else if (elements.tagName() == CATEGORY)
         {
@@ -93,11 +96,11 @@ void Parser::readItem(QDomElement & elements)
         }*/
         else if (elements.tagName() == LINK)
         {
-            item.set_url_du_flux(elements.text());
+            item->set_url_du_flux(elements.text());
         }
         else if (elements.tagName() == DESCRIPTION)
         {
-            item.set_description(elements.text());
+            item->set_description(elements.text());
         }
         /*else if (elements.tagName() == THUMBNAIL)
         {
@@ -116,11 +119,11 @@ void Parser::readItem(QDomElement & elements)
             QLocale locale(QLocale::English, QLocale::UnitedKingdom);
             QDateTime date = locale.toDateTime(elements.text(), "ddd, dd MMM yyyy hh:mm:ss");
             date.setTimeSpec(Qt::UTC);
-            item.set_date(date);
+            item->set_date(date);
         }
         else if (elements.tagName() == SOURCE)
         {
-            item.set_url_de_la_page(elements.attribute("url"));
+            item->set_url_de_la_page(elements.attribute("url"));
         }
         else if (elements.tagName() == AUTHOR)
         {
@@ -134,13 +137,13 @@ void Parser::readItem(QDomElement & elements)
         elements = elements.nextSiblingElement();
 
     }
-    cout << "[*] Detection de la langue" << endl;
-    this->detectLanguage(item, langue);
     cout << "[*] Generation de l'identifiant pour l'item" << endl;
-    QString stringHash = item.get_titre() + item.get_description() + item.get_url_de_la_page();
+    QString stringHash = item->get_titre() + item->get_description() + item->get_url_de_la_page();
     QByteArray hash = QCryptographicHash::hash(stringHash.toUtf8(), QCryptographicHash::Md5);
-    item.set_id(hash);
+    item->set_id(hash);
     qDebug() << "Hash genere : " << hash;
+
+    tika->processItem(item);
 }
 
 /**
@@ -153,26 +156,4 @@ void Parser::readFeed()
     QNetworkReply * reply = qobject_cast<QNetworkReply*>(sender());
     this->src = reply->readAll();
     emit feedRecovered();
-}
-
-void Parser::detectLanguage(Item& item, QString lang)
-{
-    QString language;
-    if (!lang.isEmpty()) {
-        QString identifier;
-        if (lang.contains(("_"))) {
-            identifier = lang.left(lang.indexOf("_")+1);
-        }
-        else
-            identifier = lang;
-
-        //TODO: en fonction de la correspondance code => langue
-        //Code temporaire, en attente de la récupération des constantes en provenances de fichiers de config
-        language = getLanguageName(identifier);
-    }
-    else {
-        //TOTO: tika
-    }
-
-    item.set_langue(language);
 }
