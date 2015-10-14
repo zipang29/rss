@@ -15,4 +15,5 @@ SOURCES += main.cpp \
 HEADERS += \
     Item.h \
     Parser.h \
-    ListItems.h
+    ListItems.h \
+    constantes.h

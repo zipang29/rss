@@ -42,22 +42,22 @@ void Parser::parseFeed()
     QDomElement root = doc.documentElement();
     while(!root.isNull())
     {
-        if (root.tagName() == "rss")
+        if (root.tagName() == RSS)
         {
             QDomElement rss = root.firstChildElement();
             while(!rss.isNull())
             {
-                if (rss.tagName() == "channel")
+                if (rss.tagName() == CHANNEL)
                 {
                     QDomElement channelElements = rss.firstChildElement();
                     while(!channelElements.isNull())
                     {
-                        if (channelElements.tagName() == "lastBuildDate")
+                        if (channelElements.tagName() == LAST_BUILD_DATE)
                         {
                             qDebug() << channelElements.text() << endl;
                             //TODO
                         }
-                        else if (channelElements.tagName() == "item")
+                        else if (channelElements.tagName() == ITEM)
                         {
                             QDomElement item = channelElements.firstChildElement();
                             this->readItem(item);
@@ -83,50 +83,50 @@ void Parser::readItem(QDomElement & elements)
     QString langue = "";
     while(!elements.isNull())
     {
-        if (elements.tagName() == "title")
+        if (elements.tagName() == TITLE)
         {
             item.set_titre(elements.text());
         }
-        /*else if (elements.tagName() == "category")
+        /*else if (elements.tagName() == CATEGORY)
         {
 
         }*/
-        else if (elements.tagName() == "link")
+        else if (elements.tagName() == LINK)
         {
             item.set_url_du_flux(elements.text());
         }
-        else if (elements.tagName() == "description")
+        else if (elements.tagName() == DESCRIPTION)
         {
             item.set_description(elements.text());
         }
-        /*else if (elements.tagName() == "thumbnail")
+        /*else if (elements.tagName() == THUMBNAIL)
         {
 
         }
-        else if (elements.tagName() == "enclosure")
+        else if (elements.tagName() == ENCLOSURE)
         {
 
         }
-        else if (elements.tagName() == "guid")
+        else if (elements.tagName() == GUID)
         {
 
         }*/
-        else if (elements.tagName() == "pubDate")
+        else if (elements.tagName() == PUB_DATE)
         {
             QLocale locale(QLocale::English, QLocale::UnitedKingdom);
             QDateTime date = locale.toDateTime(elements.text(), "ddd, dd MMM yyyy hh:mm:ss");
             date.setTimeSpec(Qt::UTC);
             item.set_date(date);
         }
-        else if (elements.tagName() == "source")
+        else if (elements.tagName() == SOURCE)
         {
             item.set_url_de_la_page(elements.attribute("url"));
         }
-        else if (elements.tagName() == "author")
+        else if (elements.tagName() == AUTHOR)
         {
             cout << "Auteur: " << elements.text().toStdString() << endl;
         }
-        else if (elements.tagName() == "language")
+        else if (elements.tagName() == LANGUAGE)
         {
             langue = elements.text();
         }

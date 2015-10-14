@@ -6,7 +6,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <iostream>
-
+#include "constantes.h"
 #include "Item.h"
 #include <QDebug>
 
