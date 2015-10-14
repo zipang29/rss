@@ -10,10 +10,13 @@ TEMPLATE = app
 SOURCES += main.cpp \
     Item.cpp \
     Parser.cpp \
-    ListItems.cpp
+    ListItems.cpp \
+    Constantes.cpp \
+    Tika.cpp
 
 HEADERS += \
     Item.h \
     Parser.h \
     ListItems.h \
-    constantes.h
+    Constantes.h \
+    Tika.h

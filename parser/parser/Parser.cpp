@@ -135,7 +135,7 @@ void Parser::readItem(QDomElement & elements)
 
     }
     cout << "[*] Detection de la langue" << endl;
-    //this->detectLanguage(item, langue);
+    this->detectLanguage(item, langue);
     cout << "[*] Generation de l'identifiant pour l'item" << endl;
     QString stringHash = item.get_titre() + item.get_description() + item.get_url_de_la_page();
     QByteArray hash = QCryptographicHash::hash(stringHash.toUtf8(), QCryptographicHash::Md5);
@@ -153,4 +153,26 @@ void Parser::readFeed()
     QNetworkReply * reply = qobject_cast<QNetworkReply*>(sender());
     this->src = reply->readAll();
     emit feedRecovered();
+}
+
+void Parser::detectLanguage(Item& item, QString lang)
+{
+    QString language;
+    if (!lang.isEmpty()) {
+        QString identifier;
+        if (lang.contains(("_"))) {
+            identifier = lang.left(lang.indexOf("_")+1);
+        }
+        else
+            identifier = lang;
+
+        //TODO: en fonction de la correspondance code => langue
+        //Code temporaire, en attente de la récupération des constantes en provenances de fichiers de config
+        language = getLanguageName(identifier);
+    }
+    else {
+        //TOTO: tika
+    }
+
+    item.set_langue(language);
 }
