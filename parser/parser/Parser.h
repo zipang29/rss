@@ -6,7 +6,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <iostream>
-#include "constantes.h"
+#include "Constantes.h"
 #include "Item.h"
 #include <QDebug>
 
@@ -26,6 +26,7 @@ class Parser : QObject
     private:
         void requestFeed();
         void readItem(QDomElement & elements);
+        void detectLanguage(Item& item, QString language);
 
         QUrl url;
         QString src;

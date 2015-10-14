@@ -11,14 +11,17 @@ SOURCES += main.cpp \
     Item.cpp \
     Parser.cpp \
     ListItems.cpp \
-    IO.cpp
+    IO.cpp \
+    Constantes.cpp \
+    Tika.cpp
 
 HEADERS += \
     Item.h \
     Parser.h \
     ListItems.h \
-    constantes.h \
-    IO.h
+    Constantes.h \
+    IO.h \
+    Tika.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/kcwin32/lib/ -lkyotocabinet
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/kcwin32/lib/ -lkyotocabinetd
