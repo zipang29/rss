@@ -10,10 +10,19 @@ TEMPLATE = app
 SOURCES += main.cpp \
     Item.cpp \
     Parser.cpp \
-    ListItems.cpp
+    ListItems.cpp \
+    IO.cpp
 
 HEADERS += \
     Item.h \
     Parser.h \
     ListItems.h \
-    constantes.h
+    constantes.h \
+    IO.h
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/kcwin32/lib/ -lkyotocabinet
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/kcwin32/lib/ -lkyotocabinetd
+else:unix: LIBS += -L$$PWD/kcwin32/lib/ -lkyotocabinet
+
+INCLUDEPATH += $$PWD/kcwin32/include
+DEPENDPATH += $$PWD/kcwin32/include
