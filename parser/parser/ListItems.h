@@ -1,16 +1,14 @@
 #ifndef LISTITEMS_H
 #define LISTITEMS_H
-#include "Item.h"
 
 #include <QMap>
+#include "Item.h"
+#include <iostream>
 
-class ListItems
+class ListItems : public QMap<QString, Item>
 {
-public:
-    ListItems();
-    Item findItem(QString id);
-    Item valuesFromBegin();
-    Item valuesFromEnd();
+    public:
+        ListItems();
 };
 
 #endif // LISTITEMS_H
