@@ -94,8 +94,7 @@ QString Item::toString()
     ret += this->resume + SEPARATOR;
     ret += this->langue + SEPARATOR;
     ret += this->category + SEPARATOR;
-    ret += QString::number(this->date.toMSecsSinceEpoch()) + SEPARATOR;
-    //ret += this->id + SEPARATOR; // A inclure ou pas dans la partie valeure de la BDD ?
+    ret += this->date.toString(Qt::ISODate) + SEPARATOR;
 
     return ret;
 }
@@ -104,12 +103,25 @@ QString Item::toString()
  * Construit un item à partir d'une chaine
  * @param v La chaine pour construire l'item. Les éléments de la chaine doivent êtres séparés par le symbole SEPARATOR définir dans Constantes.h.\n
  *          L'ordre des champs suit l'ordre des attributs de la classe à savoir comme ceci : url_du_flux, url_de_la_page, titre, description, resume, langue, category, date
- * @return L'item construit à partir de la chaine. L'id (hash) n'est pas ajouté à l'item via cette méthode, il faut l'ajouter séparément
+ * @return L'item construit à partir de la chaine. L'id (hash) n'est pas ajouté à l'item via cette méthode, il faut l'ajouter séparément. Si la chaine n'est pas valide l'item retourné sera vide.
  */
 Item * Item::fromString(QString v)
 {
-    //TODO a terminer
     Item * it = new Item();
     QStringList list = v.split(SEPARATOR);
+    if (list.size() < 8)
+    {
+        qWarning() << "La chaine n'est pas valide. Celle-ci contient moins de 8 éléments. L'item retourné est vide.";
+        return it;
+    }
+    it->set_url_du_flux(list.at(0));
+    it->set_url_de_la_page(list.at(1));
+    it->set_titre(list.at(2));
+    it->set_description(list.at(3));
+    it->set_resume(list.at(4));
+    it->set_langue(list.at(5));
+    it->set_category(list.at(6));
+    it->set_date(QDateTime::fromString(list.at(7), Qt::ISODate));
+
     return it;
 }

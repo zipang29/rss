@@ -16,6 +16,7 @@ void IO::write(const QString path, ListItems * items)
     }
     foreach (Item * item, *items)
     {
+        qDebug() << "Ajout d'un item à la bdd";
         db.set(item->get_id().toStdString(), item->toString().toStdString());
     }
 }
