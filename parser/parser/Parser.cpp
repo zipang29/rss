@@ -93,7 +93,7 @@ void Parser::readItem(QDomElement & elements)
         }*/
         else if (elements.tagName() == LINK)
         {
-            item.set_url_du_flux(elements.text());
+            item.set_url_de_la_page(elements.text());
         }
         else if (elements.tagName() == DESCRIPTION)
         {
@@ -134,6 +134,7 @@ void Parser::readItem(QDomElement & elements)
         elements = elements.nextSiblingElement();
 
     }
+    item.set_url_du_flux(url.toString());
     cout << "[*] Detection de la langue" << endl;
     this->detectLanguage(item, langue);
     cout << "[*] Generation de l'identifiant pour l'item" << endl;
