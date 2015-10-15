@@ -34,15 +34,32 @@ void Tika::destroy()
     }
 }
 
-void Tika::processItem(Item* item)
+void Tika::processItem(Item* item, QString foundLanguage)
 {
-    detectLanguage(item);
+    if (foundLanguage.isEmpty()) {
+        detectLanguage(item);
+    }
+    else {
+        QString identifier;
+        if (foundLanguage.contains('-'))
+            identifier = foundLanguage.left(foundLanguage.indexOf("-"));
+        else
+            identifier = foundLanguage;
+
+        QString language = getLanguageName(identifier);
+        if (language == "Unknown")
+            detectLanguage(item);
+        else {
+            item->set_langue(language);
+        }
+    }
 
     if (!item->get_url_de_la_page().isEmpty()) {
         downloadLink(item);
     }
     else {
         item->set_resume("Empty"); //TODO: attribut resume pour le texte du document ?
+        emit(completed(item));
     }
 }
 
@@ -57,9 +74,8 @@ void Tika::detectLanguage(Item* item)
 void Tika::setLanguage()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    Item* item = (Item*) reply->property("item").value<void*>();
     if (reply->error() == QNetworkReply::NoError) {
-        Item* item = (Item*) reply->property("item").value<void*>();
-
         QString identifier = reply->readAll();
         item->set_langue(getLanguageName(identifier));
     }
@@ -80,17 +96,20 @@ void Tika::downloadLink(Item* item)
 void Tika::convertDocument()
 {
     QNetworkReply* oldReply = qobject_cast<QNetworkReply*>(sender());
+    Item* item = (Item*) oldReply->property("item").value<void*>();
     if (oldReply->error() == QNetworkReply::NoError) {
         QNetworkRequest request(QUrl("http://localhost:9998/tika"));
         request.setRawHeader("Accept", "text/plain");
 
         QNetworkReply* reply = accessManager->put(request, oldReply->readAll());
-        reply->setProperty("item", qVariantFromValue(oldReply->property("item").value<void*>()));
+        reply->setProperty("item", qVariantFromValue((void*) item));
 
         connect(reply, SIGNAL(finished()), this, SLOT(parseDocument()));
     }
     else {
         qWarning() << "Error downloading document " << oldReply->errorString();
+        item->set_resume("Empty"); //TODO: attribut resume pour le texte du document ?
+        emit(completed(item));
     }
     oldReply->deleteLater();
 }
@@ -98,6 +117,7 @@ void Tika::convertDocument()
 void Tika::parseDocument()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    Item* item = (Item*) reply->property("item").value<void*>();
     if (reply->error() == QNetworkReply::NoError) {
         Item* item = (Item*) reply->property("item").value<void*>();
         QString text = reply->readAll();
@@ -107,6 +127,8 @@ void Tika::parseDocument()
     }
     else {
         qWarning() << "Error converting document using Tika" << reply->errorString();
+        item->set_resume("Empty"); //TODO: attribut resume pour le texte du document ?
+        emit(completed(item));
     }
     reply->deleteLater();
 }

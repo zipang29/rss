@@ -13,7 +13,7 @@ public:
     static Tika* getInstance();
     static void destroy();
 
-    void processItem(Item* item);
+    void processItem(Item* item, QString foundLanguage = QString());
 
 private:
     static Tika* instance;
