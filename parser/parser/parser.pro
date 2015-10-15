@@ -23,7 +23,10 @@ HEADERS += \
     IO.h \
     Tika.h
 
-unix|win32: LIBS += -L$$PWD/kcwin32/lib/ -lkyotocabinet
 
-INCLUDEPATH += $$PWD/kcwin32/include
-DEPENDPATH += $$PWD/kcwin32/include
+unix:!macx: LIBS += -L$$PWD/kyotocabinet-1.2.76/ -lkyotocabinet
+
+INCLUDEPATH += $$PWD/kyotocabinet-1.2.76
+DEPENDPATH += $$PWD/kyotocabinet-1.2.76
+
+unix:!macx: PRE_TARGETDEPS += $$PWD/kyotocabinet-1.2.76/libkyotocabinet.a

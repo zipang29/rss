@@ -9,6 +9,7 @@
 #include "Constantes.h"
 #include "Item.h"
 #include "Tika.h"
+#include "ListItems.h"
 #include <QDebug>
 
 using namespace std;
@@ -18,11 +19,12 @@ class Parser : QObject
     Q_OBJECT
 
     public:
-        Parser(QUrl url);
+        Parser(QUrl url, ListItems * list);
 
     public slots:
         void readFeed();
         void parseFeed();
+        void addItem(Item * item);
 
     private:
         void requestFeed();
@@ -31,10 +33,12 @@ class Parser : QObject
         QUrl url;
         QString src;
         Tika* tika;
+        ListItems * list;
 
     signals:
         void feedRecovered();
-        void itemProcessed(Item item);
+        void itemProcessed(Item * item);
+        void itemWasRead(Item item);
 };
 
 #endif // PARSER_H

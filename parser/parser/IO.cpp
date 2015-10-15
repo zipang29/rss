@@ -6,7 +6,7 @@ IO::IO()
 }
 
 //path : fichier .kch
-void IO::write(const QString path, const ListItems & items)
+void IO::write(const QString path, ListItems * items)
 {
     HashDB db;
     //Ouverture de la BDD en écriture
@@ -14,13 +14,13 @@ void IO::write(const QString path, const ListItems & items)
     {
         cerr << "Erreur à l'écriture dans la BDD : " << db.error().name() << endl;
     }
-    foreach (Item item, items)
+    foreach (Item * item, *items)
     {
-        db.set(item.get_id().toStdString(), item.toString().toStdString());
+        db.set(item->get_id().toStdString(), item->toString().toStdString());
     }
 }
 
-ListItems IO::read(QString path)
+ListItems * IO::read(QString path)
 {
     ListItems * items = new ListItems();
     HashDB db;
@@ -34,6 +34,10 @@ ListItems IO::read(QString path)
     string value;
     while (cur->get(&key, &value, true))
     {
-        Item it;
+        Item * it = Item::fromString(QString::fromStdString(value));
+        it->set_id(QString::fromStdString(key));
+        items->addItem(it);
     }
+    delete cur;
+    return items;
 }

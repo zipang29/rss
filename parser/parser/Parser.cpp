@@ -4,9 +4,10 @@
  * Constructeur
  * @param url L'URL du flux RSS à traiter
  */
-Parser::Parser(QUrl url)
+Parser::Parser(QUrl url, ListItems * list)
 {
     this->url = url;
+    this->list = list;
     tika = Tika::getInstance();
     connect(tika, SIGNAL(completed(Item*)), this, SIGNAL(itemProcessed(Item*)));
 
@@ -147,6 +148,12 @@ void Parser::readItem(QDomElement & elements)
     qDebug() << "Hash genere : " << hash;
 
     tika->processItem(item);
+    connect(this->tika, SIGNAL(completed(Item*)), this, SLOT(addItem(Item*))); // Enregistrement de l'item dans la liste lorsque les traitements sont terminés
+}
+
+void Parser::addItem(Item * item)
+{
+    this->list->addItem(item);
 }
 
 /**

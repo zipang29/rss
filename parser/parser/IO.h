@@ -13,8 +13,8 @@ class IO
 {
     public:
         IO();
-        static void write(const QString path, const ListItems & items);
-        static ListItems read(QString path);
+        static void write(const QString path, ListItems * items);
+        static ListItems * read(QString path);
 };
 
 #endif // IO_H

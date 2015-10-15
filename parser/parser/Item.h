@@ -3,7 +3,7 @@
 
 #include <QString>
 #include <QDateTime>
-#include "Constantes.h"
+#include "constantes.h"
 
 class Item
 {
@@ -31,7 +31,7 @@ public:
 	void set_date(QDateTime d);
 
     QString toString();
-    static Item fromString(QString v);
+    static Item * fromString(QString v);
 
 private:
     QString url_du_flux, url_de_la_page, titre, description, resume, langue, category;
