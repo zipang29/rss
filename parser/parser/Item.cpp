@@ -84,4 +84,29 @@ void Item::set_date(QDateTime d){
   date = d;
 }
 
+QString Item::toString()
+{
+    QString ret = "";
+    ret += this->url_du_flux + SEPARATOR;
+    ret += this->url_de_la_page + SEPARATOR;
+    ret += this->titre + SEPARATOR;
+    ret += this->description + SEPARATOR;
+    ret += this->resume + SEPARATOR;
+    ret += this->langue + SEPARATOR;
+    ret += this->category + SEPARATOR;
+    ret += QString::number(this->date.toMSecsSinceEpoch()) + SEPARATOR;
+    //ret += this->id + SEPARATOR; // A inclure ou pas dans la partie valeure de la BDD ?
 
+    return ret;
+}
+
+/**
+ * Construit un item à partir d'une chaine
+ * @param v La chaine pour construire l'item. Les éléments de la chaine doivent êtres séparés par le symbole SEPARATOR définir dans Constantes.h.\n
+ *          L'ordre des champs suit l'ordre des attributs de la classe à savoir comme ceci : url_du_flux, url_de_la_page, titre, description, resume, langue, category, date
+ * @return L'item construit à partir de la chaine. L'id (hash) n'est pas ajouté à l'item via cette méthode, il faut l'ajouter séparément
+ */
+Item Item::fromString(QString v)
+{
+    v.split(SEPARATOR);
+}

@@ -3,6 +3,11 @@
 #include <QString>
 
 /**
+  * Symbole de séparation pour l'enregistrement dans la BDD
+  */
+#define SEPARATOR ";@;"
+
+/**
   * Définition des constantes pour le parsing
   */
 #define RSS "rss"

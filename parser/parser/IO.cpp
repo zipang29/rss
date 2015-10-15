@@ -12,15 +12,28 @@ void IO::write(const QString path, const ListItems & items)
     //Ouverture de la BDD en écriture
     if (!db.open(path.toStdString(), HashDB::OWRITER | HashDB::OCREATE))
     {
-        cerr << "Erreur à l'ouverture de la BDD : " << db.error().name() << endl;
+        cerr << "Erreur à l'écriture dans la BDD : " << db.error().name() << endl;
     }
     foreach (Item item, items)
     {
-        //db.set(item.get_id().toStdString(), item);
+        db.set(item.get_id().toStdString(), item.toString().toStdString());
     }
 }
 
-/*ListItems IO::read(QString path)
+ListItems IO::read(QString path)
 {
-    return;
-}*/
+    ListItems * items = new ListItems();
+    HashDB db;
+    if (!db.open(path.toStdString(), HashDB::OREADER))
+    {
+        cerr << "Erreur à la lecture dans la BDD : " << db.error().name() << endl;
+    }
+    DB::Cursor * cur; db.cursor();
+    cur->jump();
+    string key;
+    string value;
+    while (cur->get(&key, &value, true))
+    {
+        Item it;
+    }
+}
