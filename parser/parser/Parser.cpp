@@ -139,7 +139,8 @@ void Parser::readItem(QDomElement & elements)
     }
     item->set_url_du_flux(url.toString());
     cout << "[*] Detection de la langue" << endl;
-    this->detectLanguage(item, langue);
+    Tika::getInstance()->processItem(item); // Détection de la langue
+    //this->detectLanguage(item, langue);
     cout << "[*] Generation de l'identifiant pour l'item" << endl;
     QString stringHash = item->get_titre() + item->get_description() + item->get_url_de_la_page();
     QByteArray hash = QCryptographicHash::hash(stringHash.toUtf8(), QCryptographicHash::Md5);

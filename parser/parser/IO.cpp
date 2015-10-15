@@ -16,11 +16,11 @@ void IO::write(const QString path, const ListItems & items)
     }
     foreach (Item item, items)
     {
-        db.set(item.get_id().toStdString(), item);
+        //db.set(item.get_id().toStdString(), item);
     }
 }
 
-ListItems IO::read(QString path)
+/*ListItems IO::read(QString path)
 {
-
-}
+    return;
+}*/
