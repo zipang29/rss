@@ -8,6 +8,7 @@
 #include <iostream>
 #include "Constantes.h"
 #include "Item.h"
+#include "Tika.h"
 #include <QDebug>
 
 using namespace std;
@@ -26,13 +27,14 @@ class Parser : QObject
     private:
         void requestFeed();
         void readItem(QDomElement & elements);
-        void detectLanguage(Item& item, QString language);
 
         QUrl url;
         QString src;
+        Tika* tika;
 
     signals:
         void feedRecovered();
+        void itemProcessed(Item item);
 };
 
 #endif // PARSER_H
