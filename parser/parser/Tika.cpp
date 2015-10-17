@@ -2,7 +2,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDebug>
-#include "constantes.h"
+#include "Constantes.h"
 
 Tika* Tika::instance = NULL;
 
