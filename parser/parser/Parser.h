@@ -19,7 +19,8 @@ class Parser : QObject
     Q_OBJECT
 
     public:
-        Parser(QUrl url, ListItems * list);
+        Parser(QUrl url);
+        ListItems * getListItems();
 
     public slots:
         void readFeed();

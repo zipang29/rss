@@ -33,6 +33,7 @@ public:
 
     QString toString();
     static Item * fromString(QString v);
+    QString toHumanReadable();
 
 private:
     QString url_du_flux, url_de_la_page, titre, description, resume, langue, category;

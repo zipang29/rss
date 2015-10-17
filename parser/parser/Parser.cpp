@@ -4,12 +4,13 @@
  * Constructeur
  * @param url L'URL du flux RSS à traiter
  */
-Parser::Parser(QUrl url, ListItems * list)
+Parser::Parser(QUrl url)
 {
     this->url = url;
-    this->list = list;
+    this->list = new ListItems();
     tika = Tika::getInstance();
     connect(tika, SIGNAL(completed(Item*)), this, SIGNAL(itemProcessed(Item*)));
+    connect(this, SIGNAL(itemProcessed(Item*)), this, SLOT(addItem(Item*))); // Enregistrement de l'item dans la liste lorsque les traitements sont terminés
 
     requestFeed();
 }
@@ -58,7 +59,7 @@ void Parser::parseFeed()
                     {
                         if (channelElements.tagName() == LAST_BUILD_DATE)
                         {
-                            qDebug() << channelElements.text() << endl;
+                            //qDebug() << channelElements.text() << endl;
                             //TODO
                         }
                         else if (channelElements.tagName() == ITEM)
@@ -83,7 +84,7 @@ void Parser::parseFeed()
  */
 void Parser::readItem(QDomElement & elements)
 {
-    Item* item = new Item();
+    Item * item = new Item();
     QString langue = "";
     while(!elements.isNull())
     {
@@ -128,7 +129,7 @@ void Parser::readItem(QDomElement & elements)
         }
         else if (elements.tagName() == AUTHOR)
         {
-            cout << "Auteur: " << elements.text().toStdString() << endl;
+            //cout << "Auteur: " << elements.text().toStdString() << endl;
         }
         else if (elements.tagName() == LANGUAGE)
         {
@@ -139,20 +140,17 @@ void Parser::readItem(QDomElement & elements)
 
     }
     item->set_url_du_flux(url.toString());
-    cout << "[*] Detection de la langue" << endl;
     tika->processItem(item, langue); // Détection de la langue, téléchargement et parsing du document cible de l'item
-    cout << "[*] Generation de l'identifiant pour l'item" << endl;
     QString stringHash = item->get_titre() + item->get_description() + item->get_url_de_la_page();
     QByteArray hash = QCryptographicHash::hash(stringHash.toUtf8(), QCryptographicHash::Md5);
     item->set_id(hash);
-    qDebug() << "Hash genere : " << hash;
-
     tika->processItem(item);
-    connect(this->tika, SIGNAL(completed(Item*)), this, SLOT(addItem(Item*))); // Enregistrement de l'item dans la liste lorsque les traitements sont terminés
 }
 
 void Parser::addItem(Item * item)
 {
+    cout << "[*] Ajout de l'item :" << endl;
+    item->toHumanReadable().toStdString();
     this->list->addItem(item);
 }
 
@@ -166,4 +164,9 @@ void Parser::readFeed()
     QNetworkReply * reply = qobject_cast<QNetworkReply*>(sender());
     this->src = reply->readAll();
     emit feedRecovered();
+}
+
+ListItems * Parser::getListItems()
+{
+    return this->list;
 }
