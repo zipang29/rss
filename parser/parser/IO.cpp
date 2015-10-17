@@ -43,3 +43,16 @@ ListItems IO::read(QString path)
     delete cur;
     return items;
 }
+
+void IO::writeList(ListItems *items)
+{
+    cout << "[*] Ecriture" << endl;
+    IO::write("bdd.kch", items);
+
+    std::cout << "[*] Test de lecture de la BDD" << std::endl;
+    ListItems list2 = IO::read("bdd.kch");
+    foreach (Item * item, list2)
+    {
+        std::cout << "Lecture : " + item->get_titre().toStdString() << std::endl;
+    }
+}

@@ -10,6 +10,7 @@
 #include "Item.h"
 #include "Tika.h"
 #include "ListItems.h"
+#include "IO.h"
 #include <QDebug>
 
 using namespace std;
@@ -35,11 +36,15 @@ class Parser : QObject
         QString src;
         Tika* tika;
         ListItems * list;
+        int nbItems;
+        int count; // Permet de compter le nombre d'item traité complètement
+        IO * io;
 
     signals:
         void feedRecovered();
         void itemProcessed(Item * item);
         void itemWasRead(Item item);
+        void fullList(ListItems * items);
 };
 
 #endif // PARSER_H

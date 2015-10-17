@@ -129,15 +129,16 @@ Item * Item::fromString(QString v)
 QString Item::toHumanReadable()
 {
     QString ret = "";
-    ret += "======================================";
+    ret += "======================================\n";
     ret += this->id + "\n";
-    ret += "======================================";
+    ret += "======================================\n";
     ret += "Url du flux : " + this->url_du_flux + "\n";
     ret += "Url de la page : " + this->url_de_la_page + "\n";
     ret += "Titre : " + this->titre + "\n";
-    ret += "Description : " + this->description + "\n";
-    ret += "Resume : " + this->resume + "\n";
+    //ret += "Description : " + this->description + "\n";
+    //ret += "Resume : " + this->resume + "\n";
     ret += "Langue : " + this->langue + "\n";
     ret += "Catégorie : " + this->category + "\n";
-    ret += "Date : " + this->date.toString() + "\n";
+    ret += "Date : " + this->date.toString() + "\n\n";
+    return ret;
 }

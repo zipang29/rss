@@ -9,6 +9,10 @@ Parser::Parser(QUrl url)
     this->url = url;
     this->list = new ListItems();
     tika = Tika::getInstance();
+    this->nbItems = 0;
+    this->count = 0;
+    this->io = new IO();
+    connect(this, SIGNAL(fullList(ListItems*)), this->io, SLOT(writeList(ListItems*)));
     connect(tika, SIGNAL(completed(Item*)), this, SIGNAL(itemProcessed(Item*)));
     connect(this, SIGNAL(itemProcessed(Item*)), this, SLOT(addItem(Item*))); // Enregistrement de l'item dans la liste lorsque les traitements sont terminés
 
@@ -64,6 +68,7 @@ void Parser::parseFeed()
                         }
                         else if (channelElements.tagName() == ITEM)
                         {
+                            this->nbItems++;
                             QDomElement item = channelElements.firstChildElement();
                             this->readItem(item);
                         }
@@ -144,14 +149,17 @@ void Parser::readItem(QDomElement & elements)
     QString stringHash = item->get_titre() + item->get_description() + item->get_url_de_la_page();
     QByteArray hash = QCryptographicHash::hash(stringHash.toUtf8(), QCryptographicHash::Md5);
     item->set_id(hash);
-    tika->processItem(item);
+    //tika->processItem(item);
 }
 
 void Parser::addItem(Item * item)
 {
     cout << "[*] Ajout de l'item :" << endl;
-    item->toHumanReadable().toStdString();
+    cout << item->toHumanReadable().toStdString();
+    this->count++;
     this->list->addItem(item);
+    if (this->nbItems == this->count)
+        emit fullList(this->list);
 }
 
 /**
