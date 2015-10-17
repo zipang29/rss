@@ -6,6 +6,9 @@
 #include "ListItems.h"
 #include "Item.h"
 #include <QObject>
+#include <QFile>
+#include <QThread>
+#include "Parser.h"
 
 using namespace std;
 using namespace kyotocabinet;
@@ -16,11 +19,10 @@ class IO : public QObject
 
     public:
         IO();
-        static void write(const QString path, ListItems * items);
+        static void write(const QString path, Item * item);
         static ListItems read(QString path);
+        void readFeeds();
 
-    public slots:
-        void writeList(ListItems * items);
 };
 
 #endif // IO_H

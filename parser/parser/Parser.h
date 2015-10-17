@@ -15,13 +15,14 @@
 
 using namespace std;
 
+class IO;
+
 class Parser : QObject
 {
     Q_OBJECT
 
     public:
-        Parser(QUrl url);
-        ListItems * getListItems();
+        Parser(QUrl url, IO *io);
 
     public slots:
         void readFeed();
@@ -35,9 +36,6 @@ class Parser : QObject
         QUrl url;
         QString src;
         Tika* tika;
-        ListItems * list;
-        int nbItems;
-        int count; // Permet de compter le nombre d'item traité complètement
         IO * io;
 
     signals:

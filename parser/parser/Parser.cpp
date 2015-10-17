@@ -4,15 +4,11 @@
  * Constructeur
  * @param url L'URL du flux RSS à traiter
  */
-Parser::Parser(QUrl url)
+Parser::Parser(QUrl url, IO * io)
 {
     this->url = url;
-    this->list = new ListItems();
     tika = Tika::getInstance();
-    this->nbItems = 0;
-    this->count = 0;
-    this->io = new IO();
-    connect(this, SIGNAL(fullList(ListItems*)), this->io, SLOT(writeList(ListItems*)));
+    this->io = io;
     connect(tika, SIGNAL(completed(Item*)), this, SIGNAL(itemProcessed(Item*)));
     connect(this, SIGNAL(itemProcessed(Item*)), this, SLOT(addItem(Item*))); // Enregistrement de l'item dans la liste lorsque les traitements sont terminés
 
@@ -68,7 +64,6 @@ void Parser::parseFeed()
                         }
                         else if (channelElements.tagName() == ITEM)
                         {
-                            this->nbItems++;
                             QDomElement item = channelElements.firstChildElement();
                             this->readItem(item);
                         }
@@ -154,12 +149,9 @@ void Parser::readItem(QDomElement & elements)
 
 void Parser::addItem(Item * item)
 {
-    cout << "[*] Ajout de l'item :" << endl;
-    cout << item->toHumanReadable().toStdString();
-    this->count++;
-    this->list->addItem(item);
-    if (this->nbItems == this->count)
-        emit fullList(this->list);
+    //cout << "[*] Ajout de l'item :" << endl;
+    //cout << item->toHumanReadable().toStdString();
+    IO::write("bdd.kch", item);
 }
 
 /**
@@ -172,9 +164,4 @@ void Parser::readFeed()
     QNetworkReply * reply = qobject_cast<QNetworkReply*>(sender());
     this->src = reply->readAll();
     emit feedRecovered();
-}
-
-ListItems * Parser::getListItems()
-{
-    return this->list;
 }
