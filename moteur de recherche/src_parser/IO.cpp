@@ -1,11 +1,12 @@
 #include "IO.h"
 
-IO::IO()
+IO::IO(QString database_path)
 {
+    path = database_path;
 }
 
 //path : fichier .kch
-void IO::write(const QString path, Item * item)
+void IO::write(Item * item)
 {
     HashDB db;
     //Ouverture de la BDD en écriture
@@ -16,6 +17,8 @@ void IO::write(const QString path, Item * item)
     //qDebug() << "Ajout d'un item à la bdd";
     db.set(item->get_id().toStdString(), item->toString().toStdString());
     //qDebug() << "fin de l'écriture dans la bdd";
+
+	item->deleteLater();
 }
 
 ListItems IO::read(QString path)
@@ -32,7 +35,6 @@ ListItems IO::read(QString path)
     string value;
     while (cur->get(&key, &value, true))
     {
-        std::cout << "lecture" << endl;
         Item * it = Item::fromString(QString::fromStdString(value));
         it->set_id(QString::fromStdString(key));
         items.addItem(it);
@@ -41,22 +43,32 @@ ListItems IO::read(QString path)
     return items;
 }
 
-void IO::readFeeds()
+void IO::readFeeds(QString path)
 {
-    QFile f("ListFluxRSS-v2.txt");
+    QFile f(path);
     f.open(QIODevice::ReadOnly);
     while (!f.atEnd())
     {
         QString line = f.readLine();
-        Parser * p = new Parser(QUrl(line), this);
+        readFeed(QUrl(line));
     }
+}
 
+void IO::readFeed(QUrl url)
+{
+    Parser* p = new Parser(url, this);
+	connect(p, SIGNAL(itemProcessed(Item*)), this, SLOT(write(Item*)));
+    parsers.append(p);
+}
+
+void IO::readDB()
+{
     //Test de lecture de la bdd
-    /*ListItems l = IO::read("bdd.kch");
+    ListItems l = IO::read(path);
     int i = 0;
     foreach(Item * item, l)
     {
         i++;
-        std::cout << i << " : " << item->get_titre().toStdString();
-    }*/
+        std::cout << i << " : " << item->get_titre().toStdString() << std::endl;
+    }
 }

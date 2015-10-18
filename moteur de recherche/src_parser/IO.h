@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QThread>
 #include "Parser.h"
+#include <QList>
 
 using namespace std;
 using namespace kyotocabinet;
@@ -18,10 +19,19 @@ class IO : public QObject
     Q_OBJECT
 
     public:
-        IO();
-        static void write(const QString path, Item * item);
+        IO(QString database_path);
         static ListItems read(QString path);
-        void readFeeds();
+        void readFeeds(QString path);
+        void readFeed(QUrl url);
+
+        void readDB();
+
+	public slots:
+        void write(Item* item);
+
+    private:
+        QList<Parser*> parsers;
+        QString path;
 
 };
 

@@ -6,7 +6,19 @@
 
 Item::Item()
 {
-	
+}
+
+Item::Item(const Item& other)
+{
+	url_du_flux = other.url_du_flux;
+	url_de_la_page = other.url_de_la_page;
+	titre = other.titre;
+	description = other.description;
+	resume = other.resume;
+	langue = other.langue;
+	category = other.category;
+	date = other.date;
+	id = other.id;
 }
 
 Item::~Item()

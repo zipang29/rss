@@ -10,24 +10,20 @@
 #include "Item.h"
 #include "Tika.h"
 #include "ListItems.h"
-#include "IO.h"
 #include <QDebug>
 
 using namespace std;
 
-class IO;
-
-class Parser : QObject
+class Parser : public QObject
 {
     Q_OBJECT
 
     public:
-        Parser(QUrl url, IO *io);
+        Parser(QUrl url, QObject* parent);
 
     public slots:
         void readFeed();
         void parseFeed();
-        void addItem(Item * item);
 
     private:
         void requestFeed();
@@ -36,13 +32,19 @@ class Parser : QObject
         QUrl url;
         QString src;
         Tika* tika;
-        IO * io;
+
+		int processingItem;
+
+	private slots:
+		void completedItem(Item* item);
 
     signals:
         void feedRecovered();
         void itemProcessed(Item * item);
         void itemWasRead(Item item);
         void fullList(ListItems * items);
+
+		void feedProcessed();
 };
 
 #endif // PARSER_H

@@ -6,10 +6,13 @@
 #include "Constantes.h"
 #include <QDebug>
 
-class Item
+class Item : public QObject
 {
+	Q_OBJECT
+
 public:
     Item();
+	Item(const Item& other);
 	~Item();
 	QString get_id();
 	QString get_url_du_flux();
@@ -40,4 +43,5 @@ private:
     QDateTime date;
     QString id;
 };
+
 #endif // ITEM_H

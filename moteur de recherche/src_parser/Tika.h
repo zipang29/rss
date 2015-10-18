@@ -20,10 +20,17 @@ private:
     QProcess* tika_server;
     QNetworkAccessManager* accessManager;
 
+	QMap<QString, Item*> processingItems;
+	QList<QString> waitingForLanguage;
+	QList<QString> waitingForDocument;
+
     Tika();
 
-    void detectLanguage(Item* item);
+    void detectLanguage(Item* item, QString foundLanguage);
+	void requestLanguage(Item* item);
     void downloadLink(Item* item);
+
+	void checkFinishedItem(QString id);
 
 private slots:
     void setLanguage();

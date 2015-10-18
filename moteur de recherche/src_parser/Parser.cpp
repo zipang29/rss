@@ -4,13 +4,11 @@
  * Constructeur
  * @param url L'URL du flux RSS à traiter
  */
-Parser::Parser(QUrl url, IO * io)
+Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
 {
     this->url = url;
     tika = Tika::getInstance();
-    this->io = io;
-    connect(tika, SIGNAL(completed(Item*)), this, SIGNAL(itemProcessed(Item*)));
-    connect(this, SIGNAL(itemProcessed(Item*)), this, SLOT(addItem(Item*))); // Enregistrement de l'item dans la liste lorsque les traitements sont terminés
+    connect(tika, SIGNAL(completed(Item*)), this, SLOT(completedItem(Item*)));
 
     requestFeed();
 }
@@ -31,6 +29,7 @@ void Parser::requestFeed()
  */
 void Parser::parseFeed()
 {
+	processingItem = 0;
     cout << "[*] Recreation du document de source : " << this->url.toString().toStdString() << endl;
     QDomDocument doc;
     QString * errors = NULL;
@@ -140,18 +139,11 @@ void Parser::readItem(QDomElement & elements)
 
     }
     item->set_url_du_flux(url.toString());
-    tika->processItem(item, langue); // Détection de la langue, téléchargement et parsing du document cible de l'item
     QString stringHash = item->get_titre() + item->get_description() + item->get_url_de_la_page();
     QByteArray hash = QCryptographicHash::hash(stringHash.toUtf8(), QCryptographicHash::Md5);
     item->set_id(hash);
-    //tika->processItem(item);
-}
-
-void Parser::addItem(Item * item)
-{
-    //cout << "[*] Ajout de l'item :" << endl;
-    //cout << item->toHumanReadable().toStdString();
-    IO::write("bdd.kch", item);
+	processingItem++;
+    tika->processItem(item, langue); // Détection de la langue, téléchargement et parsing du document cible de l'item
 }
 
 /**
@@ -164,4 +156,18 @@ void Parser::readFeed()
     QNetworkReply * reply = qobject_cast<QNetworkReply*>(sender());
     this->src = reply->readAll();
     emit feedRecovered();
+}
+
+void Parser::completedItem(Item* item)
+{
+	if (item->get_url_du_flux() == url.url()) {
+		processingItem--;
+		emit(itemProcessed(item));
+
+		if (processingItem == 0) {
+			qDebug() << "Traitement de " << url.url() << "terminé";
+			emit(feedProcessed());
+		}
+	}
+	
 }
