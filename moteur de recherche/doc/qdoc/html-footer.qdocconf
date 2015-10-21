@@ -1,0 +1,13 @@
+#Default HTML footer for QDoc builds.
+
+HTML.footer = \
+    "        </div>\n" \
+    "       </div>\n" \
+    "   </div>\n" \
+    "   </div>\n" \
+    "</div>\n" \
+    "<div class=\"footer\">\n" \
+    "   <p>\n" \
+    " Projet RSS-Intelligence - Nailya Bogrova, Guillaume Claudic et Louis Ormières" \
+    "   </p>\n" \
+    "</div>\n" \

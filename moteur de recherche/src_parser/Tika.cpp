@@ -4,8 +4,31 @@
 #include <QDebug>
 #include "Constantes.h"
 
+/*!
+ * \class Tika
+ * \brief Classe d'interaction avec Tika
+ * \inmodule FEED_COLLECTOR
+ *
+ * Utilise un serveur Tika, lancé dans le constructeur et terminé à la déstruction de 
+ * l'instance de la classe, pour détécter la langue d'un Item et convertir la source de celui-ci
+ * en un QString.
+ *
+ * Le jar du serveur Tika doit se trouver dans le même dossier que l'exécutable et s'appeler \e tika-server-1.10.jar
+ *
+ * Implémente le patron de conception Singleton.
+ */
+
+/*!
+ * \fn Tika::completed(Item* item)
+ * Signal émit quand les deux étapes du traitement de l'\a item (détéction de langue et 
+ * conversion de la source en string) sont terminées.
+ */
+
 Tika* Tika::instance = NULL;
 
+/*!
+ * Lance le serveur Tika
+ */
 Tika::Tika() : QObject()
 {
     accessManager = new QNetworkAccessManager(this);
@@ -18,6 +41,9 @@ Tika::Tika() : QObject()
     tika_server->start(program, args);
 }
 
+/*!
+ * Retourne l'unique instance de la classe, la crée si elle n'existe pas encore.
+ */
 Tika* Tika::getInstance()
 {
     if (instance == NULL) {
@@ -26,6 +52,11 @@ Tika* Tika::getInstance()
     return instance;
 }
 
+/*!
+ * Détruit l'instance de la classe si elle existe.
+ *
+ * Ceci à pour effet d'arrêter le serveur Tika
+ */
 void Tika::destroy()
 {
     if (instance != NULL) {
@@ -34,6 +65,14 @@ void Tika::destroy()
     }
 }
 
+/*!
+ * Lance le téléchargement et la conversion en QString du document source de l'\a item si celui-ci
+ * en possède un. Dans le cas contraire, assigne au contenu de l'\a item la valeur \e Vide
+ *
+ * Si \a foundLanguage est un identifiant de langue connue (ie: fr-FR ou en-GB), assigne à 
+ * l'\a item le nom complet de la langue (ie: French, English). Dans le cas contraire, utilise Tika
+ * pour détécter la langue de l'\a item via sa description. Si la langue est inconnue, elle est notée \e Inconnue dans l'\a item.
+ */
 void Tika::processItem(Item* item, QString foundLanguage)
 {
 	processingItems.insert(item->get_id(), item);
@@ -45,6 +84,11 @@ void Tika::processItem(Item* item, QString foundLanguage)
 	checkFinishedItem(item->get_id());
 }
 
+/*!
+ * Si \a foundLanguage est un identifiant de langue connue (ie: fr-FR ou en-GB), assigne à 
+ * l'\a item le nom complet de la langue (ie: French, English). Dans le cas contraire, utilise Tika
+ * pour détécter la langue de l'\a item via sa description. Si la langue est inconnue, elle est notée \e Inconnue dans l'\a item.
+ */
 void Tika::detectLanguage(Item* item, QString foundLanguage)
 {
 	if (foundLanguage.isEmpty()) {
@@ -58,7 +102,7 @@ void Tika::detectLanguage(Item* item, QString foundLanguage)
 			identifier = foundLanguage;
 
 		QString language = getLanguageName(identifier);
-		if (language == "Unknown") {
+		if (language == "Inconnue") {
 			requestLanguage(item);
 		}
 		else {
@@ -68,6 +112,9 @@ void Tika::detectLanguage(Item* item, QString foundLanguage)
 	}
 }
 
+/*!
+ * Lance une requête de détéction de langue à Tika pour cet \a item
+ */
 void Tika::requestLanguage(Item* item)
 {
 	QNetworkRequest request(QUrl("http://localhost:9998/language/stream"));
@@ -76,6 +123,10 @@ void Tika::requestLanguage(Item* item)
 	connect(reply, SIGNAL(finished()), this, SLOT(setLanguage()));
 }
 
+/*!
+ * Assigne la valeur de retour de la détéction de langue de Tika à l'Item concerné ou \e Inconnue si Tika
+ * n'a pas été en mesure de détécter la langue.
+ */
 void Tika::setLanguage()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
@@ -86,14 +137,17 @@ void Tika::setLanguage()
         item->set_langue(getLanguageName(identifier));
     }
     else {
-        qWarning() << "Error getting item language using Tika" << reply->errorString();
-        item->set_langue("Unknown");
+        qWarning() << "Erreur lors de la detection de la langue via Tika :" << reply->errorString();
+        item->set_langue("Inconnue");
     }
 
 	waitingForLanguage.removeOne(item->get_id());
 	checkFinishedItem(item->get_id());
 }
 
+/*!
+ * Télécharge le document source de l'\a item si il en a un.
+ */
 void Tika::downloadLink(Item* item)
 {
 	if (!item->get_url_de_la_page().isEmpty()) {
@@ -103,11 +157,16 @@ void Tika::downloadLink(Item* item)
 		connect(reply, SIGNAL(finished()), this, SLOT(convertDocument()));
 	}
 	else {
-		item->set_resume("Empty"); //TODO: attribut resume pour le texte du document ?
+		item->set_contenu("Vide");
 		waitingForDocument.removeOne(item->get_id());
 	}
 }
 
+/*!
+ * Envoi le document téléchargé à Tika pour sa conversion en string.
+ *
+ * En cas d'erreur de téléchargement, le document de l'item est assigné à la valeur \e Vide
+ */
 void Tika::convertDocument()
 {
     QNetworkReply* oldReply = qobject_cast<QNetworkReply*>(sender());
@@ -123,25 +182,30 @@ void Tika::convertDocument()
         connect(reply, SIGNAL(finished()), this, SLOT(parseDocument()));
     }
     else {
-        qWarning() << "Error downloading document " << oldReply->errorString();
-        item->set_resume("Empty"); //TODO: attribut resume pour le texte du document ?
+        qWarning() << "Erreur lors du telechargement du contenu :" << oldReply->errorString();
+		item->set_contenu("Vide");
 		waitingForDocument.removeOne(item->get_id());
 		checkFinishedItem(item->get_id());
     }
     oldReply->deleteLater();
 }
 
+/*!
+ * Récupère le string convertit par Tika et l'assigne à l'item concerné.
+ * 
+ * En cas d'erreur, le document de l'item est assigné à la valeur \e Vide
+ */
 void Tika::parseDocument()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
 	Item* item = processingItems[reply->property("item").toString()];
     if (reply->error() == QNetworkReply::NoError) {
         QString text = reply->readAll();
-        item->set_resume(text); //TODO: attribut resume pour le texte du document ?
+		item->set_contenu(text);
     }
     else {
-        qWarning() << "Error converting document using Tika" << reply->errorString();
-        item->set_resume("Empty"); //TODO: attribut resume pour le texte du document ?
+        qWarning() << "Erreur lors de la conversion du contenu via Tika :" << reply->errorString();
+		item->set_contenu("Vide");
     }
 
 	waitingForDocument.removeOne(item->get_id());
@@ -150,6 +214,10 @@ void Tika::parseDocument()
     reply->deleteLater();
 }
 
+/*!
+ * Vérifie si les deux étapes du traitement de l'item \a id (détéction de langue et conversion
+ * de la source en string) sont terminées dans quel cas le signal completed(Item* item) est émit.
+ */
 void Tika::checkFinishedItem(QString id)
 {
 	if (!waitingForLanguage.contains(id) && !waitingForDocument.contains(id)) {

@@ -3,7 +3,6 @@
 /**
  * Constructeur
  */
-
 Item::Item()
 {
 }
@@ -14,7 +13,7 @@ Item::Item(const Item& other)
 	url_de_la_page = other.url_de_la_page;
 	titre = other.titre;
 	description = other.description;
-	resume = other.resume;
+	contenu = other.contenu;
 	langue = other.langue;
 	category = other.category;
 	date = other.date;
@@ -27,7 +26,6 @@ Item::~Item()
 }
 
 //Getters et setters
-
 QString Item::get_id(){
   return id;
 } 
@@ -64,12 +62,12 @@ QString Item::get_description(){
 void Item::set_description(QString des){
   description = des;
 }
-QString Item::get_resume(){
-  return resume;
+QString Item::get_contenu(){
+	return contenu;
 } 
 
-void Item::set_resume(QString r){
-  resume = r;
+void Item::set_contenu(QString c){
+	contenu = c;
 }
 
 QString Item::get_langue(){
@@ -103,7 +101,7 @@ QString Item::toString()
     ret += this->url_de_la_page + SEPARATOR;
     ret += this->titre + SEPARATOR;
     ret += this->description + SEPARATOR;
-    ret += this->resume + SEPARATOR;
+	ret += this->contenu + SEPARATOR;
     ret += this->langue + SEPARATOR;
     ret += this->category + SEPARATOR;
     ret += this->date.toString(Qt::ISODate) + SEPARATOR;
@@ -130,7 +128,7 @@ Item * Item::fromString(QString v)
     it->set_url_de_la_page(list.at(1));
     it->set_titre(list.at(2));
     it->set_description(list.at(3));
-    it->set_resume(list.at(4));
+	it->set_contenu(list.at(4));
     it->set_langue(list.at(5));
     it->set_category(list.at(6));
     it->set_date(QDateTime::fromString(list.at(7), Qt::ISODate));
@@ -138,7 +136,7 @@ Item * Item::fromString(QString v)
     return it;
 }
 
-QString Item::toHumanReadable()
+QString Item::toHumanReadable() const
 {
     QString ret = "";
     ret += "======================================\n";
@@ -148,9 +146,15 @@ QString Item::toHumanReadable()
     ret += "Url de la page : " + this->url_de_la_page + "\n";
     ret += "Titre : " + this->titre + "\n";
     //ret += "Description : " + this->description + "\n";
-    //ret += "Resume : " + this->resume + "\n";
+    //ret += "Contenu : " + this->contenu + "\n";
     ret += "Langue : " + this->langue + "\n";
     ret += "Catégorie : " + this->category + "\n";
     ret += "Date : " + this->date.toString() + "\n\n";
     return ret;
+}
+
+QDebug& operator<<(QDebug& debug, const Item& item)
+{
+	debug << item.toHumanReadable();
+	return debug;
 }

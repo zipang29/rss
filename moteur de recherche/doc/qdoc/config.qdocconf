@@ -1,0 +1,11 @@
+include(qt-module-defaults-offline.qdocconf)
+
+outputdir = html
+headerdirs = ../../src_parser
+sourcedirs = ../../src_parser
+outputformats = HTML
+
+sources.fileextensions = "*.cpp *.qdoc *.mm *.qml"
+headers.fileextensions = "*.h *.ch *.h++ *.hh *.hpp *.hxx"
+
+syntaxhighlighting = true
