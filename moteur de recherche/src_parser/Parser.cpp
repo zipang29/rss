@@ -107,7 +107,7 @@ void Parser::parseFeed()
 /*!
  * Parse un item du flux RSS
  * 
- * Reçoit les éléments de l'item
+ * Reçoit les \a elements de l'item
  */
 void Parser::readItem(QDomElement & elements)
 {
