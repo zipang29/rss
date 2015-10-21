@@ -12,17 +12,15 @@ set(SOURCES
 	Constantes.cpp
 	IO.cpp
 	Item.cpp
-	ListItems.cpp
 	main.cpp
 	Parser.cpp
 	Tika.cpp
 )
 
 set(HEADERS
-        Constantes.h
+    Constantes.h
 	IO.h
 	Item.h
-	ListItems.h
 	Parser.h
 	Tika.h
 )

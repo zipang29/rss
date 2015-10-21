@@ -3,7 +3,6 @@
 
 #include <kchashdb.h>
 #include <QString>
-#include "ListItems.h"
 #include "Item.h"
 #include <QObject>
 #include <QFile>
@@ -20,7 +19,7 @@ class IO : public QObject
 
     public:
         IO(QString database_path);
-        static ListItems read(QString path);
+		static QMap<QString, Item*> read(QString path);
         void readFeeds(QString path);
         void readFeed(QUrl url);
 

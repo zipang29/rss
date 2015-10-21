@@ -9,7 +9,6 @@
 #include "Constantes.h"
 #include "Item.h"
 #include "Tika.h"
-#include "ListItems.h"
 #include <QDebug>
 
 using namespace std;
@@ -20,10 +19,6 @@ class Parser : public QObject
 
     public:
         Parser(QUrl url, QObject* parent);
-
-    public slots:
-        void readFeed();
-        void parseFeed();
 
     private:
         void requestFeed();
@@ -36,13 +31,14 @@ class Parser : public QObject
 		int processingItem;
 
 	private slots:
+		void parseFeed();
+		void readFeed();
 		void completedItem(Item* item);
 
     signals:
         void feedRecovered();
         void itemProcessed(Item * item);
         void itemWasRead(Item item);
-        void fullList(ListItems * items);
 
 		void feedProcessed();
 };

@@ -1,8 +1,36 @@
 #include "Parser.h"
 
-/**
- * Constructeur
- * @param url L'URL du flux RSS à traiter
+/*!
+ * \class Parser
+ * \brief Classe de parsing du projet
+ * \inmodule FEED_COLLECTOR
+ *
+ * //TODO
+ */
+
+/*!
+ * \fn Parser::feedProcessed()
+ * //TODO
+ */
+
+/*!
+ * \fn Parser::feedRecovered()
+ * //TODO
+ */
+
+/*!
+ * \fn Parser::itemProcessed(Item * item)
+ * Signal émit quand un \a item à finit d'être traité
+ */
+
+/*!
+ * \fn Parser::itemWasRead(Item item)
+ * \a item //TODO
+ */
+
+
+/*!
+ * Prend en paramètre l'\a url du flux RSS à traiter et optionellement un objet \a parent
  */
 Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
 {
@@ -13,35 +41,34 @@ Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
     requestFeed();
 }
 
-/**
+/*!
  * Permet de débuter la récupération du code source de l'URL spécifié au constructeur
  */
 void Parser::requestFeed()
 {
+	qInfo() << "Lancement du traitement du flux" << this->url.toString();
+
     QNetworkAccessManager * manager = new QNetworkAccessManager;
     QNetworkReply * reply = manager->get(QNetworkRequest(this->url));
     connect(reply, SIGNAL(finished()), this, SLOT(readFeed()));
     connect(this, SIGNAL(feedRecovered()), this, SLOT(parseFeed()));
 }
 
-/**
+/*!
  * Parse le flux RSS qui aura été précédement récupéré
  */
 void Parser::parseFeed()
 {
+	qInfo() << "Parsing du flux" << this->url.toString();
 	processingItem = 0;
-    cout << "[*] Recreation du document de source : " << this->url.toString().toStdString() << endl;
     QDomDocument doc;
     QString * errors = NULL;
     doc.setContent(this->src, false, errors);
     if (errors != NULL)
     {
-        cout << "Erreurs : " << endl << errors << endl;
-        cout << "Impossible de parser le flux RSS." << endl;
+		qWarning() << "Erreur lors du parsing du flux" << this->url.toString() << ":" << errors;
         return;
     }
-    cout << "[*] Document pret a etre parse" << endl;
-    cout << "[*] Debut du parsing" << endl;
     // Début du parsing
     QDomElement root = doc.documentElement();
     while(!root.isNull())
@@ -74,12 +101,13 @@ void Parser::parseFeed()
         }
         root = root.nextSiblingElement();
     }
-    cout << "[*] Fin parsing" << endl;
+	qInfo() << "Fin du parsing du flux" << this->url.toString();
 }
 
-/**
+/*!
  * Parse un item du flux RSS
- * @param elements Les éléments de l'item
+ * 
+ * Reçoit les éléments de l'item
  */
 void Parser::readItem(QDomElement & elements)
 {
@@ -91,10 +119,10 @@ void Parser::readItem(QDomElement & elements)
         {
             item->set_titre(elements.text());
         }
-        /*else if (elements.tagName() == CATEGORY)
+        else if (elements.tagName() == CATEGORY)
         {
-
-        }*/
+			item->set_category(elements.text());
+        }
         else if (elements.tagName() == LINK)
         {
             item->set_url_du_flux(elements.text());
@@ -103,18 +131,6 @@ void Parser::readItem(QDomElement & elements)
         {
             item->set_description(elements.text());
         }
-        /*else if (elements.tagName() == THUMBNAIL)
-        {
-
-        }
-        else if (elements.tagName() == ENCLOSURE)
-        {
-
-        }
-        else if (elements.tagName() == GUID)
-        {
-
-        }*/
         else if (elements.tagName() == PUB_DATE)
         {
             QLocale locale(QLocale::English, QLocale::UnitedKingdom);
@@ -126,10 +142,6 @@ void Parser::readItem(QDomElement & elements)
         {
             item->set_url_de_la_page(elements.attribute("url"));
         }
-        else if (elements.tagName() == AUTHOR)
-        {
-            //cout << "Auteur: " << elements.text().toStdString() << endl;
-        }
         else if (elements.tagName() == LANGUAGE)
         {
             langue = elements.text();
@@ -139,16 +151,21 @@ void Parser::readItem(QDomElement & elements)
 
     }
     item->set_url_du_flux(url.toString());
+
+	//Génération de l'ID
     QString stringHash = item->get_titre() + item->get_description() + item->get_url_de_la_page();
     QByteArray hash = QCryptographicHash::hash(stringHash.toUtf8(), QCryptographicHash::Md5);
     item->set_id(hash);
+
 	processingItem++;
     tika->processItem(item, langue); // Détection de la langue, téléchargement et parsing du document cible de l'item
 }
 
-/**
- * Slot déclenché lorsque la requête déclenché par requestFeed() aboutit
+/*!
+ * Slot déclenché lorsque la requête déclenché par requestFeed() aboutit.
+ *
  * Enregistrement du résultat de la requête dans this->src
+ *
  * Emission d'un signal feedRecovered() spécifiant que l'on peut débuter le traitement.
  */
 void Parser::readFeed()
@@ -158,6 +175,12 @@ void Parser::readFeed()
     emit feedRecovered();
 }
 
+
+/*!
+* Slot déclenché quand Tika à fini le traitement d'un Item.
+*
+* Emet le signal feedProcessed() si tous les items ont été traités par tika.
+*/
 void Parser::completedItem(Item* item)
 {
 	if (item->get_url_du_flux() == url.url()) {
@@ -165,9 +188,8 @@ void Parser::completedItem(Item* item)
 		emit(itemProcessed(item));
 
 		if (processingItem == 0) {
-			qDebug() << "Traitement de " << url.url() << "terminé";
+			qInfo() << "Traitement du flux" << url.url() << "terminé";
 			emit(feedProcessed());
 		}
 	}
-	
 }
