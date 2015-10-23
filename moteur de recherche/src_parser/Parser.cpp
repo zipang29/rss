@@ -125,7 +125,7 @@ void Parser::readItem(QDomElement & elements)
         }
         else if (elements.tagName() == LINK)
         {
-            item->set_url_du_flux(elements.text());
+            item->set_url_de_la_page(elements.text());
         }
         else if (elements.tagName() == DESCRIPTION)
         {
@@ -137,10 +137,6 @@ void Parser::readItem(QDomElement & elements)
             QDateTime date = locale.toDateTime(elements.text(), "ddd, dd MMM yyyy hh:mm:ss");
             date.setTimeSpec(Qt::UTC);
             item->set_date(date);
-        }
-        else if (elements.tagName() == SOURCE)
-        {
-            item->set_url_de_la_page(elements.attribute("url"));
         }
         else if (elements.tagName() == LANGUAGE)
         {
