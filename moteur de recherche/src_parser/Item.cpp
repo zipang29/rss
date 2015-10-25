@@ -1,12 +1,21 @@
 #include "Item.h"
 
-/**
- * Constructeur
+/*!
+ * \class Item
+ * \brief Classe de stockage en mémoire d'Items RSS
+ * \inmodule FEED_COLLECTOR
+ */
+
+/*!
+ * Constructeur par défaut, tous les attributs sont vides
  */
 Item::Item()
 {
 }
 
+/*!
+ * Constructeur de recopie, recopie les attributs de l'item \a other
+ */
 Item::Item(const Item& other)
 {
 	url_du_flux = other.url_du_flux;
@@ -20,80 +29,135 @@ Item::Item(const Item& other)
 	id = other.id;
 }
 
-Item::~Item()
-{
-	
-}
-
-//Getters et setters
+/*!
+ * Pour récupérer le hash id
+ */
 QString Item::get_id(){
   return id;
 } 
 
+/*!
+ * Assigne le hash \a i à l'item
+ */
 void Item::set_id(QString i){
   id = i;
 }
 
+/*!
+ * Pour récupérer l'url du flux
+ */
 QString Item::get_url_du_flux(){
   return url_du_flux;
 } 
 
+/*!
+ * Définit l'\a udf (url du flux)
+ */
 void Item::set_url_du_flux(QString udf){
   url_du_flux = udf;
 }
+
+/*!
+ * Retourne l'adresse de la page pointée par l'item
+ */
 QString Item::get_url_de_la_page(){
   return url_de_la_page;
 } 
 
+/*!
+ * Définit l'\a udp (adresse de la page pointée par l'item)
+ */
 void Item::set_url_de_la_page(QString udp){
   url_de_la_page = udp;
 }
+
+/*!
+ * Retourne le titre de l'item
+ */
 QString Item::get_titre(){
   return titre;
 } 
 
-void Item::set_titre(QString t){
-  titre = t;
+/*!
+ * Définit le \a titre de l'item
+ */
+void Item::set_titre(QString titre){
+  this->titre = titre;
 }
+
+/*!
+ * Retourne la description de l'item
+ */
 QString Item::get_description(){
   return description;
 } 
 
-void Item::set_description(QString des){
-  description = des;
+/*!
+ * Définit la \a description de l'item
+ */
+void Item::set_description(QString description){
+	this->description = description;
 }
+
+/*!
+ * Renvoie le contenu de la page pointée par l'item
+ */
 QString Item::get_contenu(){
 	return contenu;
 } 
 
-void Item::set_contenu(QString c){
-	contenu = c;
+/*!
+ * Définit le \a contenu de la page pointée par l'item
+ */
+void Item::set_contenu(QString contenu){
+	this->contenu = contenu;
 }
 
+/*!
+ * Retourne la langue dans laquelle a été rédigé l'item
+ */
 QString Item::get_langue(){
   return langue;
 } 
 
-void Item::set_langue(QString l){
-  langue = l;
+/*!
+ * Définit la \a langue
+ */
+void Item::set_langue(QString langue){
+	this->langue = langue;
 }
 
+/*!
+ * Retourne la catégorie
+ */
 QString Item::get_category(){
   return category;
 }
 
+/*!
+ * Définit la catégorie \a c de l'item
+ */
 void Item::set_category(QString c){
   category = c;
 }
 
+/*!
+ * Retourne la date d'ajout de l'item
+ */
 QDateTime Item::get_date(){
   return date;
 } 
 
-void Item::set_date(QDateTime d){
-  date = d;
+/*!
+ * Définit la \a date d'ajout de l'item au flux (indiqué dans le xml du flux)
+ */
+void Item::set_date(QDateTime date){
+	this->date = date;
 }
 
+/*!
+ * Permet de récupérer l'item sous forme de string. Les attributs sont séparés par la constante SEPARATOR ;@;
+ */
 QString Item::toString()
 {
     QString ret = "";
@@ -109,11 +173,13 @@ QString Item::toString()
     return ret;
 }
 
-/**
+/*!
  * Construit un item à partir d'une chaine
- * @param v La chaine pour construire l'item. Les éléments de la chaine doivent êtres séparés par le symbole SEPARATOR définir dans Constantes.h.\n
- *          L'ordre des champs suit l'ordre des attributs de la classe à savoir comme ceci : url_du_flux, url_de_la_page, titre, description, resume, langue, category, date
- * @return L'item construit à partir de la chaine. L'id (hash) n'est pas ajouté à l'item via cette méthode, il faut l'ajouter séparément. Si la chaine n'est pas valide l'item retourné sera vide.
+ *
+ * - \a v : La chaine pour construire l'item. Les éléments de la chaine doivent être séparés par le symbole SEPARATOR (;@;) définit dans Constantes.h
+ * L'ordre des champs suit l'ordre des attributs de la classe à savoir comme ceci : url_du_flux, url_de_la_page, titre, description, contenu, langue, category, date
+ * 
+ * Retourne : L'item construit à partir de la chaine. L'id (hash) n'est pas ajouté à l'item via cette méthode, il faut l'ajouter séparément. Si la chaine n'est pas valide l'item retourné sera vide.
  */
 Item * Item::fromString(QString v)
 {
@@ -136,6 +202,9 @@ Item * Item::fromString(QString v)
     return it;
 }
 
+/*!
+ * Retourne une string de l'item résumant celui-ci
+ */
 QString Item::toHumanReadable() const
 {
     QString ret = "";
@@ -153,7 +222,10 @@ QString Item::toHumanReadable() const
     return ret;
 }
 
-QDebug& operator<<(QDebug& debug, const Item& item)
+/*!
+ * Ecrit l'\a item dans le flux de \a debug
+ */
+QDebug operator<<(QDebug debug, const Item& item)
 {
 	debug << item.toHumanReadable();
 	return debug;

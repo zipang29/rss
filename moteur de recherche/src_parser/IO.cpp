@@ -1,11 +1,25 @@
 #include "IO.h"
 
+/*!
+ * \class IO
+ * \brief Classe de gestion des entrées/sorties
+ * \inmodule FEED_COLLECTOR
+ *
+ * S'occupe des opérations sur les bases NoSQL HashDB (KyotoCabinet) et de la gestion 
+ * des \l{Parser}{Parsers RSS}
+ */
+
+/*!
+ * Constructeur prenant en paramètre \a database_path correspondant au chemin vers la BDD.
+ */
 IO::IO(QString database_path)
 {
     path = database_path;
 }
 
-//path : fichier .kch
+/*!
+ * Ecrit un \a item dans la BDD
+ */
 void IO::write(Item * item)
 {
     HashDB db;
@@ -19,6 +33,11 @@ void IO::write(Item * item)
 	item->deleteLater();
 }
 
+/*!
+ * Lit la BDD contenue dans le fichier \a path.
+ * 
+ * Retourne la liste des items avec pour clé leur hash
+ */
 QMap<QString, Item*> IO::read(QString path)
 {
     QMap<QString, Item*> items;
@@ -41,6 +60,10 @@ QMap<QString, Item*> IO::read(QString path)
     return items;
 }
 
+/*!
+ * Lit une liste de flux à partir du fichier texte \a path (une url de flux par ligne)
+ * et lance les traitements sur ceux-ci
+ */
 void IO::readFeeds(QString path)
 {
     QFile f(path);
@@ -52,6 +75,9 @@ void IO::readFeeds(QString path)
     }
 }
 
+/*!
+ * Lit le flux RSS \a url et lance les traitements sur celui-ci
+ */
 void IO::readFeed(QUrl url)
 {
     Parser* p = new Parser(url, this);
@@ -59,6 +85,9 @@ void IO::readFeed(QUrl url)
     parsers.append(p);
 }
 
+/*!
+ * Lit la base de données et affiche le titre de chaque item lu dans la sortie standard
+ */
 void IO::readDB()
 {
 	qInfo() << "Contenu de la BDD :";

@@ -1,21 +1,44 @@
 #include "Parser.h"
+#include <QTimer>
 
 /*!
  * \class Parser
- * \brief Classe de parsing du projet
+ * \brief Classe de parsing de flux RSS
  * \inmodule FEED_COLLECTOR
  *
- * //TODO
+ * Procèdes aux actions suivantes :
+ * \list
+ *	\li Télécharge le flux RSS
+ *	\li Parse le flux et crée une série d'objets \l{Item}
+ *	\li Envoie chaque item à \l{Tika} pour détéction de la langue et traitement de sa page cible
+ *	\li Emet le signal \l {Parser::itemProcessed()} une fois l'item traité par Tika
+ *	\li Emet le signal \l {Parser::feedProcessed()} une fois que tous les items ont été traités
+ * \endlist
+ *
+ * Ce processus est ensuite répété à intervalle variable.
+ *
+ * Cet intervalle est défini de la sorte :
+ * \list
+ *	\li Si le flux possède une date de dernière mise à jour, l'intervalle est égal au temps qui s'est écoulé
+ *	entre cette date et l'heure courante.
+ *	\li Si le flux ne possède pas de date de dernière mise à jours, l'intervalle est égal au temps qui s'est écoulé
+ *	entre la date de publication de l'item le plus récent et l'heure courante.
+ *	\li Si le flux ne possède pas de date de dernière mise à jours et qu'aucun item ne possède de date de publication,
+ *	l'intervalle est fixé à dix minutes.
+ * \endlist
+ * La valeur de l'intervalle est recalculé à chaque visite du flux.
+ *
+ * Par ailleurs, sa valeur minimale est de dix minutes.
  */
 
 /*!
  * \fn Parser::feedProcessed()
- * //TODO
+ * Signal émit quand le traitement de tous les items du flux est terminé
  */
 
 /*!
  * \fn Parser::feedRecovered()
- * //TODO
+ * Signal émit quand le flux à été téléchargé
  */
 
 /*!
@@ -24,13 +47,7 @@
  */
 
 /*!
- * \fn Parser::itemWasRead(Item item)
- * \a item //TODO
- */
-
-
-/*!
- * Prend en paramètre l'\a url du flux RSS à traiter et optionellement un objet \a parent
+ * Prend en paramètre l'\a url du flux RSS à traiter et optionellement un objet \a parent et lance le traitement du flux
  */
 Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
 {
@@ -38,6 +55,9 @@ Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
     tika = Tika::getInstance();
     connect(tika, SIGNAL(completed(Item*)), this, SLOT(completedItem(Item*)));
 
+	timerStarted = false;
+
+	connect(this, SIGNAL(feedRecovered()), this, SLOT(parseFeed()));
     requestFeed();
 }
 
@@ -51,7 +71,6 @@ void Parser::requestFeed()
     QNetworkAccessManager * manager = new QNetworkAccessManager;
     QNetworkReply * reply = manager->get(QNetworkRequest(this->url));
     connect(reply, SIGNAL(finished()), this, SLOT(readFeed()));
-    connect(this, SIGNAL(feedRecovered()), this, SLOT(parseFeed()));
 }
 
 /*!
@@ -85,8 +104,9 @@ void Parser::parseFeed()
                     {
                         if (channelElements.tagName() == LAST_BUILD_DATE)
                         {
-                            //qDebug() << channelElements.text() << endl;
-                            //TODO
+							QDateTime date = QDateTime::fromString(channelElements.text(), Qt::RFC2822Date).toUTC();
+							int timeToWait = QDateTime::currentMSecsSinceEpoch() - date.toMSecsSinceEpoch();
+							setTimer(timeToWait);
                         }
                         else if (channelElements.tagName() == ITEM)
                         {
@@ -101,13 +121,17 @@ void Parser::parseFeed()
         }
         root = root.nextSiblingElement();
     }
+
+	if (!timerStarted)
+		setTimer();
+
 	qInfo() << "Fin du parsing du flux" << this->url.toString();
 }
 
 /*!
  * Parse un item du flux RSS
  * 
- * Reçoit les éléments de l'item
+ * Reçoit les \a elements de l'item
  */
 void Parser::readItem(QDomElement & elements)
 {
@@ -125,7 +149,7 @@ void Parser::readItem(QDomElement & elements)
         }
         else if (elements.tagName() == LINK)
         {
-            item->set_url_du_flux(elements.text());
+            item->set_url_de_la_page(elements.text());
         }
         else if (elements.tagName() == DESCRIPTION)
         {
@@ -137,10 +161,11 @@ void Parser::readItem(QDomElement & elements)
             QDateTime date = locale.toDateTime(elements.text(), "ddd, dd MMM yyyy hh:mm:ss");
             date.setTimeSpec(Qt::UTC);
             item->set_date(date);
-        }
-        else if (elements.tagName() == SOURCE)
-        {
-            item->set_url_de_la_page(elements.attribute("url"));
+
+			if (!timerStarted) {
+				int timeToWait = QDateTime::currentMSecsSinceEpoch() - date.toMSecsSinceEpoch();
+				setTimer(timeToWait);
+			}
         }
         else if (elements.tagName() == LANGUAGE)
         {
@@ -162,6 +187,33 @@ void Parser::readItem(QDomElement & elements)
 }
 
 /*!
+ * Démarre un minuteur qui déclenchera la revisite du flux après \a timeToWait ms. La durée d'attente
+ * est d'au moins 10 minutes, si \a timeToWait est inférieur à cette valeur, sa valeur sera ignorée et le 
+ * minuteur sera lancé avec une attente de 10 minutes
+ */
+void Parser::setTimer(int timeToWait)
+{
+	if (timeToWait < (10 * 60 * 1000))
+		timeToWait = 10 * 60 * 1000;
+
+	if (!timerStarted) {
+		QTimer::singleShot(timeToWait, this, SLOT(revisite()));
+		timerStarted = true;
+		qInfo() << "Revisite du flux" << url.url() << "dans" << timeToWait << "ms";
+	}
+}
+
+/*!
+ * Lance la revisite du flux.
+ */
+void Parser::revisite()
+{
+	qInfo() << "Revisite du flux" << url.url();
+	timerStarted = false;
+	requestFeed();
+}
+
+/*!
  * Slot déclenché lorsque la requête déclenché par requestFeed() aboutit.
  *
  * Enregistrement du résultat de la requête dans this->src
@@ -173,8 +225,9 @@ void Parser::readFeed()
     QNetworkReply * reply = qobject_cast<QNetworkReply*>(sender());
     this->src = reply->readAll();
     emit feedRecovered();
-}
 
+	reply->deleteLater();
+}
 
 /*!
 * Slot déclenché quand Tika à fini le traitement d'un Item.
@@ -188,7 +241,7 @@ void Parser::completedItem(Item* item)
 		emit(itemProcessed(item));
 
 		if (processingItem == 0) {
-			qInfo() << "Traitement du flux" << url.url() << "terminé";
+			qInfo() << "Traitement du flux" << url.url() << "termine";
 			emit(feedProcessed());
 		}
 	}

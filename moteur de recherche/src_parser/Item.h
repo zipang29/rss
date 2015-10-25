@@ -13,7 +13,6 @@ class Item : public QObject
 public:
     Item();
 	Item(const Item& other);
-	~Item();
 	QString get_id();
 	QString get_url_du_flux();
 	QString get_url_de_la_page();
@@ -37,7 +36,7 @@ public:
     QString toString();
     static Item * fromString(QString v);
     QString toHumanReadable() const;
-	friend QDebug& operator<<(QDebug& debug, const Item& item);
+	friend QDebug operator<<(QDebug debug, const Item& item);
 
 private:
     QString url_du_flux, url_de_la_page, titre, description, contenu, langue, category;
