@@ -10,7 +10,7 @@
  * \inmodule FEED_COLLECTOR
  *
  * Utilise un serveur Tika, lancé dans le constructeur et terminé à la déstruction de 
- * l'instance de la classe, pour détécter la langue d'un Item et convertir la source de celui-ci
+ * l'instance de la classe, pour détécter la langue d'un \l{Item} et convertir la page cible de celui-ci
  * en un QString.
  *
  * Le jar du serveur Tika doit se trouver dans le même dossier que l'exécutable et s'appeler \e tika-server-1.10.jar
@@ -21,7 +21,7 @@
 /*!
  * \fn Tika::completed(Item* item)
  * Signal émit quand les deux étapes du traitement de l'\a item (détéction de langue et 
- * conversion de la source en string) sont terminées.
+ * conversion de la source en QString) sont terminées.
  */
 
 Tika* Tika::instance = NULL;
@@ -39,7 +39,6 @@ Tika::Tika() : QObject()
 
     tika_server = new QProcess(this);
 	tika_server->setReadChannel(QProcess::StandardOutput);
-	connect(tika_server, SIGNAL(readyReadStandardOutput()), this, SLOT(tikaOutput()));
     tika_server->start(program, args);
 }
 
@@ -68,7 +67,7 @@ void Tika::destroy()
 }
 
 /*!
- * Lance le téléchargement et la conversion en QString du document source de l'\a item si celui-ci
+ * Lance le téléchargement et la conversion en QString du document cible de l'\a item si celui-ci
  * en possède un. Dans le cas contraire, assigne au contenu de l'\a item la valeur \e Vide
  *
  * Si \a foundLanguage est un identifiant de langue connue (ie: fr-FR ou en-GB), assigne à 
@@ -148,7 +147,7 @@ void Tika::setLanguage()
 }
 
 /*!
- * Télécharge le document source de l'\a item si il en a un.
+ * Télécharge le document cible de l'\a item si il en a un.
  */
 void Tika::downloadLink(Item* item)
 {
@@ -218,7 +217,7 @@ void Tika::parseDocument()
 
 /*!
  * Vérifie si les deux étapes du traitement de l'item \a id (détéction de langue et conversion
- * de la source en string) sont terminées dans quel cas le signal completed(Item* item) est émit.
+ * du document cible en string) sont terminées dans quel cas le signal completed(Item* item) est émit.
  */
 void Tika::checkFinishedItem(QString id)
 {
@@ -227,9 +226,4 @@ void Tika::checkFinishedItem(QString id)
 		processingItems.remove(id);
 		emit(completed(item));
 	}
-}
-
-void Tika::tikaOutput()
-{
-	qDebug() << "Tika:" << tika_server->readAllStandardOutput();
 }

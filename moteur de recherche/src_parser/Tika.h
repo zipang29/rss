@@ -38,8 +38,6 @@ private slots:
     void convertDocument();
     void parseDocument();
 
-	void tikaOutput();
-
 signals:
     void completed(Item* item);
 };

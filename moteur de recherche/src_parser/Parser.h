@@ -23,7 +23,7 @@ class Parser : public QObject
     private:
         void requestFeed();
         void readItem(QDomElement & elements);
-		void setTimer(int& timeToWait);
+		void setTimer(int timeToWait = 0);
 
         QUrl url;
         QString src;
@@ -42,7 +42,6 @@ class Parser : public QObject
     signals:
         void feedRecovered();
         void itemProcessed(Item * item);
-        void itemWasRead(Item item);
 
 		void feedProcessed();
 };

@@ -3,20 +3,42 @@
 
 /*!
  * \class Parser
- * \brief Classe de parsing du projet
+ * \brief Classe de parsing de flux RSS
  * \inmodule FEED_COLLECTOR
  *
- * //TODO
+ * Procèdes aux actions suivantes :
+ * \list
+ *	\li Télécharge le flux RSS
+ *	\li Parse le flux et crée une série d'objets \l{Item}
+ *	\li Envoie chaque item à \l{Tika} pour détéction de la langue et traitement de sa page cible
+ *	\li Emet le signal \l {Parser::itemProcessed()} une fois l'item traité par Tika
+ *	\li Emet le signal \l {Parser::feedProcessed()} une fois que tous les items ont été traités
+ * \endlist
+ *
+ * Ce processus est ensuite répété à intervalle variable.
+ *
+ * Cet intervalle est défini de la sorte :
+ * \list
+ *	\li Si le flux possède une date de dernière mise à jour, l'intervalle est égal au temps qui s'est écoulé
+ *	entre cette date et l'heure courante.
+ *	\li Si le flux ne possède pas de date de dernière mise à jours, l'intervalle est égal au temps qui s'est écoulé
+ *	entre la date de publication de l'item le plus récent et l'heure courante.
+ *	\li Si le flux ne possède pas de date de dernière mise à jours et qu'aucun item ne possède de date de publication,
+ *	l'intervalle est fixé à dix minutes.
+ * \endlist
+ * La valeur de l'intervalle est recalculé à chaque visite du flux.
+ *
+ * Par ailleurs, sa valeur minimale est de dix minutes.
  */
 
 /*!
  * \fn Parser::feedProcessed()
- * //TODO
+ * Signal émit quand le traitement de tous les items du flux est terminé
  */
 
 /*!
  * \fn Parser::feedRecovered()
- * //TODO
+ * Signal émit quand le flux à été téléchargé
  */
 
 /*!
@@ -25,13 +47,7 @@
  */
 
 /*!
- * \fn Parser::itemWasRead(Item item)
- * \a item //TODO
- */
-
-
-/*!
- * Prend en paramètre l'\a url du flux RSS à traiter et optionellement un objet \a parent
+ * Prend en paramètre l'\a url du flux RSS à traiter et optionellement un objet \a parent et lance le traitement du flux
  */
 Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
 {
@@ -105,6 +121,10 @@ void Parser::parseFeed()
         }
         root = root.nextSiblingElement();
     }
+
+	if (!timerStarted)
+		setTimer();
+
 	qInfo() << "Fin du parsing du flux" << this->url.toString();
 }
 
@@ -171,7 +191,7 @@ void Parser::readItem(QDomElement & elements)
  * est d'au moins 10 minutes, si \a timeToWait est inférieur à cette valeur, sa valeur sera ignorée et le 
  * minuteur sera lancé avec une attente de 10 minutes
  */
-void Parser::setTimer(int& timeToWait)
+void Parser::setTimer(int timeToWait)
 {
 	if (timeToWait < (10 * 60 * 1000))
 		timeToWait = 10 * 60 * 1000;

@@ -1,3 +1,56 @@
-Qt 5.5 : licence LGPL
-Tika : Apache License, Version 2.0
-Kyoto Cabinet : GNU General Public License
+Kyoto Cabinet - Copyright (C) 2009-2012 FAL Labs
+This program is free software: you can redistribute it and/or modify it under the terms of
+the GNU General Public License as published by the Free Software Foundation, either version
+3 of the License, or any later version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with this program.
+If not, see <http://www.gnu.org/licenses/>
+
+*************************************************************************
+
+Qt 5.5
+Copyright (C) 2015 The Qt Company Ltd.
+Contact: http://www.qt.io/licensing/
+
+Commercial License Usage
+Licensees holding valid commercial Qt licenses may use this file in
+accordance with the commercial license agreement provided with the
+Software or, alternatively, in accordance with the terms contained in
+a written agreement between you and The Qt Company. For licensing terms
+and conditions see http://www.qt.io/terms-conditions. For further
+information use the contact form at http://www.qt.io/contact-us.
+
+GNU Lesser General Public License Usage
+Alternatively, this file may be used under the terms of the GNU Lesser
+General Public License version 2.1 or version 3 as published by the Free
+Software Foundation and appearing in the file LICENSE.LGPLv21 and
+LICENSE.LGPLv3 included in the packaging of this file. Please review the
+following information to ensure the GNU Lesser General Public License
+requirements will be met: https://www.gnu.org/licenses/lgpl.html and
+http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+
+As a special exception, The Qt Company gives you certain additional
+rights. These rights are described in The Qt Company LGPL Exception
+version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+
+*************************************************************************
+
+Apache Tika
+Copyright 2015 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+Copyright 1993-2010 University Corporation for Atmospheric Research/Unidata
+This software contains code derived from UCAR/Unidata's NetCDF library.
+
+Tika-server component uses CDDL-licensed dependencies: jersey (http://jersey.java.net/) and 
+Grizzly (http://grizzly.java.net/)
+
+Tika-parsers component uses CDDL/LGPL dual-licensed dependency: jhighlight (https://github.com/codelibs/jhighlight)
+
+OpenCSV: Copyright 2005 Bytecode Pty Ltd. Licensed under the Apache License, Version 2.0
+
+IPTC Photo Metadata descriptions Copyright 2010 International Press Telecommunications Council.

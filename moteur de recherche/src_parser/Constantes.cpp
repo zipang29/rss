@@ -1,8 +1,11 @@
 #include "Constantes.h"
 
+/*!
+ * Retourne la version longue (en anglais) de l'\a identifier de langue (ie: fr => french, en => english)
+ */
 QString getLanguageName(QString identifier)
 {
-    //TODO : à optimiser
+    //TODO : moche, à optimiser
     if (identifier == "af") {
         return QString("Afrikaans");
     }

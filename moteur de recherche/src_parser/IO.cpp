@@ -1,8 +1,16 @@
 #include "IO.h"
 
 /*!
- * Constructeur prenant en paramètre \a database_path correspondant au chemin vers la BDD. Attend un fichier
- * *.kch
+ * \class IO
+ * \brief Classe de gestion des entrées/sorties
+ * \inmodule FEED_COLLECTOR
+ *
+ * S'occupe des opérations sur les bases NoSQL HashDB (KyotoCabinet) et de la gestion 
+ * des \l{Parser}{Parsers RSS}
+ */
+
+/*!
+ * Constructeur prenant en paramètre \a database_path correspondant au chemin vers la BDD.
  */
 IO::IO(QString database_path)
 {
@@ -10,8 +18,7 @@ IO::IO(QString database_path)
 }
 
 /*!
- * \brief IO::write Ecrit un item dans la BDD
- * \param item L'item à écrire
+ * Ecrit un \a item dans la BDD
  */
 void IO::write(Item * item)
 {
@@ -27,9 +34,9 @@ void IO::write(Item * item)
 }
 
 /*!
- * \brief IO::read Lit la BDD
- * \param path L'adresse de la BDD (fichier .kch)
- * \return La liste des items avec pour clé leur hash
+ * Lit la BDD contenue dans le fichier \a path.
+ * 
+ * Retourne la liste des items avec pour clé leur hash
  */
 QMap<QString, Item*> IO::read(QString path)
 {
@@ -54,8 +61,8 @@ QMap<QString, Item*> IO::read(QString path)
 }
 
 /*!
- * \brief IO::readFeeds Lit une liste de flux à partir d'un fichier texte (un flux par ligne)
- * \param path Emplacement du fichier
+ * Lit une liste de flux à partir du fichier texte \a path (une url de flux par ligne)
+ * et lance les traitements sur ceux-ci
  */
 void IO::readFeeds(QString path)
 {
@@ -69,8 +76,7 @@ void IO::readFeeds(QString path)
 }
 
 /*!
- * \brief IO::readFeed Lit un flux RSS et lance les traitements sur celui-ci
- * \param url L'adresse du flux à traiter
+ * Lit le flux RSS \a url et lance les traitements sur celui-ci
  */
 void IO::readFeed(QUrl url)
 {
@@ -80,7 +86,7 @@ void IO::readFeed(QUrl url)
 }
 
 /*!
- * \brief IO::readDB Lit la base de données et affiche le titre de chaque item lu
+ * Lit la base de données et affiche le titre de chaque item lu dans la sortie standard
  */
 void IO::readDB()
 {

@@ -1,20 +1,30 @@
-Nailya Bogroba - Guillaume Claudic - Louis Ormières
+Nailya Bogrova - Guillaume Claudic - Louis Ormières
 M2 - WMR
-Sous projet Feed Collector
+Projet « RSS-Intelligence »
+Sous projet «FEED-collector»
 
-Installation et exécution :
-Il n'y a pas d'installation à effectuer, le programme peut être lancé via le fichier parser.exe.
-Pour lancer le programme, ouvrir un invité de commande sur Windows. Se placer dans le dossier de l'exécutable puis exécuter la commande comme ceci :
+Ce projet utilise plusieurs librairies, pour plus d'information sur leurs licences, consultez le fichier licences.txt
 
-	parser.exe -f ListFluxRSS-v2.txt bdd.kch : cette commande lancera le parser avec pour liste de flux "ListFluxRSS-v2.txt" et comme base de données "bdd.kch".
-	
-	Options :
-		-f, --fichier <chemin d'accès> : collecte les flux RSS désignés dans le fichier (une URL par ligne)
-		-u, --url <URL> : URL d'un flux RSS à collecter (on ne peut spécifier qu'un seul flux via ce paramètre). Peut être utilisé pour tester le programme sur un flux.
-		
-	Arguments : 
-		Base de données : Chemin d'accès au fichier HashDB (.kch), sera créé en cas de collection d'un ou plusieurs flux
-		
-Note importante : Si Tika renvoie des erreurs sur la sortie standard après que le programme ait déjà été lancé une première fois, veuillez vérifier 
-que le processus Java correspondant à Tika lancé par la précédente exécution du parser n'est pas encore en cours d'exécution. Si c'est le cas, il faut le tuer.
-Cela se produit car notre programme n'est pas fait pour être arrêté. Il est censé rester en fonction en permanance tel un serveur.
+Prérequis à l'exécution :
+	- Microsoft Windows Vista, 7, 8, 8.1 ou 10 (XP n'est pas supporté)
+	- Le package redistribuable Visual C++ pour Visual Studio 2013 32bit (vcredist_x86.exe disponible sur http://www.microsoft.com/fr-FR/download/details.aspx?id=40784)
+	- Une JRE version 7 ou supérieur (tests réalisés sur la version 8) dont les exécutables figurent dans la variable d'environnement PATH
+
+Exécution :
+Le logiciel s'exécute via une invite de commandes Windows (cmd) ou un terminal MinGW (bash). Dans la suite, les exemples s'appliquerons pour une utilisation avec le cmd.
+
+	- Placez-vous dans le dossier contenant l'exécutable parser.exe
+	- Lancer "parser.exe -h" pour obtenir l'aide sur les différents paramètres de lancements
+
+Exemples :
+"parser.exe -f ListFluxRSS-v2.txt bdd.kch" Lance le parser pour les flux RSS dont les adresses se trouvent dans le fichier ListFluxRSS-v2.txt (une par ligne). La base de donnée sera sauvegardée dans le fichier bdd.kch, s'il n'existe pas, ce fichier sera créé, dans le cas contraire les données seront ajoutées à celles déjà existantes
+
+"parser.exe -u http://www.france24.com/en/timeline/rss bdd.kch" Lance le parser pour le flux http://www.france24.com/en/timeline/rss et stocke les données dans le fichier bdd.kch
+
+"parser.exe -f ListFluxRSS-v2.txt -u http://www.france24.com/en/timeline/rss bdd.kch" Lance le parser pour le flux http://www.france24.com/en/timeline/rss ainsi que ceux contenus dans le fichier ListFluxRSS-v2.exe
+
+"parser.exe bdd.kch" Liste le contenu de la base de donnée (titre des items RSS uniquement)
+
+
+Problèmes connus :
+Le parser lance lui-même un serveur Tika pour certaines opérations de traitement des données. Il arrive sur certains systèmes que celui-ci ne se lance pas correctement via le parser. Si des messages d'erreur type "connexion refused" s'affiche lors du traitement de données par Tika, lancez manuellement le serveur Tika via la commande "java -jar tika-server-1.10.jar" avec un cmd. Si le problème persiste, vérifiez qu'un autre logiciel n'occupe pas déjà le port 9998 requis par le serveur Tika.
