@@ -38,12 +38,14 @@ int main(int argc, char *argv[])
 	if (positionalArgs.size() == 0) {
         args.showHelp(1);
     }
+
     if ((!args.isSet(fileOption) && !args.isSet(urlOption))) {
 		IO* io = new IO(positionalArgs[0]);
         io->readDB();
 		return 0;
     }
     else {
+		qSetMessagePattern("[%{time dd-MM-yyyy HH:mm:ss} - %{type}]: %{message}");
 		IO* io = new IO(positionalArgs[0]);
         if (args.isSet(fileOption)) {
             QString path = args.value(fileOption);

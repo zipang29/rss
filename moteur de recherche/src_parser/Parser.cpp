@@ -1,4 +1,5 @@
 #include "Parser.h"
+#include <QTimer>
 
 /*!
  * \class Parser
@@ -38,6 +39,9 @@ Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
     tika = Tika::getInstance();
     connect(tika, SIGNAL(completed(Item*)), this, SLOT(completedItem(Item*)));
 
+	timerStarted = false;
+
+	connect(this, SIGNAL(feedRecovered()), this, SLOT(parseFeed()));
     requestFeed();
 }
 
@@ -51,7 +55,6 @@ void Parser::requestFeed()
     QNetworkAccessManager * manager = new QNetworkAccessManager;
     QNetworkReply * reply = manager->get(QNetworkRequest(this->url));
     connect(reply, SIGNAL(finished()), this, SLOT(readFeed()));
-    connect(this, SIGNAL(feedRecovered()), this, SLOT(parseFeed()));
 }
 
 /*!
@@ -85,8 +88,9 @@ void Parser::parseFeed()
                     {
                         if (channelElements.tagName() == LAST_BUILD_DATE)
                         {
-                            //qDebug() << channelElements.text() << endl;
-                            //TODO
+							QDateTime date = QDateTime::fromString(channelElements.text(), Qt::RFC2822Date).toUTC();
+							int timeToWait = QDateTime::currentMSecsSinceEpoch() - date.toMSecsSinceEpoch();
+							setTimer(timeToWait);
                         }
                         else if (channelElements.tagName() == ITEM)
                         {
@@ -137,6 +141,11 @@ void Parser::readItem(QDomElement & elements)
             QDateTime date = locale.toDateTime(elements.text(), "ddd, dd MMM yyyy hh:mm:ss");
             date.setTimeSpec(Qt::UTC);
             item->set_date(date);
+
+			if (!timerStarted) {
+				int timeToWait = QDateTime::currentMSecsSinceEpoch() - date.toMSecsSinceEpoch();
+				setTimer(timeToWait);
+			}
         }
         else if (elements.tagName() == LANGUAGE)
         {
@@ -158,6 +167,33 @@ void Parser::readItem(QDomElement & elements)
 }
 
 /*!
+ * Démarre un minuteur qui déclenchera la revisite du flux après \a timeToWait ms. La durée d'attente
+ * est d'au moins 10 minutes, si \a timeToWait est inférieur à cette valeur, sa valeur sera ignorée et le 
+ * minuteur sera lancé avec une attente de 10 minutes
+ */
+void Parser::setTimer(int& timeToWait)
+{
+	if (timeToWait < (10 * 60 * 1000))
+		timeToWait = 10 * 60 * 1000;
+
+	if (!timerStarted) {
+		QTimer::singleShot(timeToWait, this, SLOT(revisite()));
+		timerStarted = true;
+		qInfo() << "Revisite du flux" << url.url() << "dans" << timeToWait << "ms";
+	}
+}
+
+/*!
+ * Lance la revisite du flux.
+ */
+void Parser::revisite()
+{
+	qInfo() << "Revisite du flux" << url.url();
+	timerStarted = false;
+	requestFeed();
+}
+
+/*!
  * Slot déclenché lorsque la requête déclenché par requestFeed() aboutit.
  *
  * Enregistrement du résultat de la requête dans this->src
@@ -169,8 +205,9 @@ void Parser::readFeed()
     QNetworkReply * reply = qobject_cast<QNetworkReply*>(sender());
     this->src = reply->readAll();
     emit feedRecovered();
-}
 
+	reply->deleteLater();
+}
 
 /*!
 * Slot déclenché quand Tika à fini le traitement d'un Item.
@@ -184,7 +221,7 @@ void Parser::completedItem(Item* item)
 		emit(itemProcessed(item));
 
 		if (processingItem == 0) {
-			qInfo() << "Traitement du flux" << url.url() << "terminé";
+			qInfo() << "Traitement du flux" << url.url() << "termine";
 			emit(feedProcessed());
 		}
 	}

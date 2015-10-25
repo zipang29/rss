@@ -38,6 +38,8 @@ Tika::Tika() : QObject()
     args << "-jar" << "tika-server-1.10.jar";
 
     tika_server = new QProcess(this);
+	tika_server->setReadChannel(QProcess::StandardOutput);
+	connect(tika_server, SIGNAL(readyReadStandardOutput()), this, SLOT(tikaOutput()));
     tika_server->start(program, args);
 }
 
@@ -60,7 +62,7 @@ Tika* Tika::getInstance()
 void Tika::destroy()
 {
     if (instance != NULL) {
-        delete instance;
+        instance->deleteLater();
         instance = NULL;
     }
 }
@@ -225,4 +227,9 @@ void Tika::checkFinishedItem(QString id)
 		processingItems.remove(id);
 		emit(completed(item));
 	}
+}
+
+void Tika::tikaOutput()
+{
+	qDebug() << "Tika:" << tika_server->readAllStandardOutput();
 }

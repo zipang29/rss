@@ -23,17 +23,21 @@ class Parser : public QObject
     private:
         void requestFeed();
         void readItem(QDomElement & elements);
+		void setTimer(int& timeToWait);
 
         QUrl url;
         QString src;
         Tika* tika;
 
 		int processingItem;
+		bool timerStarted;
 
 	private slots:
 		void parseFeed();
 		void readFeed();
 		void completedItem(Item* item);
+
+		void revisite();
 
     signals:
         void feedRecovered();
