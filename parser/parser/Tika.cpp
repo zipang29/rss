@@ -2,6 +2,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDebug>
+#include <QRegExp>
 #include "Constantes.h"
 
 Tika* Tika::instance = NULL;
@@ -128,6 +129,25 @@ void Tika::parseDocument()
     else {
         qWarning() << "Error converting document using Tika" << reply->errorString();
         item->set_resume("Empty"); //TODO: attribut resume pour le texte du document ?
+        emit(completed(item));
+    }
+    reply->deleteLater();
+}
+
+QString Tika::delDateEtWhitespace()
+{
+    QRegExp rx("[data:]|(\s{2,})");
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    Item* item = (Item*) reply->property("item").value<void*>();
+    if (reply->error() == QNetworkReply::NoError) {
+        QString s = reply->readAll();
+        item->set_resume(text);
+        s.remove(rx);
+        emit(completed(item));
+    }
+    else {
+        qWarning() << "Error getting reply" << reply->errorString();
+        item->set_resume("Empty");
         emit(completed(item));
     }
     reply->deleteLater();
