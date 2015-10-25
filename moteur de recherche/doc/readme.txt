@@ -17,4 +17,4 @@ Pour lancer le programme, ouvrir un invité de commande sur Windows. Se placer da
 		
 Note importante : Si Tika renvoie des erreurs sur la sortie standard après que le programme ait déjà été lancé une première fois, veuillez vérifier 
 que le processus Java correspondant à Tika lancé par la précédente exécution du parser n'est pas encore en cours d'exécution. Si c'est le cas, il faut le tuer.
-Cela ce produit car notre programme n'est pas fait pour être arrêté. Il est censé rester en fonction en permanance tel un serveur.
+Cela se produit car notre programme n'est pas fait pour être arrêté. Il est censé rester en fonction en permanance tel un serveur.
