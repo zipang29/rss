@@ -1,0 +1,3 @@
+Qt 5.5 : licence LGPL
+Tika : Apache License, Version 2.0
+Kyoto Cabinet : GNU General Public License
