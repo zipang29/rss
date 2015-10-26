@@ -421,6 +421,6 @@ QString getLanguageName(QString identifier)
         return QString("Zulu");
     }
     else {
-        return QString("Inconnue");
+        return QString(UNKNOWN_LANGUAGE);
     }
 }

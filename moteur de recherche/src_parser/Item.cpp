@@ -1,4 +1,5 @@
 #include "Item.h"
+#include <QRegularExpression>
 
 /*!
  * \class Item
@@ -229,4 +230,35 @@ QDebug operator<<(QDebug debug, const Item& item)
 {
 	debug << item.toHumanReadable();
 	return debug;
+}
+
+/*!
+ * Renvoie le contenu de l'item sous forme de QString formatté au format CSV
+ * (Titre; Date; Description; Contenu; Langue; Catégorie; URL de la page; URL du flux)
+ */
+QString Item::toCSV()
+{
+	//Suppression des retours à la ligne et des points-virgule
+	QRegularExpression reg("[\\s;]");
+
+	QString tireEchappe = titre;
+	tireEchappe.replace(reg, " ");
+
+	QString descriptionEchappe = description;
+	descriptionEchappe.replace(reg, " ");
+
+	QString contenuEchappe = contenu;
+	contenuEchappe.replace(reg, " ");
+
+	QString csv;
+	csv.append(tireEchappe).append(";");
+	csv.append(date.toString("dd-mm-yyyy HH:mm:ss")).append(";");
+	csv.append(descriptionEchappe).append(";");
+	csv.append(contenuEchappe).append(";");
+	csv.append(langue).append(";");
+	csv.append(category).append(";");
+	csv.append(url_de_la_page).append(";");
+	csv.append(url_du_flux).append(";");
+
+	return csv;
 }

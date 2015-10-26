@@ -3,6 +3,7 @@
 #include <QNetworkReply>
 #include <QDebug>
 #include "Constantes.h"
+#include <QRegularExpression>
 
 /*!
  * \class Tika
@@ -103,7 +104,7 @@ void Tika::detectLanguage(Item* item, QString foundLanguage)
 			identifier = foundLanguage;
 
 		QString language = getLanguageName(identifier);
-		if (language == "Inconnue") {
+		if (language == UNKNOWN_LANGUAGE) {
 			requestLanguage(item);
 		}
 		else {
@@ -139,7 +140,7 @@ void Tika::setLanguage()
     }
     else {
         qWarning() << "Erreur lors de la detection de la langue via Tika :" << reply->errorString();
-        item->set_langue("Inconnue");
+		item->set_langue(UNKNOWN_LANGUAGE);
     }
 
 	waitingForLanguage.removeOne(item->get_id());
@@ -158,7 +159,7 @@ void Tika::downloadLink(Item* item)
 		connect(reply, SIGNAL(finished()), this, SLOT(convertDocument()));
 	}
 	else {
-		item->set_contenu("Vide");
+		item->set_contenu(NO_CONTENT);
 		waitingForDocument.removeOne(item->get_id());
 	}
 }
@@ -184,7 +185,7 @@ void Tika::convertDocument()
     }
     else {
         qWarning() << "Erreur lors du telechargement du contenu :" << oldReply->errorString();
-		item->set_contenu("Vide");
+		item->set_contenu(NO_CONTENT);
 		waitingForDocument.removeOne(item->get_id());
 		checkFinishedItem(item->get_id());
     }
@@ -201,12 +202,17 @@ void Tika::parseDocument()
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
 	Item* item = processingItems[reply->property("item").toString()];
     if (reply->error() == QNetworkReply::NoError) {
+		QRegularExpression rx("((\\[image:\\s?\\])|\\[data:\\s?\\])");
+		QRegularExpression rx2("(\\s{2,})");
+
         QString text = reply->readAll();
+		text.remove(rx);
+		text.replace(rx2, " ");
 		item->set_contenu(text);
     }
     else {
         qWarning() << "Erreur lors de la conversion du contenu via Tika :" << reply->errorString();
-		item->set_contenu("Vide");
+		item->set_contenu(NO_CONTENT);
     }
 
 	waitingForDocument.removeOne(item->get_id());

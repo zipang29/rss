@@ -37,6 +37,7 @@ public:
     static Item * fromString(QString v);
     QString toHumanReadable() const;
 	friend QDebug operator<<(QDebug debug, const Item& item);
+	QString toCSV();
 
 private:
     QString url_du_flux = NO_URL, url_de_la_page = NO_URL, titre = NO_TITLE, description = NO_DESCRIPTION, contenu = NO_CONTENT, langue = UNDEFINED_LANGUAGE, category = UNCATEGORIZED;

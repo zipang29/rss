@@ -100,3 +100,38 @@ void IO::readDB()
         qInfo() << i << ":" << item->get_titre();
     }
 }
+
+/*!
+ * Sauvegarde le contenu de la base de donnée \a bdd_path dans le fichier CSV \a csv_path.
+ * \sa Item::toCSV()
+ */
+void IO::toCSV(QString bdd_path, QString csv_path)
+{
+	QMap<QString, Item*> items = IO::read(bdd_path);
+	qInfo() << "Ecriture de" << items.size() << "items dans" << csv_path;
+
+	QFile csv_file(csv_path);
+	csv_file.open(QFile::WriteOnly | QFile::Truncate);
+
+	QTextStream csv(&csv_file);
+
+	csv << "Titre;";
+	csv << "Date;";
+	csv << "Description;";
+	csv << "Contenu;";
+	csv << "Langue;";
+	csv << "Categorie;";
+	csv << "Url de la page cible;";
+	csv << "Url du flux RSS;";
+	
+	csv << "\n";
+
+	foreach(Item* item, items.values()) {
+		csv << item->toCSV();
+		csv << "\n";
+	}
+
+	csv_file.close();
+
+	qInfo() << "Ecriture terminee";
+}

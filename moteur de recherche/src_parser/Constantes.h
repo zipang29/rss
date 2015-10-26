@@ -24,6 +24,8 @@
 
 #define UNDEFINED_LANGUAGE "Langue indéfinie"
 
+#define UNKNOWN_LANGUAGE "Langue inconnue"
+
 #define NO_ID "Pas de hash"
 
 /**

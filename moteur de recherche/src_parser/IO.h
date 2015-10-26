@@ -22,6 +22,7 @@ class IO : public QObject
         void readFeed(QUrl url);
 
         void readDB();
+		static void toCSV(QString bdd_path, QString csv_path);
 
 	public slots:
         void write(Item* item);
