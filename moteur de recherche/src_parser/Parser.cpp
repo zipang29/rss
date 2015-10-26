@@ -1,5 +1,6 @@
 #include "Parser.h"
 #include <QTimer>
+#include <QNetworkReply>
 
 /*!
  * \class Parser

@@ -1,4 +1,5 @@
 #include "IO.h"
+#include <QFile>
 
 /*!
  * \class IO

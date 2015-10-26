@@ -3,8 +3,6 @@
 
 #include <QDomElement>
 #include <QUrl>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
 #include <iostream>
 #include "Constantes.h"
 #include "Item.h"

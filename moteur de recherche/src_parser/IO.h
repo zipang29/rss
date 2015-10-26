@@ -5,8 +5,6 @@
 #include <QString>
 #include "Item.h"
 #include <QObject>
-#include <QFile>
-#include <QThread>
 #include "Parser.h"
 #include <QList>
 
