@@ -4,40 +4,26 @@
  <classDiagram>
   <classList>
    <class>
-    <id>2</id>
-    <name>Parser</name>
+    <id>5</id>
+    <name>IO</name>
     <abstract>0</abstract>
-    <x>186</x>
+    <x>-167</x>
     <y>-11</y>
-    <width>201</width>
-    <height>180</height>
+    <width>244</width>
+    <height>165</height>
     <documentation></documentation>
     <attributes>
      <attribute>
-      <name>url</name>
-      <visibility>private</visibility>
-      <type>QUrl</type>
-      <defaultValue></defaultValue>
-      <documentation></documentation>
-     </attribute>
-     <attribute>
-      <name>src</name>
+      <name>path</name>
       <visibility>private</visibility>
       <type>QString</type>
-      <defaultValue></defaultValue>
-      <documentation></documentation>
-     </attribute>
-     <attribute>
-      <name>processingItem</name>
-      <visibility>private</visibility>
-      <type>int</type>
       <defaultValue></defaultValue>
       <documentation></documentation>
      </attribute>
     </attributes>
     <methods>
      <method>
-      <name>Parser</name>
+      <name>IO</name>
       <visibility>public</visibility>
       <abstract>0</abstract>
       <static>0</static>
@@ -46,13 +32,42 @@
       <returnValue></returnValue>
       <parameters>
        <parameter>
-        <name>url</name>
-        <type>QUrl</type>
+        <name>database_path</name>
+        <type>QString</type>
         <defaultValue></defaultValue>
        </parameter>
+      </parameters>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>read</name>
+      <visibility>public</visibility>
+      <abstract>0</abstract>
+      <static>1</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue>QMap&lt;QString, Item*></returnValue>
+      <parameters>
        <parameter>
-        <name>parent</name>
-        <type>QObject *</type>
+        <name>path</name>
+        <type>QString</type>
+        <defaultValue></defaultValue>
+       </parameter>
+      </parameters>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>readFeeds</name>
+      <visibility>public</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters>
+       <parameter>
+        <name>path</name>
+        <type>QString</type>
         <defaultValue></defaultValue>
        </parameter>
       </parameters>
@@ -66,11 +81,17 @@
       <virtual>0</virtual>
       <pureVirtual>0</pureVirtual>
       <returnValue></returnValue>
-      <parameters/>
+      <parameters>
+       <parameter>
+        <name>url</name>
+        <type>QUrl</type>
+        <defaultValue></defaultValue>
+       </parameter>
+      </parameters>
       <documentation></documentation>
      </method>
      <method>
-      <name>parseFeed</name>
+      <name>readDB</name>
       <visibility>public</visibility>
       <abstract>0</abstract>
       <static>0</static>
@@ -81,7 +102,146 @@
       <documentation></documentation>
      </method>
      <method>
-      <name>requestFeed</name>
+      <name>write</name>
+      <visibility>public</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters>
+       <parameter>
+        <name>item</name>
+        <type>Item*</type>
+        <defaultValue></defaultValue>
+       </parameter>
+      </parameters>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>toCSV</name>
+      <visibility>public</visibility>
+      <abstract>0</abstract>
+      <static>1</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters>
+       <parameter>
+        <name>bdd_path</name>
+        <type>QString</type>
+        <defaultValue></defaultValue>
+       </parameter>
+       <parameter>
+        <name>csv_path</name>
+        <type>QString</type>
+        <defaultValue></defaultValue>
+       </parameter>
+      </parameters>
+      <documentation></documentation>
+     </method>
+    </methods>
+   </class>
+   <class>
+    <id>4</id>
+    <name>Tika</name>
+    <abstract>0</abstract>
+    <x>699</x>
+    <y>-96</y>
+    <width>332</width>
+    <height>300</height>
+    <documentation></documentation>
+    <attributes>
+     <attribute>
+      <name>instance</name>
+      <visibility>private</visibility>
+      <type>Tika *</type>
+      <defaultValue></defaultValue>
+      <documentation></documentation>
+     </attribute>
+     <attribute>
+      <name>tika_server</name>
+      <visibility>private</visibility>
+      <type>QProcess *</type>
+      <defaultValue></defaultValue>
+      <documentation></documentation>
+     </attribute>
+     <attribute>
+      <name>accessManager</name>
+      <visibility>private</visibility>
+      <type>QNetworkAccessManager *</type>
+      <defaultValue></defaultValue>
+      <documentation></documentation>
+     </attribute>
+     <attribute>
+      <name>processingItems</name>
+      <visibility>private</visibility>
+      <type>QMap&lt;QString, Item*></type>
+      <defaultValue></defaultValue>
+      <documentation></documentation>
+     </attribute>
+     <attribute>
+      <name>waitingForLanguage</name>
+      <visibility>private</visibility>
+      <type>QList&lt;QString></type>
+      <defaultValue></defaultValue>
+      <documentation></documentation>
+     </attribute>
+     <attribute>
+      <name>waitingForDocument</name>
+      <visibility>private</visibility>
+      <type>QList&lt;QString></type>
+      <defaultValue></defaultValue>
+      <documentation></documentation>
+     </attribute>
+    </attributes>
+    <methods>
+     <method>
+      <name>getInstance</name>
+      <visibility>public</visibility>
+      <abstract>0</abstract>
+      <static>1</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue>Tika *</returnValue>
+      <parameters/>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>destroy</name>
+      <visibility>public</visibility>
+      <abstract>0</abstract>
+      <static>1</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters/>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>processItem</name>
+      <visibility>public</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters>
+       <parameter>
+        <name>item</name>
+        <type>Item *</type>
+        <defaultValue></defaultValue>
+       </parameter>
+       <parameter>
+        <name>foundLanguage</name>
+        <type>QString = QString()</type>
+        <defaultValue></defaultValue>
+       </parameter>
+      </parameters>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>Tika</name>
       <visibility>private</visibility>
       <abstract>0</abstract>
       <static>0</static>
@@ -92,7 +252,7 @@
       <documentation></documentation>
      </method>
      <method>
-      <name>readItem</name>
+      <name>detectLanguage</name>
       <visibility>private</visibility>
       <abstract>0</abstract>
       <static>0</static>
@@ -101,15 +261,20 @@
       <returnValue></returnValue>
       <parameters>
        <parameter>
-        <name>elements</name>
-        <type>QDomElements &amp;</type>
+        <name>item</name>
+        <type>Item *</type>
+        <defaultValue></defaultValue>
+       </parameter>
+       <parameter>
+        <name>foundLanguage</name>
+        <type>QString</type>
         <defaultValue></defaultValue>
        </parameter>
       </parameters>
       <documentation></documentation>
      </method>
      <method>
-      <name>completedItem</name>
+      <name>requestLanguage</name>
       <visibility>private</visibility>
       <abstract>0</abstract>
       <static>0</static>
@@ -125,72 +290,132 @@
       </parameters>
       <documentation></documentation>
      </method>
+     <method>
+      <name>downloadLink</name>
+      <visibility>private</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters>
+       <parameter>
+        <name>item</name>
+        <type>Item *</type>
+        <defaultValue></defaultValue>
+       </parameter>
+      </parameters>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>checkFinishedItem</name>
+      <visibility>private</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters>
+       <parameter>
+        <name>id</name>
+        <type>QString</type>
+        <defaultValue></defaultValue>
+       </parameter>
+      </parameters>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>setLanguage</name>
+      <visibility>private</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters/>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>convertDocument</name>
+      <visibility>private</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters/>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>parserDocument</name>
+      <visibility>private</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters/>
+      <documentation></documentation>
+     </method>
     </methods>
    </class>
    <class>
     <id>1</id>
     <name>Item</name>
     <abstract>0</abstract>
-    <x>195</x>
-    <y>255</y>
-    <width>185</width>
-    <height>495</height>
+    <x>196</x>
+    <y>273</y>
+    <width>310</width>
+    <height>570</height>
     <documentation></documentation>
     <attributes>
      <attribute>
       <name>url_du_flux</name>
       <visibility>private</visibility>
       <type>QString</type>
-      <defaultValue></defaultValue>
+      <defaultValue>NO_URL</defaultValue>
       <documentation></documentation>
      </attribute>
      <attribute>
       <name>url_de_la_page</name>
       <visibility>private</visibility>
       <type>QString</type>
-      <defaultValue></defaultValue>
+      <defaultValue>NO_URL</defaultValue>
       <documentation></documentation>
      </attribute>
      <attribute>
       <name>titre</name>
       <visibility>private</visibility>
       <type>QString</type>
-      <defaultValue></defaultValue>
+      <defaultValue>NO_TITLE</defaultValue>
       <documentation></documentation>
      </attribute>
      <attribute>
       <name>description</name>
       <visibility>private</visibility>
       <type>QString</type>
-      <defaultValue></defaultValue>
+      <defaultValue>NO_DESCRIPTION</defaultValue>
       <documentation></documentation>
      </attribute>
      <attribute>
-      <name>description</name>
+      <name>contenu</name>
       <visibility>private</visibility>
       <type>QString</type>
-      <defaultValue></defaultValue>
-      <documentation></documentation>
-     </attribute>
-     <attribute>
-      <name>resume</name>
-      <visibility>private</visibility>
-      <type>QString</type>
-      <defaultValue></defaultValue>
+      <defaultValue>NO_CONTENT</defaultValue>
       <documentation></documentation>
      </attribute>
      <attribute>
       <name>langue</name>
       <visibility>private</visibility>
       <type>QString</type>
-      <defaultValue></defaultValue>
+      <defaultValue>UNDEFINED_LANGUAGE</defaultValue>
       <documentation></documentation>
      </attribute>
      <attribute>
       <name>category</name>
       <visibility>private</visibility>
       <type>QString</type>
-      <defaultValue></defaultValue>
+      <defaultValue>UNCATEGORIZED</defaultValue>
       <documentation></documentation>
      </attribute>
      <attribute>
@@ -204,7 +429,7 @@
       <name>id</name>
       <visibility>private</visibility>
       <type>QString</type>
-      <defaultValue></defaultValue>
+      <defaultValue>NO_ID</defaultValue>
       <documentation></documentation>
      </attribute>
     </attributes>
@@ -276,7 +501,7 @@
       <documentation></documentation>
      </method>
      <method>
-      <name>get_resume</name>
+      <name>get_contenu</name>
       <visibility>public</visibility>
       <abstract>0</abstract>
       <static>0</static>
@@ -405,7 +630,7 @@
       <documentation></documentation>
      </method>
      <method>
-      <name>set_resume</name>
+      <name>set_contenu</name>
       <visibility>public</visibility>
       <abstract>0</abstract>
       <static>0</static>
@@ -483,86 +708,8 @@
       <parameters/>
       <documentation></documentation>
      </method>
-    </methods>
-   </class>
-   <class>
-    <id>4</id>
-    <name>Tika</name>
-    <abstract>0</abstract>
-    <x>613</x>
-    <y>-75</y>
-    <width>332</width>
-    <height>300</height>
-    <documentation></documentation>
-    <attributes>
-     <attribute>
-      <name>instance</name>
-      <visibility>private</visibility>
-      <type>Tika *</type>
-      <defaultValue></defaultValue>
-      <documentation></documentation>
-     </attribute>
-     <attribute>
-      <name>tika_server</name>
-      <visibility>private</visibility>
-      <type>QProcess *</type>
-      <defaultValue></defaultValue>
-      <documentation></documentation>
-     </attribute>
-     <attribute>
-      <name>accessManager</name>
-      <visibility>private</visibility>
-      <type>QNetworkAccessManager *</type>
-      <defaultValue></defaultValue>
-      <documentation></documentation>
-     </attribute>
-     <attribute>
-      <name>processingItems</name>
-      <visibility>private</visibility>
-      <type>QMap&lt;QString, Item*></type>
-      <defaultValue></defaultValue>
-      <documentation></documentation>
-     </attribute>
-     <attribute>
-      <name>waitingForLanguage</name>
-      <visibility>private</visibility>
-      <type>QList&lt;QString></type>
-      <defaultValue></defaultValue>
-      <documentation></documentation>
-     </attribute>
-     <attribute>
-      <name>waitingForDocument</name>
-      <visibility>private</visibility>
-      <type>QList&lt;QString></type>
-      <defaultValue></defaultValue>
-      <documentation></documentation>
-     </attribute>
-    </attributes>
-    <methods>
      <method>
-      <name>getInstance</name>
-      <visibility>public</visibility>
-      <abstract>0</abstract>
-      <static>1</static>
-      <virtual>0</virtual>
-      <pureVirtual>0</pureVirtual>
-      <returnValue>Tika *</returnValue>
-      <parameters/>
-      <documentation></documentation>
-     </method>
-     <method>
-      <name>destroy</name>
-      <visibility>public</visibility>
-      <abstract>0</abstract>
-      <static>1</static>
-      <virtual>0</virtual>
-      <pureVirtual>0</pureVirtual>
-      <returnValue></returnValue>
-      <parameters/>
-      <documentation></documentation>
-     </method>
-     <method>
-      <name>processItem</name>
+      <name>Item</name>
       <visibility>public</visibility>
       <abstract>0</abstract>
       <static>0</static>
@@ -571,45 +718,35 @@
       <returnValue></returnValue>
       <parameters>
        <parameter>
-        <name>item</name>
-        <type>Item *</type>
-        <defaultValue></defaultValue>
-       </parameter>
-       <parameter>
-        <name>foundLanguage</name>
-        <type>QString = QString()</type>
+        <name>other</name>
+        <type>const Item&amp;</type>
         <defaultValue></defaultValue>
        </parameter>
       </parameters>
       <documentation></documentation>
      </method>
      <method>
-      <name>Tika</name>
+      <name>toString</name>
       <visibility>public</visibility>
       <abstract>0</abstract>
       <static>0</static>
       <virtual>0</virtual>
       <pureVirtual>0</pureVirtual>
-      <returnValue></returnValue>
+      <returnValue>QString</returnValue>
       <parameters/>
       <documentation></documentation>
      </method>
      <method>
-      <name>detectLanguage</name>
-      <visibility>private</visibility>
+      <name>fromString</name>
+      <visibility>public</visibility>
       <abstract>0</abstract>
-      <static>0</static>
+      <static>1</static>
       <virtual>0</virtual>
       <pureVirtual>0</pureVirtual>
-      <returnValue></returnValue>
+      <returnValue>Item *</returnValue>
       <parameters>
        <parameter>
-        <name>item</name>
-        <type>Item *</type>
-        <defaultValue></defaultValue>
-       </parameter>
-       <parameter>
-        <name>foundLanguage</name>
+        <name>v</name>
         <type>QString</type>
         <defaultValue></defaultValue>
        </parameter>
@@ -617,112 +754,93 @@
       <documentation></documentation>
      </method>
      <method>
-      <name>requestLanguage</name>
-      <visibility>private</visibility>
+      <name>toHumanReadable</name>
+      <visibility>public</visibility>
       <abstract>0</abstract>
       <static>0</static>
       <virtual>0</virtual>
       <pureVirtual>0</pureVirtual>
-      <returnValue></returnValue>
+      <returnValue>QString</returnValue>
+      <parameters/>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>toCSV</name>
+      <visibility>public</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue>QString</returnValue>
+      <parameters/>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>operator&lt;&lt;</name>
+      <visibility>public</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue>QDebug</returnValue>
       <parameters>
+       <parameter>
+        <name>debug</name>
+        <type>QDebug</type>
+        <defaultValue></defaultValue>
+       </parameter>
        <parameter>
         <name>item</name>
-        <type>Item *</type>
+        <type>const Item &amp;</type>
         <defaultValue></defaultValue>
        </parameter>
       </parameters>
-      <documentation></documentation>
-     </method>
-     <method>
-      <name>downloadLink</name>
-      <visibility>private</visibility>
-      <abstract>0</abstract>
-      <static>0</static>
-      <virtual>0</virtual>
-      <pureVirtual>0</pureVirtual>
-      <returnValue></returnValue>
-      <parameters>
-       <parameter>
-        <name>item</name>
-        <type>Item *</type>
-        <defaultValue></defaultValue>
-       </parameter>
-      </parameters>
-      <documentation></documentation>
-     </method>
-     <method>
-      <name>checkFinishedItem</name>
-      <visibility>private</visibility>
-      <abstract>0</abstract>
-      <static>0</static>
-      <virtual>0</virtual>
-      <pureVirtual>0</pureVirtual>
-      <returnValue></returnValue>
-      <parameters>
-       <parameter>
-        <name>id</name>
-        <type>QString</type>
-        <defaultValue></defaultValue>
-       </parameter>
-      </parameters>
-      <documentation></documentation>
-     </method>
-     <method>
-      <name>setLanguage</name>
-      <visibility>private</visibility>
-      <abstract>0</abstract>
-      <static>0</static>
-      <virtual>0</virtual>
-      <pureVirtual>0</pureVirtual>
-      <returnValue></returnValue>
-      <parameters/>
-      <documentation></documentation>
-     </method>
-     <method>
-      <name>convertDocument</name>
-      <visibility>private</visibility>
-      <abstract>0</abstract>
-      <static>0</static>
-      <virtual>0</virtual>
-      <pureVirtual>0</pureVirtual>
-      <returnValue></returnValue>
-      <parameters/>
-      <documentation></documentation>
-     </method>
-     <method>
-      <name>parserDocument</name>
-      <visibility>private</visibility>
-      <abstract>0</abstract>
-      <static>0</static>
-      <virtual>0</virtual>
-      <pureVirtual>0</pureVirtual>
-      <returnValue></returnValue>
-      <parameters/>
       <documentation></documentation>
      </method>
     </methods>
    </class>
    <class>
-    <id>5</id>
-    <name>IO</name>
+    <id>2</id>
+    <name>Parser</name>
     <abstract>0</abstract>
-    <x>-158</x>
-    <y>2</y>
-    <width>169</width>
-    <height>150</height>
+    <x>264</x>
+    <y>-49</y>
+    <width>201</width>
+    <height>225</height>
     <documentation></documentation>
     <attributes>
      <attribute>
-      <name>path</name>
+      <name>url</name>
+      <visibility>private</visibility>
+      <type>QUrl</type>
+      <defaultValue></defaultValue>
+      <documentation></documentation>
+     </attribute>
+     <attribute>
+      <name>src</name>
       <visibility>private</visibility>
       <type>QString</type>
       <defaultValue></defaultValue>
       <documentation></documentation>
      </attribute>
+     <attribute>
+      <name>processingItem</name>
+      <visibility>private</visibility>
+      <type>int</type>
+      <defaultValue></defaultValue>
+      <documentation></documentation>
+     </attribute>
+     <attribute>
+      <name>timerStarted</name>
+      <visibility>private</visibility>
+      <type>bool</type>
+      <defaultValue></defaultValue>
+      <documentation></documentation>
+     </attribute>
     </attributes>
     <methods>
      <method>
-      <name>IO</name>
+      <name>Parser</name>
       <visibility>public</visibility>
       <abstract>0</abstract>
       <static>0</static>
@@ -731,42 +849,13 @@
       <returnValue></returnValue>
       <parameters>
        <parameter>
-        <name>database_path</name>
-        <type>QString</type>
+        <name>url</name>
+        <type>QUrl</type>
         <defaultValue></defaultValue>
        </parameter>
-      </parameters>
-      <documentation></documentation>
-     </method>
-     <method>
-      <name>read</name>
-      <visibility>public</visibility>
-      <abstract>0</abstract>
-      <static>1</static>
-      <virtual>0</virtual>
-      <pureVirtual>0</pureVirtual>
-      <returnValue>ListItems</returnValue>
-      <parameters>
        <parameter>
-        <name>path</name>
-        <type>QString</type>
-        <defaultValue></defaultValue>
-       </parameter>
-      </parameters>
-      <documentation></documentation>
-     </method>
-     <method>
-      <name>readFeeds</name>
-      <visibility>public</visibility>
-      <abstract>0</abstract>
-      <static>0</static>
-      <virtual>0</virtual>
-      <pureVirtual>0</pureVirtual>
-      <returnValue></returnValue>
-      <parameters>
-       <parameter>
-        <name>path</name>
-        <type>QString</type>
+        <name>parent</name>
+        <type>QObject *</type>
         <defaultValue></defaultValue>
        </parameter>
       </parameters>
@@ -780,17 +869,11 @@
       <virtual>0</virtual>
       <pureVirtual>0</pureVirtual>
       <returnValue></returnValue>
-      <parameters>
-       <parameter>
-        <name>url</name>
-        <type>QUrl</type>
-        <defaultValue></defaultValue>
-       </parameter>
-      </parameters>
+      <parameters/>
       <documentation></documentation>
      </method>
      <method>
-      <name>readDB</name>
+      <name>parseFeed</name>
       <visibility>public</visibility>
       <abstract>0</abstract>
       <static>0</static>
@@ -801,8 +884,36 @@
       <documentation></documentation>
      </method>
      <method>
-      <name>write</name>
-      <visibility>public</visibility>
+      <name>requestFeed</name>
+      <visibility>private</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters/>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>readItem</name>
+      <visibility>private</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters>
+       <parameter>
+        <name>elements</name>
+        <type>QDomElements &amp;</type>
+        <defaultValue></defaultValue>
+       </parameter>
+      </parameters>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>completedItem</name>
+      <visibility>private</visibility>
       <abstract>0</abstract>
       <static>0</static>
       <virtual>0</virtual>
@@ -811,52 +922,44 @@
       <parameters>
        <parameter>
         <name>item</name>
-        <type>Item*</type>
+        <type>Item *</type>
         <defaultValue></defaultValue>
        </parameter>
       </parameters>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>setTimer</name>
+      <visibility>private</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters>
+       <parameter>
+        <name>timeToWait</name>
+        <type>int = 0</type>
+        <defaultValue></defaultValue>
+       </parameter>
+      </parameters>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>revisite</name>
+      <visibility>private</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters/>
       <documentation></documentation>
      </method>
     </methods>
    </class>
   </classList>
   <links>
-   <dependence>
-    <start>1</start>
-    <end>2</end>
-    <arrow>1</arrow>
-   </dependence>
-   <association>
-    <start>2</start>
-    <end>4</end>
-    <name></name>
-    <typeAssociation>1</typeAssociation>
-    <direction>4</direction>
-    <roleA></roleA>
-    <multiplicityA></multiplicityA>
-    <roleB>tika           </roleB>
-    <multiplicityB>1</multiplicityB>
-    <listTypeA></listTypeA>
-    <listTypeB></listTypeB>
-   </association>
-   <association>
-    <start>5</start>
-    <end>2</end>
-    <name></name>
-    <typeAssociation>1</typeAssociation>
-    <direction>2</direction>
-    <roleA></roleA>
-    <multiplicityA></multiplicityA>
-    <roleB>parsers        </roleB>
-    <multiplicityB>*</multiplicityB>
-    <listTypeA></listTypeA>
-    <listTypeB>QList</listTypeB>
-   </association>
-   <dependence>
-    <start>1</start>
-    <end>5</end>
-    <arrow>1</arrow>
-   </dependence>
    <association>
     <start>1</start>
     <end>4</end>
@@ -870,6 +973,42 @@
     <listTypeA>QMap&lt;QString, Item*></listTypeA>
     <listTypeB></listTypeB>
    </association>
+   <dependence>
+    <start>1</start>
+    <end>5</end>
+    <arrow>1</arrow>
+   </dependence>
+   <association>
+    <start>5</start>
+    <end>2</end>
+    <name></name>
+    <typeAssociation>1</typeAssociation>
+    <direction>2</direction>
+    <roleA></roleA>
+    <multiplicityA></multiplicityA>
+    <roleB>QList&lt;parsers*>      </roleB>
+    <multiplicityB>*</multiplicityB>
+    <listTypeA></listTypeA>
+    <listTypeB>QList</listTypeB>
+   </association>
+   <association>
+    <start>2</start>
+    <end>4</end>
+    <name></name>
+    <typeAssociation>1</typeAssociation>
+    <direction>4</direction>
+    <roleA></roleA>
+    <multiplicityA></multiplicityA>
+    <roleB>tika           </roleB>
+    <multiplicityB>1</multiplicityB>
+    <listTypeA></listTypeA>
+    <listTypeB></listTypeB>
+   </association>
+   <dependence>
+    <start>1</start>
+    <end>2</end>
+    <arrow>1</arrow>
+   </dependence>
   </links>
   <notes/>
  </classDiagram>
