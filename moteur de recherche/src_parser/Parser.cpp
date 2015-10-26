@@ -158,9 +158,7 @@ void Parser::readItem(QDomElement & elements)
         }
         else if (elements.tagName() == PUB_DATE)
         {
-            QLocale locale(QLocale::English, QLocale::UnitedKingdom);
-            QDateTime date = locale.toDateTime(elements.text(), "ddd, dd MMM yyyy hh:mm:ss");
-            date.setTimeSpec(Qt::UTC);
+            QDateTime date = QDateTime::fromString(elements.text(), Qt::RFC2822Date).toUTC();
             item->set_date(date);
 
 			if (!timerStarted) {

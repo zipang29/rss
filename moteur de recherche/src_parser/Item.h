@@ -39,9 +39,9 @@ public:
 	friend QDebug operator<<(QDebug debug, const Item& item);
 
 private:
-    QString url_du_flux, url_de_la_page, titre, description, contenu, langue, category;
+    QString url_du_flux = NO_URL, url_de_la_page = NO_URL, titre = NO_TITLE, description = NO_DESCRIPTION, contenu = NO_CONTENT, langue = UNDEFINED_LANGUAGE, category = UNCATEGORIZED;
     QDateTime date;
-    QString id;
+    QString id = NO_ID;
 };
 
 #endif // ITEM_H
