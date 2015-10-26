@@ -69,11 +69,11 @@ void Tika::destroy()
 
 /*!
  * Lance le téléchargement et la conversion en QString du document cible de l'\a item si celui-ci
- * en possède un. Dans le cas contraire, assigne au contenu de l'\a item la valeur \e Vide
+ * en possède un. Dans le cas contraire, assigne au contenu de l'\a item la valeur \e {Sans contenu}
  *
  * Si \a foundLanguage est un identifiant de langue connue (ie: fr-FR ou en-GB), assigne à 
  * l'\a item le nom complet de la langue (ie: French, English). Dans le cas contraire, utilise Tika
- * pour détécter la langue de l'\a item via sa description. Si la langue est inconnue, elle est notée \e Inconnue dans l'\a item.
+ * pour détécter la langue de l'\a item via sa description. Si la langue est inconnue, elle est notée \e {Langue inconnue} dans l'\a item.
  */
 void Tika::processItem(Item* item, QString foundLanguage)
 {
@@ -89,7 +89,7 @@ void Tika::processItem(Item* item, QString foundLanguage)
 /*!
  * Si \a foundLanguage est un identifiant de langue connue (ie: fr-FR ou en-GB), assigne à 
  * l'\a item le nom complet de la langue (ie: French, English). Dans le cas contraire, utilise Tika
- * pour détécter la langue de l'\a item via sa description. Si la langue est inconnue, elle est notée \e Inconnue dans l'\a item.
+ * pour détécter la langue de l'\a item via sa description. Si la langue est inconnue, elle est notée \e {Langue inconnue} dans l'\a item.
  */
 void Tika::detectLanguage(Item* item, QString foundLanguage)
 {
@@ -126,7 +126,7 @@ void Tika::requestLanguage(Item* item)
 }
 
 /*!
- * Assigne la valeur de retour de la détéction de langue de Tika à l'Item concerné ou \e Inconnue si Tika
+ * Assigne la valeur de retour de la détéction de langue de Tika à l'Item concerné ou \e {Langue inconnue} si Tika
  * n'a pas été en mesure de détécter la langue.
  */
 void Tika::setLanguage()
@@ -167,7 +167,7 @@ void Tika::downloadLink(Item* item)
 /*!
  * Envoi le document téléchargé à Tika pour sa conversion en string.
  *
- * En cas d'erreur de téléchargement, le document de l'item est assigné à la valeur \e Vide
+ * En cas d'erreur de téléchargement, le document de l'item est assigné à la valeur \e {Sans contenu}
  */
 void Tika::convertDocument()
 {
@@ -195,7 +195,7 @@ void Tika::convertDocument()
 /*!
  * Récupère le string convertit par Tika et l'assigne à l'item concerné.
  * 
- * En cas d'erreur, le document de l'item est assigné à la valeur \e Vide
+ * En cas d'erreur, le document de l'item est assigné à la valeur \e {Sans contenu}
  */
 void Tika::parseDocument()
 {

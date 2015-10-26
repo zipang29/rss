@@ -7,7 +7,7 @@ Ce projet utilise plusieurs librairies, pour plus d'information sur leurs licenc
 
 Prérequis à l'exécution :
 	- Microsoft Windows Vista, 7, 8, 8.1 ou 10 (XP n'est pas supporté)
-	- Le package redistribuable Visual C++ pour Visual Studio 2013 32bit (vcredist_x86.exe disponible sur http://www.microsoft.com/fr-FR/download/details.aspx?id=40784)
+	- Le package redistribuable Visual C++ pour Visual Studio 2013 32bit (vcredist_x86.exe disponible sur http://www.microsoft.com/fr-FR/download/details.aspx?id=40784 ou dans le dossier Binaires)
 	- Une JRE version 7 ou supérieur (tests réalisés sur la version 8) dont les exécutables figurent dans la variable d'environnement PATH
 
 Exécution :
@@ -31,4 +31,4 @@ Exemples :
 Problèmes connus :
 Le parser lance lui-même un serveur Tika pour certaines opérations de traitement des données. Il arrive sur certains systèmes que celui-ci ne se lance pas correctement via le parser. Si des messages d'erreur type "connexion refused" s'affiche lors du traitement de données par Tika, lancez manuellement le serveur Tika via la commande "java -jar tika-server-1.10.jar" avec un cmd. Si le problème persiste, vérifiez qu'un autre logiciel n'occupe pas déjà le port 9998 requis par le serveur Tika.
 
-Bien qui puissant, la librairie Tika ne peut prendre en charge tous les types de documents, il arrive donc parfois que celui-ci affiche une erreur de type "Unsupported Media Type". L'item concerné aura donc la valeur "Sans contenu" dans son contenu
+Bien que puissant, la librairie Tika ne peut prendre en charge tous les types de documents, il arrive donc parfois que celui-ci affiche une erreur de type "Unsupported Media Type". L'item concerné aura donc la valeur "Sans contenu" dans son contenu
