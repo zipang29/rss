@@ -5,7 +5,7 @@ SET(LIBRARY_OUTPUT_PATH ${moteur-de-recherche_SOURCE_DIR}/lib)
 SET(EXECUTABLE_OUTPUT_PATH ${moteur-de-recherche_SOURCE_DIR}/bin)
 SET(CMAKE_INSTALL_PREFIX "${moteur-de-recherche_SOURCE_DIR}/install" CACHE PATH "Default install in project folder" FORCE)
 
-SUBDIRS(src_kyoto src_parser)
+SUBDIRS(src_kyoto src_parser src_clucene)
 
 file(COPY ${moteur-de-recherche_SOURCE_DIR}/doc/ListFluxRSS-v2.txt DESTINATION ${moteur-de-recherche_SOURCE_DIR}/bin/)
 file(COPY ${moteur-de-recherche_SOURCE_DIR}/doc/ListFluxRSS-v2.txt DESTINATION ${moteur-de-recherche_SOURCE_DIR}/bin/Debug/)
