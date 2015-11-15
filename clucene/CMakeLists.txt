@@ -30,7 +30,7 @@ endif(WIN32)
 
 
 # include specific modules
-set(CMAKE_MODULE_PATH "${clucene_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 #define options...
 
@@ -53,7 +53,7 @@ OPTION(ENABLE_MMAP
   OFF)
 OPTION(DISABLE_MULTITHREADING
   "disable multithreading - remove all locking code"
-  OFF)
+  ON)
 OPTION(ENABLE_DMALLOC
   "enable dmalloc memory leak checker"
   OFF)
@@ -82,7 +82,7 @@ OPTION(ENABLE_PACKAGING
   OFF)
 OPTION(BUILD_STATIC_LIBRARIES
   "create targets for building static libraries"
-  OFF)
+  ON)
 OPTION(BUILD_CONTRIBS
   "create targets for building the clucene-contribs"
   OFF)
@@ -135,12 +135,20 @@ ENDIF(CMAKE_COMPILER_IS_GNUCC)
 
 
 #Single output directory for building all executables and libraries.
-#SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin CACHE PATH "Executable Output Directory" FORCE)
-#SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin CACHE PATH "Library Output Directory" FORCE)
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin CACHE PATH "Executable Output Directory" FORCE)
+SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin CACHE PATH "Library Output Directory" FORCE)
+
+SET(CMAKE_INSTALL_PREFIX "${clucene_SOURCE_DIR}/out" CACHE PATH "Default install in project folder" FORCE)
 
 #add tests
-ENABLE_TESTING()
-ADD_TEST(SimpleTest ${EXECUTABLE_OUTPUT_PATH}/cl_test )
+OPTION(COMPILER_TESTS
+  "Compile les projets de test"
+  OFF)
+
+IF (COMPILER_TESTS)
+  ENABLE_TESTING()
+  ADD_TEST(SimpleTest ${EXECUTABLE_OUTPUT_PATH}/cl_test )
+ENDIF (COMPILER_TESTS)
 
 #use single output directory
 INCLUDE_DIRECTORIES( ${clucene_SOURCE_DIR}/src/shared )
@@ -156,7 +164,9 @@ INCLUDE_DIRECTORIES( ${_CL_BOOST_INCLUDE_PATH} )
 ADD_SUBDIRECTORY (src/ext)
 ADD_SUBDIRECTORY (src/shared)
 ADD_SUBDIRECTORY (src/core)
-ADD_SUBDIRECTORY (src/test)
+IF (COMPILER_TESTS)
+  ADD_SUBDIRECTORY (src/test)
+ENDIF (COMPILER_TESTS)
 ADD_SUBDIRECTORY (src/demo EXCLUDE_FROM_ALL)
 IF ( BUILD_CONTRIBS )
   ADD_SUBDIRECTORY (src/contribs EXCLUDE_FROM_ALL)

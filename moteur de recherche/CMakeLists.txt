@@ -5,12 +5,18 @@ SET(LIBRARY_OUTPUT_PATH ${moteur-de-recherche_SOURCE_DIR}/lib)
 SET(EXECUTABLE_OUTPUT_PATH ${moteur-de-recherche_SOURCE_DIR}/bin)
 SET(CMAKE_INSTALL_PREFIX "${moteur-de-recherche_SOURCE_DIR}/install" CACHE PATH "Default install in project folder" FORCE)
 
-SUBDIRS(src_kyoto src_parser src_clucene)
+if(WIN32)
+ set(CMAKE_DEBUG_POSTFIX "d")
+endif(WIN32)
 
+SUBDIRS(src_kyoto src_parser)
+
+#Copie de la liste des flux dans les dossiers de binaires
 file(COPY ${moteur-de-recherche_SOURCE_DIR}/doc/ListFluxRSS-v2.txt DESTINATION ${moteur-de-recherche_SOURCE_DIR}/bin/)
 file(COPY ${moteur-de-recherche_SOURCE_DIR}/doc/ListFluxRSS-v2.txt DESTINATION ${moteur-de-recherche_SOURCE_DIR}/bin/Debug/)
 file(COPY ${moteur-de-recherche_SOURCE_DIR}/doc/ListFluxRSS-v2.txt DESTINATION ${moteur-de-recherche_SOURCE_DIR}/bin/Release/)
 
+#Copie de Tika dans les dossiers de binaires
 file(COPY ${moteur-de-recherche_SOURCE_DIR}/tika/tika-server-1.10.jar DESTINATION ${moteur-de-recherche_SOURCE_DIR}/bin/)
 file(COPY ${moteur-de-recherche_SOURCE_DIR}/tika/tika-server-1.10.jar DESTINATION ${moteur-de-recherche_SOURCE_DIR}/bin/Debug/)
 file(COPY ${moteur-de-recherche_SOURCE_DIR}/tika/tika-server-1.10.jar DESTINATION ${moteur-de-recherche_SOURCE_DIR}/bin/Release/)
