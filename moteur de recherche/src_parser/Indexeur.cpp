@@ -1,7 +1,6 @@
 #include "Indexeur.h"
 #include "IO.h"
 #include <QFileInfo>
-#include <exception>
 
 Indexeur::Indexeur(QString dbPath)
 {
