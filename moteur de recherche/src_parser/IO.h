@@ -7,6 +7,7 @@
 #include <QObject>
 #include "Parser.h"
 #include <QList>
+#include "Indexeur.h"
 
 using namespace std;
 using namespace kyotocabinet;
@@ -30,6 +31,7 @@ class IO : public QObject
     private:
         QList<Parser*> parsers;
         QString path;
+		Indexeur * i;
 
 };
 

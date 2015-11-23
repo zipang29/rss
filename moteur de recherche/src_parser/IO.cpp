@@ -1,6 +1,5 @@
 #include "IO.h"
 #include <QFile>
-#include "Indexeur.h"
 
 /*!
  * \class IO
@@ -17,6 +16,7 @@
 IO::IO(QString database_path)
 {
     path = database_path;
+	this->i = new Indexeur("bdd.db"); // TODO ajouter un argument à passer au programme pour pouvoir définir vers quel fichier on veut enregistrer les données
 }
 
 /*!
@@ -83,7 +83,6 @@ void IO::readFeeds(QString path)
 void IO::readFeed(QUrl url)
 {
     Parser* p = new Parser(url, this);
-    Indexeur * i = new Indexeur("bdd.db"); // TODO ajouter un argument à passer au programme pour pouvoir définir vers quel fichier on veut enregistrer les données
 	connect(p, SIGNAL(itemProcessed(Item*)), this, SLOT(write(Item*)));
     connect(p, SIGNAL(itemProcessed(Item*)), i, SLOT(indexing(Item*)));
     parsers.append(p);

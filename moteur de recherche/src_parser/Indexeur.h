@@ -3,6 +3,7 @@
 
 #include "CLucene.h"
 #include "CLucene\analysis\standard\StandardAnalyzer.h"
+#include "CLucene\document\Field.h"
 #include <QObject>
 #include "Item.h"
 
