@@ -6,17 +6,16 @@ Indexeur::Indexeur(QString dbPath)
 {
     this->dbPath = dbPath;
     a = new StandardAnalyzer();
+	QFileInfo file(dbPath);
+	if (file.exists() || file.isDir())
+		writer = new IndexWriter(dbPath.toStdString().c_str(), a, false);
+	else
+		writer = new IndexWriter(dbPath.toStdString().c_str(), a, true);
 }
 
 void Indexeur::indexing(Item * item)
 {
-    QFileInfo file(dbPath);
-    if (file.exists() || file.isDir())
-        writer = new IndexWriter(dbPath.toStdString().c_str(), a, false);
-    else
-        writer = new IndexWriter(dbPath.toStdString().c_str(), a, true);
-
-    Document * doc = new Document();
+    /*Document * doc = new Document();
     Field * f = new Field(L"url_du_flux", item->get_url_du_flux().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
     doc->add(*f);
     f = new Field(L"url_de_la_page", item->get_url_de_la_page().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
@@ -34,8 +33,13 @@ void Indexeur::indexing(Item * item)
     f = new Field(L"date", item->get_date().toString().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
     doc->add(*f);
 
-    writer->addDocument(doc, writer->getAnalyzer());
+    writer->addDocument(doc, writer->getAnalyzer());*/
 
-    writer->close();
+    
 
+}
+
+Indexeur::~Indexeur()
+{
+	writer->close();
 }

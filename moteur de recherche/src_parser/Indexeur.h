@@ -16,13 +16,14 @@ class Indexeur : public QObject
 
     public:
         Indexeur(QString dbPath);
+		~Indexeur();
 
     public slots:
         void indexing(Item * item);
 
     private:
         QString dbPath;
-        StandardAnalyzer * a;
+        StandardAnalyzer * a = NULL;
         IndexWriter * writer = NULL;
 };
 
