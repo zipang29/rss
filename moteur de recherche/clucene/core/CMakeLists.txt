@@ -1,0 +1,167 @@
+PROJECT(clucene-core)
+
+SET(clucene_core_Files
+	./CLucene/StdHeader.cpp
+	./CLucene/debug/error.cpp
+	./CLucene/util/ThreadLocal.cpp
+	./CLucene/util/Reader.cpp
+	./CLucene/util/Equators.cpp
+	./CLucene/util/FastCharStream.cpp
+	./CLucene/util/MD5Digester.cpp
+	./CLucene/util/StringIntern.cpp
+	./CLucene/util/BitSet.cpp
+	./CLucene/queryParser/FastCharStream.cpp
+	./CLucene/queryParser/MultiFieldQueryParser.cpp
+	./CLucene/queryParser/QueryParser.cpp
+	./CLucene/queryParser/QueryParserTokenManager.cpp
+	./CLucene/queryParser/QueryToken.cpp
+	./CLucene/queryParser/legacy/Lexer.cpp
+	./CLucene/queryParser/legacy/MultiFieldQueryParser.cpp
+	./CLucene/queryParser/legacy/QueryParser.cpp
+	./CLucene/queryParser/legacy/QueryParserBase.cpp
+	./CLucene/queryParser/legacy/QueryToken.cpp
+	./CLucene/queryParser/legacy/TokenList.cpp
+	./CLucene/analysis/standard/StandardAnalyzer.cpp
+	./CLucene/analysis/standard/StandardFilter.cpp
+	./CLucene/analysis/standard/StandardTokenizer.cpp
+	./CLucene/analysis/Analyzers.cpp
+	./CLucene/analysis/AnalysisHeader.cpp
+	./CLucene/store/MMapInput.cpp
+	./CLucene/store/IndexInput.cpp
+	./CLucene/store/Lock.cpp
+	./CLucene/store/LockFactory.cpp
+	./CLucene/store/IndexOutput.cpp
+	./CLucene/store/Directory.cpp
+	./CLucene/store/FSDirectory.cpp
+	./CLucene/store/RAMDirectory.cpp
+	./CLucene/document/Document.cpp
+	./CLucene/document/DateField.cpp
+	./CLucene/document/DateTools.cpp
+	./CLucene/document/Field.cpp
+	./CLucene/document/FieldSelector.cpp
+	./CLucene/document/NumberTools.cpp
+	./CLucene/index/IndexFileNames.cpp
+	./CLucene/index/IndexFileNameFilter.cpp
+	./CLucene/index/IndexDeletionPolicy.cpp
+	./CLucene/index/SegmentMergeInfo.cpp
+	./CLucene/index/SegmentInfos.cpp
+	./CLucene/index/MergeScheduler.cpp
+	./CLucene/index/SegmentTermDocs.cpp
+	./CLucene/index/FieldsWriter.cpp
+	./CLucene/index/TermInfosWriter.cpp
+	./CLucene/index/Term.cpp
+	./CLucene/index/Terms.cpp
+	./CLucene/index/MergePolicy.cpp
+	./CLucene/index/DocumentsWriter.cpp
+	./CLucene/index/DocumentsWriterThreadState.cpp
+	./CLucene/index/SegmentTermVector.cpp
+	./CLucene/index/TermVectorReader.cpp
+	./CLucene/index/FieldInfos.cpp
+	./CLucene/index/CompoundFile.cpp
+	./CLucene/index/SkipListReader.cpp
+	./CLucene/index/SkipListWriter.cpp
+	./CLucene/index/IndexFileDeleter.cpp
+	./CLucene/index/SegmentReader.cpp
+	./CLucene/index/DirectoryIndexReader.cpp
+	./CLucene/index/TermVectorWriter.cpp
+	./CLucene/index/IndexReader.cpp
+	./CLucene/index/SegmentTermPositions.cpp
+	./CLucene/index/SegmentMerger.cpp
+	./CLucene/index/IndexWriter.cpp
+	./CLucene/index/MultiReader.cpp
+	./CLucene/index/MultiSegmentReader.cpp
+	./CLucene/index/Payload.cpp
+	./CLucene/index/SegmentTermEnum.cpp
+	./CLucene/index/TermInfo.cpp
+	./CLucene/index/IndexModifier.cpp
+	./CLucene/index/SegmentMergeQueue.cpp
+	./CLucene/index/FieldsReader.cpp
+	./CLucene/index/TermInfosReader.cpp
+	./CLucene/index/MultipleTermPositions.cpp
+	./CLucene/search/Compare.cpp
+	./CLucene/search/Scorer.cpp
+	./CLucene/search/ScorerDocQueue.cpp
+	./CLucene/search/PhraseScorer.cpp
+	./CLucene/search/SloppyPhraseScorer.cpp
+	./CLucene/search/DisjunctionSumScorer.cpp
+	./CLucene/search/ConjunctionScorer.cpp
+	./CLucene/search/PhraseQuery.cpp
+	./CLucene/search/PrefixQuery.cpp
+	./CLucene/search/ExactPhraseScorer.cpp
+	./CLucene/search/TermScorer.cpp
+	./CLucene/search/Similarity.cpp
+	./CLucene/search/BooleanScorer.cpp
+	./CLucene/search/BooleanScorer2.cpp
+	./CLucene/search/HitQueue.cpp
+	./CLucene/search/FieldCacheImpl.cpp
+	./CLucene/search/ChainedFilter.cpp
+	./CLucene/search/RangeFilter.cpp
+	./CLucene/search/CachingWrapperFilter.cpp
+	./CLucene/search/QueryFilter.cpp
+	./CLucene/search/TermQuery.cpp
+	./CLucene/search/FuzzyQuery.cpp
+	./CLucene/search/SearchHeader.cpp
+	./CLucene/search/RangeQuery.cpp
+	./CLucene/search/IndexSearcher.cpp
+	./CLucene/search/Sort.cpp
+	./CLucene/search/PhrasePositions.cpp
+	./CLucene/search/FieldDocSortedHitQueue.cpp
+	./CLucene/search/WildcardTermEnum.cpp
+	./CLucene/search/MultiSearcher.cpp
+	./CLucene/search/Hits.cpp
+	./CLucene/search/MultiTermQuery.cpp
+	./CLucene/search/FilteredTermEnum.cpp
+	./CLucene/search/FieldSortedHitQueue.cpp
+	./CLucene/search/WildcardQuery.cpp
+	./CLucene/search/Explanation.cpp
+	./CLucene/search/BooleanQuery.cpp
+	./CLucene/search/FieldCache.cpp
+	./CLucene/search/DateFilter.cpp
+	./CLucene/search/MatchAllDocsQuery.cpp
+	./CLucene/search/MultiPhraseQuery.cpp
+	./CLucene/search/ConstantScoreQuery.cpp
+	./CLucene/search/CachingSpanFilter.cpp
+	./CLucene/search/CachingSpanFilter.h
+	./CLucene/search/SpanFilter.h
+	./CLucene/search/SpanFilterResult.h
+	./CLucene/search/SpanQueryFilter.cpp
+	./CLucene/search/SpanQueryFilter.h	
+	./CLucene/search/spans/_EmptySpans.h
+	./CLucene/search/spans/_NearSpansOrdered.h
+	./CLucene/search/spans/_NearSpansUnordered.h
+	./CLucene/search/spans/_TermSpans.h
+	./CLucene/search/spans/NearSpansOrdered.cpp
+	./CLucene/search/spans/NearSpansUnordered.cpp
+	./CLucene/search/spans/SpanFirstQuery.cpp
+	./CLucene/search/spans/SpanFirstQuery.h
+	./CLucene/search/spans/SpanNearQuery.cpp
+	./CLucene/search/spans/SpanNearQuery.h
+	./CLucene/search/spans/SpanNotQuery.cpp
+	./CLucene/search/spans/SpanNotQuery.h
+	./CLucene/search/spans/SpanOrQuery.cpp
+	./CLucene/search/spans/SpanOrQuery.h
+	./CLucene/search/spans/SpanQuery.h
+	./CLucene/search/spans/Spans.h
+	./CLucene/search/spans/SpanScorer.cpp
+	./CLucene/search/spans/SpanScorer.h
+	./CLucene/search/spans/SpanTermQuery.cpp
+	./CLucene/search/spans/SpanTermQuery.h
+	./CLucene/search/spans/SpanWeight.cpp
+	./CLucene/search/spans/SpanWeight.h
+	./CLucene/search/spans/TermSpans.cpp
+)
+
+file(GLOB_RECURSE HEADERS ${clucene-core_SOURCE_DIR}/*.h)
+
+#create the libraries
+#INCLUDE_DIRECTORIES( ${clucene_SOURCE_DIR}/src/core )
+
+INCLUDE_DIRECTORIES(${clucene_SOURCE_DIR}/core
+                    ${clucene_SOURCE_DIR}/shared
+)
+
+add_library(clucene-core SHARED
+	${clucene_core_Files} ${clucene_shared_Files} ${HEADERS}
+)
+
+TARGET_LINK_LIBRARIES(clucene-core clucene-shared)
