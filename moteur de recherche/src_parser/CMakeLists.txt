@@ -8,11 +8,6 @@ find_package(Qt5Core)
 find_package(Qt5Xml)
 find_package(Qt5Network)
 
-
-link_directories(../../clucene/out/include)
-link_directories(../../clucene/out/lib)
-
-
 set(SOURCES
 	Constantes.cpp
 	IO.cpp
@@ -32,7 +27,7 @@ set(HEADERS
 	Indexeur.h
 )
 
-INCLUDE_DIRECTORIES(${kyoto_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${kyoto_SOURCE_DIR} ${clucene_SOURCE_DIR}/include)
 
 add_executable(parser ${SOURCES} ${HEADERS})
 
@@ -41,6 +36,6 @@ target_link_libraries(parser
 					Qt5::Xml
 					Qt5::Network
 					kyoto
-                                        clucene-core
-                                        clucene-shared
+					clucene-core
+					clucene-shared
 					)
