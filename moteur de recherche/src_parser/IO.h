@@ -17,7 +17,7 @@ class IO : public QObject
     Q_OBJECT
 
     public:
-        IO(QString database_path);
+        IO(QString database_path, QString index_db_path);
 		static QMap<QString, Item*> read(QString path);
         void readFeeds(QString path);
         void readFeed(QUrl url);

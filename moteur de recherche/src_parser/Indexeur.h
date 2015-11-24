@@ -27,6 +27,7 @@ class Indexeur : public QObject
         StandardAnalyzer * a = NULL;
         IndexWriter * writer = NULL;
 
+		Field * id;
 		Field * url_du_flux;
 		Field * url_de_la_page;
 		Field * titre;

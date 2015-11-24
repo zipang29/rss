@@ -16,6 +16,8 @@ Indexeur::Indexeur(QString dbPath)
 void Indexeur::indexing(Item * item)
 {
     Document * doc = new Document();
+	id = new Field("id", (const TCHAR*)item->get_id().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+	doc->add(*id);
 	url_du_flux = new Field("url_du_flux", (const TCHAR*)item->get_url_du_flux().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
 	doc->add(*url_du_flux);
 	url_de_la_page = new Field("url_de_la_page", (const TCHAR*)item->get_url_de_la_page().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
@@ -39,6 +41,7 @@ void Indexeur::indexing(Item * item)
 Indexeur::~Indexeur()
 {
 	writer->close();
+	delete id;
 	delete url_du_flux;
 	delete url_de_la_page;
 	delete titre;
