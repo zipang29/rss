@@ -26,6 +26,15 @@ class Indexeur : public QObject
         QString dbPath;
         StandardAnalyzer * a = NULL;
         IndexWriter * writer = NULL;
+
+		Field * url_du_flux;
+		Field * url_de_la_page;
+		Field * titre;
+		Field * description;
+		Field * contenu;
+		Field * langue;
+		Field * category;
+		Field * date;
 };
 
 #endif // IO_H
