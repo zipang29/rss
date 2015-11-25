@@ -8,6 +8,7 @@
  * \title Projet RSS-Intelligence - Nailya Bogrova, Guillaume Claudic et Louis Ormières
  * 
  * \l {FEED_COLLECTOR} {Sous projet FEED-collector}
+ * \l {INDEXER-SEARCHER} {Sous projet INDEXER-SEARCHER}
  */
 
 /*!

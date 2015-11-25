@@ -14,6 +14,7 @@
 */
 SearchEngine::SearchEngine(QString db_path)
 {
+	qDebug() << "db_path : " << db_path;
 	this->searcher = new IndexSearcher(db_path.toStdString().c_str());
 	this->analyser = new StandardAnalyzer();
 	this->parser = new QueryParser("title", this->analyser); // Le champs de recherche par défaut est le titre
