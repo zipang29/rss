@@ -6,15 +6,15 @@ Indexeur::Indexeur(QString dbPath)
 {
     this->dbPath = dbPath;
     a = new StandardAnalyzer();
+}
+
+void Indexeur::indexing(Item * item)
+{
 	QFileInfo file(dbPath);
 	if (file.exists() || file.isDir())
 		writer = new IndexWriter(dbPath.toStdString().c_str(), a, false);
 	else
 		writer = new IndexWriter(dbPath.toStdString().c_str(), a, true);
-}
-
-void Indexeur::indexing(Item * item)
-{
     Document * doc = new Document();
 	id = new Field("id", (const TCHAR*)item->get_id().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
 	doc->add(*id);
@@ -36,11 +36,11 @@ void Indexeur::indexing(Item * item)
 	doc->add(*date);
 
     writer->addDocument(doc, writer->getAnalyzer());
+	writer->close();
 }
 
 Indexeur::~Indexeur()
 {
-	writer->close();
 	delete id;
 	delete url_du_flux;
 	delete url_de_la_page;
