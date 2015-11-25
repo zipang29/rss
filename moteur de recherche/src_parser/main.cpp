@@ -16,6 +16,12 @@
  * \subtitle Sous projet FEED-collector
  */
 
+/*!
+* \module INDEXER-SEARCHER
+* \title Projet RSS-Intelligence - Nailya Bogrova, Guillaume Claudic et Louis Ormières
+* \subtitle Sous projet INDEXER-SEARCHER
+*/
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);

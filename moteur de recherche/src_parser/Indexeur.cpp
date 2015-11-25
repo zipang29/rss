@@ -1,13 +1,26 @@
 #include "Indexeur.h"
 #include "IO.h"
 #include <QFileInfo>
+/*!
+* \class Indexeur
+* \brief Classe d'indexation d'item
+* \inmodule INDEXER-SEARCHER
+*
+* S'occupe d'indexer des items dans une base de données sur le disque
+*/
 
+/*!
+* Constructeur prenant en paramètre \a dbPath correspondant au chemin vers la BDD d'indexation.
+*/
 Indexeur::Indexeur(QString dbPath)
 {
     this->dbPath = dbPath;
     a = new StandardAnalyzer();
 }
 
+/*!
+* Index un \a item dans la BDD
+*/
 void Indexeur::indexing(Item * item)
 {
 	QFileInfo file(dbPath);
@@ -39,6 +52,9 @@ void Indexeur::indexing(Item * item)
 	writer->close();
 }
 
+/*!
+* Destructeur
+*/
 Indexeur::~Indexeur()
 {
 	delete id;
