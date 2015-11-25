@@ -8,16 +8,18 @@ find_package(Qt5Core)
 
 set(SOURCES
 	main.cpp
+	SearchEngine.cpp
 )
 
 set(HEADERS
-
+	SearchEngine.h
 )
 
 INCLUDE_DIRECTORIES(${parser_SOURCE_DIR})
 
 add_executable(search
 				${SOURCES}
+				${HEADERS}
 )
 
 target_link_libraries(search parser-lib)
