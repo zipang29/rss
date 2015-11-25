@@ -1,5 +1,4 @@
 #include "Indexeur.h"
-#include "IO.h"
 #include <QFileInfo>
 /*!
 * \class Indexeur
@@ -12,7 +11,7 @@
 /*!
 * Constructeur prenant en paramètre \a dbPath correspondant au chemin vers la BDD d'indexation.
 */
-Indexeur::Indexeur(QString dbPath)
+Indexeur::Indexeur(QString dbPath, QObject* parent) : QObject(parent)
 {
     this->dbPath = dbPath;
     a = new StandardAnalyzer();
@@ -28,28 +27,54 @@ void Indexeur::indexing(Item * item)
 		writer = new IndexWriter(dbPath.toStdString().c_str(), a, false);
 	else
 		writer = new IndexWriter(dbPath.toStdString().c_str(), a, true);
+
     Document * doc = new Document();
-	id = new Field("id", (const TCHAR*)item->get_id().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+
+	Field* id = new Field("id", (const TCHAR*)item->get_id().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
 	doc->add(*id);
-	url_du_flux = new Field("url_du_flux", (const TCHAR*)item->get_url_du_flux().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+
+	Field* url_du_flux = new Field("url_du_flux", (const TCHAR*)item->get_url_du_flux().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
 	doc->add(*url_du_flux);
-	url_de_la_page = new Field("url_de_la_page", (const TCHAR*)item->get_url_de_la_page().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+
+	Field* url_de_la_page = new Field("url_de_la_page", (const TCHAR*)item->get_url_de_la_page().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
 	doc->add(*url_de_la_page);
-	titre = new Field("titre", (const TCHAR*)item->get_titre().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+
+	Field* titre = new Field("titre", (const TCHAR*)item->get_titre().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
 	doc->add(*titre);
-	description = new Field("description", (const TCHAR*)item->get_description().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+
+	Field* description = new Field("description", (const TCHAR*)item->get_description().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
 	doc->add(*description);
-	contenu = new Field("contenu", (const TCHAR*)item->get_contenu().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+
+	Field* contenu = new Field("contenu", (const TCHAR*)item->get_contenu().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
 	doc->add(*contenu);
-	langue = new Field("langue", (const TCHAR*)item->get_langue().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+
+	Field* langue = new Field("langue", (const TCHAR*)item->get_langue().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
 	doc->add(*langue);
-	category = new Field("category", (const TCHAR*)item->get_category().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+
+	Field* category = new Field("category", (const TCHAR*)item->get_category().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
 	doc->add(*category);
-	date = new Field("date", (const TCHAR*)item->get_date().toString().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+
+	Field* date = new Field("date", (const TCHAR*)item->get_date().toString().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
 	doc->add(*date);
 
     writer->addDocument(doc, writer->getAnalyzer());
+	writer->flush();
 	writer->close();
+
+	delete writer;
+	writer = NULL;
+
+	fields.append(id);
+	fields.append(url_du_flux);
+	fields.append(url_de_la_page);
+	fields.append(titre);
+	fields.append(description);
+	fields.append(contenu);
+	fields.append(langue);
+	fields.append(category);
+	fields.append(date);
+
+	docs.append(doc);
 }
 
 /*!
@@ -57,13 +82,20 @@ void Indexeur::indexing(Item * item)
 */
 Indexeur::~Indexeur()
 {
-	delete id;
-	delete url_du_flux;
-	delete url_de_la_page;
-	delete titre;
-	delete description;
-	delete contenu;
-	delete langue;
-	delete category;
-	delete date;
+	QList<Document*>::iterator docIter = docs.begin();
+	while (docIter != docs.end()) {
+		Document* doc = docIter[0];
+		docIter = docs.erase(docIter);
+		delete doc;
+	}
+
+	QList<Field*>::iterator fieldIter = fields.begin();
+	while (fieldIter != fields.end()) {
+		Field* f = fieldIter[0];
+		fieldIter = fields.erase(fieldIter);
+		delete f;
+	}
+
+	if (a != NULL)
+		delete a;
 }

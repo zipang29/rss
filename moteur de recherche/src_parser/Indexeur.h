@@ -16,7 +16,7 @@ class Indexeur : public QObject
     Q_OBJECT
 
     public:
-        Indexeur(QString dbPath);
+        Indexeur(QString dbPath, QObject* parent = 0);
 		~Indexeur();
 
     public slots:
@@ -27,15 +27,8 @@ class Indexeur : public QObject
         StandardAnalyzer * a = NULL;
         IndexWriter * writer = NULL;
 
-		Field * id;
-		Field * url_du_flux;
-		Field * url_de_la_page;
-		Field * titre;
-		Field * description;
-		Field * contenu;
-		Field * langue;
-		Field * category;
-		Field * date;
+		QList<Document*> docs;
+		QList<Field*> fields;
 };
 
 #endif // IO_H

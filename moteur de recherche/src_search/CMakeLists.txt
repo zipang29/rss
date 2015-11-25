@@ -15,7 +15,7 @@ set(HEADERS
 	SearchEngine.h
 )
 
-INCLUDE_DIRECTORIES(${parser_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${parser_SOURCE_DIR} ${clucene_SOURCE_DIR}/include)
 
 add_executable(search
 				${SOURCES}

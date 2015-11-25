@@ -13,10 +13,10 @@
 /*!
  * Constructeur prenant en paramètre \a database_path correspondant au chemin vers la BDD.
  */
-IO::IO(QString database_path, QString index_db_path)
+IO::IO(QString database_path)
 {
     path = database_path;
-	this->i = new Indexeur(index_db_path);
+	this->i = new Indexeur(database_path + ".index", this);
 }
 
 /*!

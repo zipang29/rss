@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     args.addHelpOption();
 
     args.addPositionalArgument("Base de donnees", "Chemin d'acces au fichier HashDB (.kch), sera cree en cas de collection d'un ou plusieurs flux. Son contenu ne sera jamais efface");
-	args.addPositionalArgument("Index", "Nom du dossier gérant le contenu de l'indexation");
+	args.addPositionalArgument("Index", "Nom du dossier gerant le contenu de l'indexation");
 
     QCommandLineOption fileOption(QStringList() << "f" << "fichier", "Collecte les flux RSS designes dans le fichier (une URL par ligne)", "Chemin d'acces");
     args.addOption(fileOption);
@@ -46,12 +46,12 @@ int main(int argc, char *argv[])
     args.process(a);
 
 	QStringList positionalArgs = args.positionalArguments();
-	if (positionalArgs.size() < 2) {
+	if (positionalArgs.size() != 1) {
         args.showHelp(1);
     }
 
     if ((!args.isSet(fileOption) && !args.isSet(urlOption) && !args.isSet(csvOption))) {
-		IO* io = new IO(positionalArgs[0], positionalArgs[1]);
+		IO* io = new IO(positionalArgs[0]);
         io->readDB();
 		return 0;
     }
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 	}
     else {
 		qSetMessagePattern("[%{time dd-MM-yyyy HH:mm:ss} - %{type}]: %{message}");
-		IO* io = new IO(positionalArgs[0], positionalArgs[1]);
+		IO* io = new IO(positionalArgs[0]);
         if (args.isSet(fileOption)) {
             QString path = args.value(fileOption);
             io->readFeeds(path);
