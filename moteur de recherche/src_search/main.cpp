@@ -43,6 +43,8 @@ int main(int argc, char *argv[])
 
 		while (true)
 		{
+			qDebug() << "\n\nChamps de recherche disponibles : url_du_flux, url_de_la_page, titre (par défaut), description, contenu, langue, category, date, id";
+			qDebug() << "Recherche > ";
 			query = cin.readLine();
 			if (query == "q")
 				break;
