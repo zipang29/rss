@@ -22,12 +22,18 @@ int main(int argc, char *argv[])
 		if (!query.isEmpty())
 		{
 			Hits * results = search->simpleQuery(query);
+			if (results == NULL)
+			{
+				qCritical() << "La requête a retournee une valeur NULL. Le programme va se terminer.";
+				return -1;
+			}
 			qDebug() << "Nombre de resultats : " << results->length();
 			for (int i = 0; i < results->length(); i++)
 			{
 				Document doc = results->doc(i);
-				QString result = (QString)doc.get((const TCHAR *)"titre");
-				qDebug() << "Titre : " << result;
+				//QString result = (QString)doc.get((const TCHAR *)"titre");
+				Field * result = doc.getField("titre");
+				qDebug() << "Titre : " << result->toString();
 			}
 			//delete results;
 		}
