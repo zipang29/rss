@@ -30,31 +30,31 @@ void Indexeur::indexing(Item * item)
 
     Document * doc = new Document();
 
-	Field* id = new Field("id", (const TCHAR*)item->get_id().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+	Field* id = new Field("id", (const TCHAR*)item->get_id().toStdWString().c_str(), Field::STORE_YES | Field::INDEX_TOKENIZED);
 	doc->add(*id);
 
-	Field* url_du_flux = new Field("url_du_flux", (const TCHAR*)item->get_url_du_flux().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+	Field* url_du_flux = new Field("url_du_flux", (const TCHAR*)item->get_url_du_flux().toStdWString().c_str(), Field::STORE_YES | Field::INDEX_TOKENIZED);
 	doc->add(*url_du_flux);
 
-	Field* url_de_la_page = new Field("url_de_la_page", (const TCHAR*)item->get_url_de_la_page().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+	Field* url_de_la_page = new Field("url_de_la_page", (const TCHAR*)item->get_url_de_la_page().toStdWString().c_str(), Field::STORE_YES | Field::INDEX_TOKENIZED);
 	doc->add(*url_de_la_page);
 
-	Field* titre = new Field("titre", (const TCHAR*)item->get_titre().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+	Field* titre = new Field("titre", (const TCHAR*)item->get_titre().toStdWString().c_str(), Field::STORE_YES | Field::INDEX_TOKENIZED);
 	doc->add(*titre);
 
-	Field* description = new Field("description", (const TCHAR*)item->get_description().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+	Field* description = new Field("description", (const TCHAR*)item->get_description().toStdWString().c_str(), Field::STORE_YES | Field::INDEX_TOKENIZED);
 	doc->add(*description);
 
-	Field* contenu = new Field("contenu", (const TCHAR*)item->get_contenu().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+	Field* contenu = new Field("contenu", (const TCHAR*)item->get_contenu().toStdWString().c_str(), Field::STORE_YES | Field::INDEX_TOKENIZED);
 	doc->add(*contenu);
 
-	Field* langue = new Field("langue", (const TCHAR*)item->get_langue().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+	Field* langue = new Field("langue", (const TCHAR*)item->get_langue().toStdWString().c_str(), Field::STORE_YES | Field::INDEX_TOKENIZED);
 	doc->add(*langue);
 
-	Field* category = new Field("category", (const TCHAR*)item->get_category().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+	Field* category = new Field("category", (const TCHAR*)item->get_category().toStdWString().c_str(), Field::STORE_YES | Field::INDEX_TOKENIZED);
 	doc->add(*category);
 
-	Field* date = new Field("date", (const TCHAR*)item->get_date().toString().toStdWString().c_str(), Field::STORE_YES, Field::INDEX_TOKENIZED);
+	Field* date = new Field("date", (const TCHAR*)item->get_date().toString().toStdWString().c_str(), Field::STORE_YES | Field::INDEX_TOKENIZED);
 	doc->add(*date);
 
     writer->addDocument(doc, writer->getAnalyzer());

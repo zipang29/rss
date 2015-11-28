@@ -14,10 +14,16 @@
 */
 SearchEngine::SearchEngine(QString db_path)
 {
-	qDebug() << "db_path : " << db_path;
-	this->searcher = new IndexSearcher(db_path.toStdString().c_str());
-	this->analyser = new StandardAnalyzer();
-	this->parser = new QueryParser("title", this->analyser); // Le champs de recherche par défaut est le titre
+	try {
+		this->reader = IndexReader::open(db_path.toStdString().c_str());
+		this->searcher = new IndexSearcher(this->reader);
+		this->analyser = new StandardAnalyzer();
+		this->parser = new QueryParser("titre", this->analyser); // Le champs de recherche par défaut est le titre
+	}
+	catch (...)
+	{
+		qDebug() << "exception constructeur";
+	}
 }
 
 /*!
@@ -27,10 +33,17 @@ Hits * SearchEngine::simpleQuery(QString query)
 {
 	if (query != NULL)
 		delete this->query;
-	this->query = this->parser->parse((const TCHAR*)query.toStdString().c_str());
-	Hits * hits = this->searcher->search(this->query);
-	qDebug() << "Nombre de résultats :" << hits->length();
-	return hits;
+	try
+	{
+		this->query = this->parser->parse((const TCHAR*)query.toStdString().c_str());
+		Hits * hits = this->searcher->search(this->query);
+		return hits;
+	}
+	catch (...)
+	{
+		qDebug() << "exception methode";
+	}
+	return NULL;
 }
 
 /*!

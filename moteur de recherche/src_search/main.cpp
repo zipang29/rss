@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 	QCoreApplication a(argc, argv);
 	
 	QString query;
-	SearchEngine * search = new SearchEngine("bdd.db");
+	SearchEngine * search = new SearchEngine("bdd.kch.index");
 
 	QTextStream cin(stdin);
 
@@ -22,14 +22,14 @@ int main(int argc, char *argv[])
 		if (!query.isEmpty())
 		{
 			Hits * results = search->simpleQuery(query);
-			qDebug() << "Nombre de résultats : " + results->length();
+			qDebug() << "Nombre de resultats : " << results->length();
 			for (int i = 0; i < results->length(); i++)
 			{
 				Document doc = results->doc(i);
-				QString result = (QString)doc.get((const TCHAR *)"title");
+				QString result = (QString)doc.get((const TCHAR *)"titre");
 				qDebug() << "Titre : " << result;
 			}
-			delete results;
+			//delete results;
 		}
 	}
 

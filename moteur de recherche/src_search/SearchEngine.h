@@ -6,6 +6,8 @@ using namespace lucene::search;
 using namespace lucene::queryParser;
 using namespace lucene::document;
 using namespace lucene::analysis::standard;
+using namespace lucene::index;
+using namespace lucene::store;
 
 class SearchEngine
 {
@@ -15,6 +17,7 @@ class SearchEngine
 		~SearchEngine();
 
 	private:
+		IndexReader * reader;
 		IndexSearcher * searcher;
 		Query * query = NULL;
 		StandardAnalyzer * analyser;
