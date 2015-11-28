@@ -1,5 +1,6 @@
 #include "SearchEngine.h"
 #include <QDebug>
+#include <QFileInfo>
 
 /*!
 * \class SearchEngine
@@ -15,14 +16,20 @@
 SearchEngine::SearchEngine(QString db_path)
 {
 	try {
-		this->reader = IndexReader::open(db_path.toStdString().c_str());
-		this->searcher = new IndexSearcher(this->reader);
-		this->analyser = new StandardAnalyzer();
-		this->parser = new QueryParser("titre", this->analyser); // Le champs de recherche par défaut est le titre
+		QFileInfo file(db_path);
+		if (file.exists() || file.isDir())
+		{
+			this->reader = IndexReader::open(db_path.toStdString().c_str());
+			this->searcher = new IndexSearcher(this->reader);
+			this->analyser = new StandardAnalyzer();
+			this->parser = new QueryParser("titre", this->analyser); // Le champs de recherche par défaut est le titre
+		}
+		else
+			qCritical() << "La base de donnees d'index n'existe pas : " + db_path;
 	}
 	catch (...)
 	{
-		qDebug() << "exception constructeur";
+		qCritical() << "Une exception a etee lancee depuis le constructeur de la classe SearchEngine";
 	}
 }
 
@@ -41,7 +48,7 @@ Hits * SearchEngine::simpleQuery(QString query)
 	}
 	catch (...)
 	{
-		qDebug() << "exception methode";
+		qCritical() << "Une exception a etee lancee depuis la methode simpleQuery de la classe SearchEngine";
 	}
 	return NULL;
 }
