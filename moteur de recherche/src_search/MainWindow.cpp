@@ -4,16 +4,16 @@
 #include <QMessageBox>
 
 /*!
-* \class MainWindow
-* \brief Classe gérant la GUI du programme de recherche
-* \inmodule INDEXER-SEARCHER
-*
-* Permet de créer une interface permettant d'effectuer des recherches dans un index CLucene
-*/
+ * \class MainWindow
+ * \brief Classe gÃ©rant la GUI du programme de recherche
+ * \inmodule INDEXER-SEARCHER
+ *
+ * Permet de crÃ©er une interface permettant d'effectuer des recherches dans un index CLucene
+ */
 
 /*!
-* Constructeur prenant en paramètre \a index correspondant au chemin vers la BDD d'indexation.
-*/
+ * Constructeur prenant en paramÃ¨tre \a index correspondant au chemin vers la BDD d'indexation.
+ */
 MainWindow::MainWindow(QString index)
 {
 	ui.setupUi(this);
@@ -23,9 +23,10 @@ MainWindow::MainWindow(QString index)
 }
 
 /*!
-* Slot permettant d'effectuer une requête de recherche à partir de la barre de recherche de l'interface. 
-* Affiche les résultats de la recherche dans la zone de l'interface prévue à cet effet.
-*/
+ * Slot permettant d'effectuer une requÃªte de recherche Ã  partir de la barre de recherche de l'interface. 
+ * 
+ * Affiche les rÃ©sultats de la recherche dans la zone de l'interface prÃ©vue Ã  cet effet.
+ */
 void MainWindow::simpleQuery()
 {
 	ui.rechercher->setEnabled(false);

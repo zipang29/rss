@@ -1,16 +1,16 @@
 #include "Indexeur.h"
 #include <QFileInfo>
 /*!
-* \class Indexeur
-* \brief Classe d'indexation d'item
-* \inmodule INDEXER-SEARCHER
-*
-* S'occupe d'indexer des items dans une base de données sur le disque
-*/
+ * \class Indexeur
+ * \brief Classe d'indexation d'item
+ * \inmodule INDEXER-SEARCHER
+ *
+ * S'occupe d'indexer des items dans une base de donnÃ©es sur le disque
+ */
 
 /*!
-* Constructeur prenant en paramètre \a dbPath correspondant au chemin vers la BDD d'indexation.
-*/
+ * Constructeur prenant en paramÃ¨tre \a dbPath correspondant au chemin vers la BDD d'indexation et optionellement un objet \a parent
+ */
 Indexeur::Indexeur(QString dbPath, QObject* parent) : QObject(parent)
 {
     this->dbPath = dbPath;
@@ -18,8 +18,8 @@ Indexeur::Indexeur(QString dbPath, QObject* parent) : QObject(parent)
 }
 
 /*!
-* Index un \a item dans la BDD
-*/
+ * Index un \a item dans la BDD
+ */
 void Indexeur::indexing(Item * item)
 {
 	QFileInfo file(dbPath);
@@ -67,8 +67,8 @@ void Indexeur::indexing(Item * item)
 }
 
 /*!
-* Destructeur
-*/
+ * Destructeur
+ */
 Indexeur::~Indexeur()
 {
 	QList<Document*>::iterator docIter = docs.begin();

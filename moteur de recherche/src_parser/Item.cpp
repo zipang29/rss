@@ -234,7 +234,7 @@ QDebug operator<<(QDebug debug, const Item& item)
 
 /*!
  * Renvoie le contenu de l'item sous forme de QString formatté au format CSV
- * (Titre; Date; Description; Contenu; Langue; Catégorie; URL de la page; URL du flux)
+ * (Id; Titre; Date; Description; Contenu; Langue; Catégorie; URL de la page; URL du flux)
  */
 QString Item::toCSV()
 {

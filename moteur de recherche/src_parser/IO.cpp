@@ -12,6 +12,7 @@
 
 /*!
  * Constructeur prenant en paramètre \a database_path correspondant au chemin vers la BDD.
+ *
  * Charge la liste des identifiants des items déjà présents dans la BDD afin de ne pas creer de duplicata
  */
 IO::IO(QString database_path)
@@ -24,6 +25,7 @@ IO::IO(QString database_path)
 
 /*!
  * Ecrit un \a item dans la BDD, l'index puis le détruit.
+ *
  * L'item sera traité uniquement si il n'est pas déjà dans la BDD.
  */
 void IO::write(Item * item)

@@ -8,6 +8,7 @@
  * \title Projet RSS-Intelligence - Nailya Bogrova, Guillaume Claudic et Louis Ormières
  * 
  * \l {FEED_COLLECTOR} {Sous projet FEED-collector}
+ *
  * \l {INDEXER-SEARCHER} {Sous projet INDEXER-SEARCHER}
  */
 
@@ -15,13 +16,17 @@
  * \module FEED_COLLECTOR
  * \title Projet RSS-Intelligence - Nailya Bogrova, Guillaume Claudic et Louis Ormières
  * \subtitle Sous projet FEED-collector
+ *
+ * \l {index} {Retour à la liste des sous projets}
  */
 
 /*!
-* \module INDEXER-SEARCHER
-* \title Projet RSS-Intelligence - Nailya Bogrova, Guillaume Claudic et Louis Ormières
-* \subtitle Sous projet INDEXER-SEARCHER
-*/
+ * \module INDEXER-SEARCHER
+ * \title Projet RSS-Intelligence - Nailya Bogrova, Guillaume Claudic et Louis Ormières
+ * \subtitle Sous projet INDEXER-SEARCHER
+ *
+ * \l {index} {Retour à la liste des sous projets}
+ */
 
 int main(int argc, char *argv[])
 {

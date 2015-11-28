@@ -3,16 +3,16 @@
 #include <QFileInfo>
 
 /*!
-* \class SearchEngine
-* \brief Classe permettant d'effectuer des requÍtes dans la BDD afin de retrouver des items en fonction de mots clÈs
-* \inmodule INDEXER-SEARCHER
-*
-* S'occupe d'effectuer des recherches dans la base de donnÈes et de renvoyer les rÈsultats trouvÈs
-*/
+ * \class SearchEngine
+ * \brief Classe permettant d'effectuer des requ√™tes dans la BDD afin de retrouver des items en fonction de mots cl√©s
+ * \inmodule INDEXER-SEARCHER
+ *
+ * S'occupe d'effectuer des recherches dans la base de donn√©es et de renvoyer les r√©sultats trouv√©s
+ */
 
 /*!
-* Constructeur prenant en paramËtre \a db_path correspondant au chemin vers la BDD d'indexation.
-*/
+ * Constructeur prenant en param√®tre \a db_path correspondant au chemin vers la BDD d'indexation.
+ */
 SearchEngine::SearchEngine(QString db_path)
 {
 	try {
@@ -22,7 +22,7 @@ SearchEngine::SearchEngine(QString db_path)
 			this->reader = IndexReader::open(db_path.toStdString().c_str());
 			this->searcher = new IndexSearcher(this->reader);
 			this->analyser = new StandardAnalyzer();
-			this->parser = new QueryParser("titre", this->analyser); // Le champs de recherche par dÈfaut est le titre
+			this->parser = new QueryParser("titre", this->analyser); // Le champs de recherche par d√©faut est le titre
 		}
 		else
 			qCritical() << "La base de donnees d'index n'existe pas : " + db_path;
@@ -34,8 +34,8 @@ SearchEngine::SearchEngine(QString db_path)
 }
 
 /*!
-* ExÈcute une \a query simple. Retourne les Hits les plus pertinents
-*/
+ * Ex√©cute une \a query simple. Retourne les Hits les plus pertinents
+ */
 Hits * SearchEngine::simpleQuery(QString query)
 {
 	if (query != NULL)
@@ -54,8 +54,8 @@ Hits * SearchEngine::simpleQuery(QString query)
 }
 
 /*!
-* Destructeur
-*/
+ * Destructeur
+ */
 SearchEngine::~SearchEngine()
 {
 	searcher->close();

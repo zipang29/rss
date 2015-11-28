@@ -1,8 +1,8 @@
 include(qt-module-defaults-offline.qdocconf)
 
 outputdir = html
-headerdirs = ../../src_parser
-sourcedirs = ../../src_parser
+headerdirs = ../../src_parser ../../src_search
+sourcedirs = ../../src_parser ../../src_search
 outputformats = HTML
 
 sources.fileextensions = "*.cpp *.qdoc *.mm *.qml"
