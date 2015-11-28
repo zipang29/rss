@@ -53,15 +53,17 @@ int main(int argc, char *argv[])
 				Hits * results = search->simpleQuery(query);
 				if (results == NULL)
 				{
-					qCritical() << "La requête a retournee une valeur NULL. Le programme va se terminer.";
-					return -1;
+					qCritical() << "La requete a retournee une valeur NULL. Le programme va se terminer.";
 				}
-				qDebug() << "Nombre de resultats : " << results->length();
-				for (int i = 0; i < results->length(); i++)
+				else
 				{
-					Document doc = results->doc(i);
-					Field * result = doc.getField("titre");
-					qDebug() << "Titre : " << result->stringValue();
+					qDebug() << "Nombre de resultats : " << results->length();
+					for (int i = 0; i < results->length(); i++)
+					{
+						Document doc = results->doc(i);
+						Field * result = doc.getField("titre");
+						qDebug() << "Titre : " << result->stringValue();
+					}
 				}
 				//delete results;
 			}

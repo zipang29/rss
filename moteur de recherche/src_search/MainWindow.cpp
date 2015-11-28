@@ -38,27 +38,32 @@ void MainWindow::simpleQuery()
 	{
 		SearchEngine * search = new SearchEngine(this->index);
 		Hits * results = search->simpleQuery(query);
-		if (results->length() == 0)
-			ui.display->setHtml("<h1>Aucun resultat pour la recherche '" + query + "'</h1>");
+		if (results == NULL)
+			QMessageBox::warning(this, "Requete invalide", "Synthaxe incorrecte.");
 		else
 		{
-			QString html;
-			for (int i = 0; i < results->length(); i++)
+			if (results->length() == 0)
+				ui.display->setHtml("<h1>Aucun resultat pour la recherche '" + query + "'</h1>");
+			else
 			{
-				Document doc = results->doc(i);
-				Field * titreField = doc.getField("titre");
-				QString titre = titreField->stringValue();
-				Field * url_du_fluxField = doc.getField("url_du_flux");
-				QString url_du_flux = url_du_fluxField->stringValue();
-				Field * url_de_la_pageField = doc.getField("url_de_la_page");
-				QString url_de_la_page = url_de_la_pageField->stringValue();
+				QString html;
+				for (int i = 0; i < results->length(); i++)
+				{
+					Document doc = results->doc(i);
+					Field * titreField = doc.getField("titre");
+					QString titre = titreField->stringValue();
+					Field * url_du_fluxField = doc.getField("url_du_flux");
+					QString url_du_flux = url_du_fluxField->stringValue();
+					Field * url_de_la_pageField = doc.getField("url_de_la_page");
+					QString url_de_la_page = url_de_la_pageField->stringValue();
 
-				Field * descriptionField = doc.getField("description");
-				QString description = descriptionField->stringValue();
+					Field * descriptionField = doc.getField("description");
+					QString description = descriptionField->stringValue();
 
-				html += "<h1>" + titre + "</h1><br>" + description + "<br>Flux : <a href='" + url_du_flux + "'>" + url_du_flux + "</a><br>Source : <a href='" + url_de_la_page + "'>" + url_de_la_page + "</a><br>";
+					html += "<h1>" + titre + "</h1><br>" + description + "<br>Flux : <a href='" + url_du_flux + "'>" + url_du_flux + "</a><br>Source : <a href='" + url_de_la_page + "'>" + url_de_la_page + "</a><br>";
+				}
+				ui.display->setHtml(html);
 			}
-			ui.display->setHtml(html);
 		}
 		delete search;
 	}
