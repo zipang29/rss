@@ -17,6 +17,8 @@ IO::IO(QString database_path)
 {
     path = database_path;
 	this->i = new Indexeur(database_path + ".index", this);
+
+	loadSavedIds();
 }
 
 /*!
@@ -24,13 +26,19 @@ IO::IO(QString database_path)
  */
 void IO::write(Item * item)
 {
-    HashDB db;
-    //Ouverture de la BDD en écriture
-    if (!db.open(path.toStdString(), HashDB::OWRITER | HashDB::OCREATE))
-    {
-        qCritical() << "Erreur à l'écriture dans la BDD :" << db.error().name();
-    }
-    db.set(item->get_id().toStdString(), item->toString().toStdString());
+	if (!ids.contains(item->get_id())) {
+		HashDB db;
+		//Ouverture de la BDD en écriture
+		if (!db.open(path.toStdString(), HashDB::OWRITER | HashDB::OCREATE))
+		{
+			qCritical() << "Erreur à l'écriture dans la BDD :" << db.error().name();
+		}
+		db.set(item->get_id().toStdString(), item->toString().toStdString());
+
+		i->indexing(item);
+
+		ids.append(item->get_id());
+	}
 
 	item->deleteLater();
 }
@@ -84,7 +92,6 @@ void IO::readFeed(QUrl url)
 {
     Parser* p = new Parser(url, this);
 	connect(p, SIGNAL(itemProcessed(Item*)), this, SLOT(write(Item*)));
-    connect(p, SIGNAL(itemProcessed(Item*)), i, SLOT(indexing(Item*)));
     parsers.append(p);
 }
 
@@ -103,6 +110,15 @@ void IO::readDB()
     }
 }
 
+void IO::loadSavedIds()
+{
+	QMap<QString, Item*> l = IO::read(path);
+	foreach(Item * item, l)
+	{
+		ids.append(item->get_id());
+	}
+}
+
 /*!
  * Sauvegarde le contenu de la base de donnée \a bdd_path dans le fichier CSV \a csv_path.
  * \sa Item::toCSV()
@@ -117,6 +133,7 @@ void IO::toCSV(QString bdd_path, QString csv_path)
 
 	QTextStream csv(&csv_file);
 
+	csv << "Id;";
 	csv << "Titre;";
 	csv << "Date;";
 	csv << "Description;";

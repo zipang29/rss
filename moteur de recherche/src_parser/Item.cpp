@@ -251,6 +251,7 @@ QString Item::toCSV()
 	contenuEchappe.replace(reg, " ");
 
 	QString csv;
+	csv.append(id).append(";");
 	csv.append(tireEchappe).append(";");
 	csv.append(date.toString("dd-mm-yyyy HH:mm:ss")).append(";");
 	csv.append(descriptionEchappe).append(";");

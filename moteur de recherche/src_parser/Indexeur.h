@@ -28,7 +28,6 @@ class Indexeur : public QObject
         IndexWriter * writer = NULL;
 
 		QList<Document*> docs;
-		QList<Field*> fields;
 };
 
 #endif // IO_H

@@ -179,7 +179,7 @@ void Parser::readItem(QDomElement & elements)
 	//Génération de l'ID
     QString stringHash = item->get_titre() + item->get_description() + item->get_url_de_la_page();
     QByteArray hash = QCryptographicHash::hash(stringHash.toUtf8(), QCryptographicHash::Md5);
-    item->set_id(hash);
+    item->set_id(QString(hash.toHex()));
 
 	processingItem++;
     tika->processItem(item, langue); // Détection de la langue, téléchargement et parsing du document cible de l'item

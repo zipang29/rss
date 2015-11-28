@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
 	QStringList positionalArgs = args.positionalArguments();
 	if (positionalArgs.size() == 0)
-		args.showHelp();
+		args.showHelp(1);
 
 	if (args.isSet(guiOption))
 	{

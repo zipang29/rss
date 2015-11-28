@@ -31,9 +31,11 @@ class IO : public QObject
 
     private:
         QList<Parser*> parsers;
+		QList<QString> ids;
         QString path;
 		Indexeur * i;
 
+		void loadSavedIds();
 };
 
 #endif // IO_H
