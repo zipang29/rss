@@ -38,6 +38,7 @@ void MainWindow::simpleQuery()
 			html += "<h1>" + titre + "</h1><br>Flux : <a href='" + url_du_flux + "'>" + url_du_flux + "</a><br>Source : <a href='" + url_de_la_page + "'>" + url_de_la_page + "</a><br>";
 		}
 		ui.display->setHtml(html);
+		delete search;
 	}
 	ui.rechercher->setEnabled(true);
 }

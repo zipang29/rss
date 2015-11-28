@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 				{
 					Document doc = results->doc(i);
 					Field * result = doc.getField("titre");
-					qDebug() << "Titre : " << result->toString();
+					qDebug() << "Titre : " << result->stringValue();
 				}
 				//delete results;
 			}
