@@ -2,44 +2,72 @@
 #include <QTextStream>
 #include "SearchEngine.h"
 #include <QDebug>
+#include <QCommandLineParser>
+#include "MainWindow.h"
 
 using namespace lucene::search;
 
 int main(int argc, char *argv[])
 {
-	QCoreApplication a(argc, argv);
+	QApplication a(argc, argv);
 	
-	QString query;
-	SearchEngine * search = new SearchEngine("bdd.kch.index");
+	QCommandLineParser args;
+	args.setApplicationDescription("Application GUI et Console permettant d'effectuer des recherches sur un index CLucene");
+	args.addHelpOption();
 
-	QTextStream cin(stdin);
+	args.addPositionalArgument("Index CLucene", "Chemin d'acces au dossier d'index CLucene");
 
-	while (true)
+	QCommandLineOption guiOption(QStringList() << "g" << "gui", "Lance l'application en mode fenetrees");
+	args.addOption(guiOption);
+
+	args.process(a);
+
+	QStringList positionalArgs = args.positionalArguments();
+	if (positionalArgs.size() == 0)
+		args.showHelp();
+
+	if (args.isSet(guiOption))
 	{
-		query = cin.readLine();
-		if (query == "q")
-			break;
-		if (!query.isEmpty())
-		{
-			Hits * results = search->simpleQuery(query);
-			if (results == NULL)
-			{
-				qCritical() << "La requête a retournee une valeur NULL. Le programme va se terminer.";
-				return -1;
-			}
-			qDebug() << "Nombre de resultats : " << results->length();
-			for (int i = 0; i < results->length(); i++)
-			{
-				Document doc = results->doc(i);
-				//QString result = (QString)doc.get((const TCHAR *)"titre");
-				Field * result = doc.getField("titre");
-				qDebug() << "Titre : " << result->toString();
-			}
-			//delete results;
-		}
-	}
 
-	delete search;
+		MainWindow w(positionalArgs[0]);
+		w.show();
+
+		return a.exec();
+	}
+	else
+	{
+		QString query;
+		SearchEngine * search = new SearchEngine(positionalArgs[0]);
+
+		QTextStream cin(stdin);
+
+		while (true)
+		{
+			query = cin.readLine();
+			if (query == "q")
+				break;
+			if (!query.isEmpty())
+			{
+				Hits * results = search->simpleQuery(query);
+				if (results == NULL)
+				{
+					qCritical() << "La requête a retournee une valeur NULL. Le programme va se terminer.";
+					return -1;
+				}
+				qDebug() << "Nombre de resultats : " << results->length();
+				for (int i = 0; i < results->length(); i++)
+				{
+					Document doc = results->doc(i);
+					Field * result = doc.getField("titre");
+					qDebug() << "Titre : " << result->toString();
+				}
+				//delete results;
+			}
+		}
+
+		delete search;
+		return 0;
+	}
 
 	return 0;
 }
