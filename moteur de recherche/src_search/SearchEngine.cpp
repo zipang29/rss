@@ -48,7 +48,7 @@ Hits * SearchEngine::simpleQuery(QString query)
 	}
 	catch (...)
 	{
-		qCritical() << "Une exception a etee lancee depuis la methode simpleQuery de la classe SearchEngine";
+		qCritical() << "Une exception a ete lancee depuis la methode simpleQuery de la classe SearchEngine";
 	}
 	return NULL;
 }

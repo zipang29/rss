@@ -19,6 +19,7 @@ MainWindow::MainWindow(QString index)
 	ui.setupUi(this);
 	this->index = index;
 	ui.display->page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
+	connect(ui.requete, SIGNAL(returnPressed()), ui.rechercher, SIGNAL(clicked()));
 	connect(ui.rechercher, SIGNAL(clicked()), this, SLOT(simpleQuery()));
 	connect(ui.display, SIGNAL(linkClicked(QUrl)), this, SLOT(openURL(QUrl)));
 }

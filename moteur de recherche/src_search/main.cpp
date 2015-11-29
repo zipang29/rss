@@ -47,8 +47,8 @@ int main(int argc, char *argv[])
 
 		while (true)
 		{
-			qDebug() << "\n\nChamps de recherche disponibles : url_du_flux, url_de_la_page, titre (par défaut), description, contenu, langue, category, date, id";
-			qDebug() << "Recherche > ";
+			qInfo() << "\n\nChamps de recherche disponibles : url_du_flux, url_de_la_page, titre (par defaut), description, contenu, langue, category, date, id";
+			qInfo() << "Recherche (q pour quitter) > ";
 			query = cin.readLine();
 			if (query == "q")
 				break;
@@ -57,16 +57,16 @@ int main(int argc, char *argv[])
 				Hits * results = search->simpleQuery(query);
 				if (results == NULL)
 				{
-					qCritical() << "La requete a retournee une valeur NULL. Le programme va se terminer.";
+					qWarning() << "La requete a retournee une valeur NULL";
 				}
 				else
 				{
-					qDebug() << "Nombre de resultats : " << results->length();
+					qInfo() << "Nombre de resultats : " << results->length();
 					for (int i = 0; i < results->length(); i++)
 					{
 						Document doc = results->doc(i);
 						Field * result = doc.getField("titre");
-						qDebug() << "Titre : " << result->stringValue();
+						qInfo() << "Titre : " << result->stringValue();
 					}
 				}
 				//delete results;
