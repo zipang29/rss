@@ -4,6 +4,79 @@
  <classDiagram>
   <classList>
    <class>
+    <id>6</id>
+    <name>MainWindow</name>
+    <abstract>0</abstract>
+    <x>94</x>
+    <y>63</y>
+    <width>158</width>
+    <height>120</height>
+    <documentation></documentation>
+    <attributes>
+     <attribute>
+      <name>ui</name>
+      <visibility>private</visibility>
+      <type>Ui::MainWindow</type>
+      <defaultValue></defaultValue>
+      <documentation></documentation>
+     </attribute>
+     <attribute>
+      <name>index</name>
+      <visibility>private</visibility>
+      <type>QString</type>
+      <defaultValue></defaultValue>
+      <documentation></documentation>
+     </attribute>
+    </attributes>
+    <methods>
+     <method>
+      <name>MainWindow</name>
+      <visibility>public</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters>
+       <parameter>
+        <name>index</name>
+        <type>QString</type>
+        <defaultValue></defaultValue>
+       </parameter>
+      </parameters>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>simpleQuery</name>
+      <visibility>public</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters/>
+      <documentation></documentation>
+     </method>
+     <method>
+      <name>openUrl</name>
+      <visibility>public</visibility>
+      <abstract>0</abstract>
+      <static>0</static>
+      <virtual>0</virtual>
+      <pureVirtual>0</pureVirtual>
+      <returnValue></returnValue>
+      <parameters>
+       <parameter>
+        <name>url</name>
+        <type>QUrl</type>
+        <defaultValue></defaultValue>
+       </parameter>
+      </parameters>
+      <documentation></documentation>
+     </method>
+    </methods>
+   </class>
+   <class>
     <id>7</id>
     <name>SearchEngine</name>
     <abstract>0</abstract>
@@ -86,62 +159,6 @@
      </method>
      <method>
       <name>~SearchEngine</name>
-      <visibility>public</visibility>
-      <abstract>0</abstract>
-      <static>0</static>
-      <virtual>0</virtual>
-      <pureVirtual>0</pureVirtual>
-      <returnValue></returnValue>
-      <parameters/>
-      <documentation></documentation>
-     </method>
-    </methods>
-   </class>
-   <class>
-    <id>6</id>
-    <name>MainWindow</name>
-    <abstract>0</abstract>
-    <x>94</x>
-    <y>63</y>
-    <width>158</width>
-    <height>105</height>
-    <documentation></documentation>
-    <attributes>
-     <attribute>
-      <name>ui</name>
-      <visibility>private</visibility>
-      <type>Ui::MainWindow</type>
-      <defaultValue></defaultValue>
-      <documentation></documentation>
-     </attribute>
-     <attribute>
-      <name>index</name>
-      <visibility>private</visibility>
-      <type>QString</type>
-      <defaultValue></defaultValue>
-      <documentation></documentation>
-     </attribute>
-    </attributes>
-    <methods>
-     <method>
-      <name>MainWindow</name>
-      <visibility>public</visibility>
-      <abstract>0</abstract>
-      <static>0</static>
-      <virtual>0</virtual>
-      <pureVirtual>0</pureVirtual>
-      <returnValue></returnValue>
-      <parameters>
-       <parameter>
-        <name>index</name>
-        <type>QString</type>
-        <defaultValue></defaultValue>
-       </parameter>
-      </parameters>
-      <documentation></documentation>
-     </method>
-     <method>
-      <name>simpleQuery</name>
       <visibility>public</visibility>
       <abstract>0</abstract>
       <static>0</static>
