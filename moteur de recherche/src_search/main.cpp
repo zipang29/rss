@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
 	args.addPositionalArgument("Index CLucene", "Chemin d'acces au dossier d'index CLucene");
 
-	QCommandLineOption guiOption(QStringList() << "g" << "gui", "Lance l'application en mode fenetrees");
+	QCommandLineOption guiOption(QStringList() << "g" << "gui", "Lance l'application en mode fenetree");
 	args.addOption(guiOption);
 
 	args.process(a);
@@ -26,10 +26,14 @@ int main(int argc, char *argv[])
 	if (positionalArgs.size() == 0)
 		args.showHelp(1);
 
+	QString index = positionalArgs[0];
+	if (index.endsWith("/")) //IndexReader plante si le chemin d'accès finit par / donc on le supprime
+		index = index.left(index.length() - 1);
+
 	if (args.isSet(guiOption))
 	{
 
-		MainWindow w(positionalArgs[0]);
+		MainWindow w(index);
 		w.show();
 
 		return a.exec();
@@ -37,7 +41,7 @@ int main(int argc, char *argv[])
 	else
 	{
 		QString query;
-		SearchEngine * search = new SearchEngine(positionalArgs[0]);
+		SearchEngine * search = new SearchEngine(index);
 
 		QTextStream cin(stdin);
 

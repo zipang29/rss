@@ -14,7 +14,7 @@ Exécution :
 Le logiciel s'exécute via une invite de commandes Windows (cmd) ou un terminal MinGW (bash). Dans la suite, les exemples s'appliquerons pour une utilisation avec le cmd.
 
 	- Placez-vous dans le dossier contenant l'exécutable parser.exe
-	- Lancer "parser.exe -h" pour obtenir l'aide sur les différents paramètres de lancements
+	- Lancer "parser.exe -h" pour obtenir l'aide sur les différents paramètres de lancement
 
 Exemples :
 "parser.exe -f ListFluxRSS-v2.txt bdd.kch" Lance le parser pour les flux RSS dont les adresses se trouvent dans le fichier ListFluxRSS-v2.txt (une par ligne). La base de donnée sera sauvegardée dans le fichier bdd.kch, s'il n'existe pas, ce fichier sera créé, dans le cas contraire les données seront ajoutées à celles déjà existantes

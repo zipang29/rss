@@ -33,11 +33,10 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     QCommandLineParser args;
-    args.setApplicationDescription("RSS feed collector : Collecte les flux designes et stocke le resultat dans une base de donnees NoSQL HashDB \nEn absence d'options le programme listera les items present dans la base de donnee \n Si l'option csv est donnee, les donnes du fichier base de donne serons exportes dans le fichier csv, aucun parsing n'aura lieu");
+    args.setApplicationDescription("RSS feed collector : Collecte les flux designes et stocke le resultat dans une base de donnees NoSQL HashDB. Ce resultat est indexe via la librairie CLucene dans un dossier .index \nEn absence d'options le programme listera les items present dans la base de donnee \n Si l'option csv est donnee, les donnes du fichier base de donne serons exportes dans le fichier csv, aucun parsing n'aura lieu");
     args.addHelpOption();
 
     args.addPositionalArgument("Base de donnees", "Chemin d'acces au fichier HashDB (.kch), sera cree en cas de collection d'un ou plusieurs flux. Son contenu ne sera jamais efface");
-	args.addPositionalArgument("Index", "Nom du dossier gerant le contenu de l'indexation");
 
     QCommandLineOption fileOption(QStringList() << "f" << "fichier", "Collecte les flux RSS designes dans le fichier (une URL par ligne)", "Chemin d'acces");
     args.addOption(fileOption);

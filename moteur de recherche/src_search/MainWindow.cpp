@@ -72,6 +72,9 @@ void MainWindow::simpleQuery()
 	ui.rechercher->setEnabled(true);
 }
 
+/*!
+ * Slot permettant d'ouvrir un lien d'article \a url dans le navigateur par défaut du système.
+ */
 void MainWindow::openURL(QUrl url)
 {
 	QDesktopServices::openUrl(url);
