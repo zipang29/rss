@@ -8,6 +8,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt5Core)
 find_package(Qt5Widgets)
+find_package(Qt5WebKitWidgets)
 
 set(SOURCES
 	main.cpp
@@ -27,4 +28,4 @@ add_executable(search
 				${HEADERS}
 )
 
-target_link_libraries(search parser-lib Qt5::Widgets)
+target_link_libraries(search parser-lib Qt5::Widgets Qt5::WebKitWidgets)

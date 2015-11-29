@@ -13,6 +13,7 @@ class MainWindow : public QMainWindow
 
 	public slots:
 		void simpleQuery();
+		void openURL(QUrl url);
 
 	private:
 		Ui::MainWindow ui;

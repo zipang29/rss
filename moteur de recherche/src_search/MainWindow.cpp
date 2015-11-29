@@ -18,8 +18,9 @@ MainWindow::MainWindow(QString index)
 {
 	ui.setupUi(this);
 	this->index = index;
-	ui.display->setOpenExternalLinks(true);
+	ui.display->page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
 	connect(ui.rechercher, SIGNAL(clicked()), this, SLOT(simpleQuery()));
+	connect(ui.display, SIGNAL(linkClicked(QUrl)), this, SLOT(openURL(QUrl)));
 }
 
 /*!
@@ -69,4 +70,9 @@ void MainWindow::simpleQuery()
 		delete search;
 	}
 	ui.rechercher->setEnabled(true);
+}
+
+void MainWindow::openURL(QUrl url)
+{
+	QDesktopServices::openUrl(url);
 }
