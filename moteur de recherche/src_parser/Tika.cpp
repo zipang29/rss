@@ -4,6 +4,7 @@
 #include <QDebug>
 #include "Constantes.h"
 #include <QRegularExpression>
+#include <libstemmer.h>
 
 /*!
  * \class Tika
@@ -204,10 +205,12 @@ void Tika::parseDocument()
     if (reply->error() == QNetworkReply::NoError) {
 		QRegularExpression rx("((\\[image:\\s?\\])|\\[data:\\s?\\])");
 		QRegularExpression rx2("(\\s{2,})");
+		QRegularExpression rx3("([^a-zA-Z\\s])");
 
         QString text = reply->readAll();
 		text.remove(rx);
 		text.replace(rx2, " ");
+		text.replace(rx3, "");
 		item->set_contenu(text);
     }
     else {

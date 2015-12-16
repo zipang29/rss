@@ -26,7 +26,7 @@ set(HEADERS
 	Indexeur.h
 )
 
-INCLUDE_DIRECTORIES(${kyoto_SOURCE_DIR} ${clucene_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(${kyoto_SOURCE_DIR} ${clucene_SOURCE_DIR}/include ${stemmer_SOURCE_DIR}/include)
 
 add_executable(parser
 				main.cpp
@@ -44,6 +44,7 @@ target_link_libraries(parser-lib
 					kyoto
 					clucene-core
 					clucene-shared
+					stemmer
 					)
 
 target_link_libraries(parser parser-lib)
