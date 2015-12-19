@@ -13,9 +13,18 @@ void Dictionnaire::addWord(QString word)
 		nbMots[word]++;
 	else
 		nbMots.insert(word, 1);
+
+	int newMax = qMax(maxValueNbMots, nbMots[word]);
+	if (newMax != maxValueNbMots)
+	{
+		maxValueNbMots = newMax;
+		tfListUpdated = false;
+	}
+	else
+		tfListToUpdate.push_back(word);
+
 	id.insert(word, idGenerator);
 	Dictionnaire::idGenerator++;
-	tfListUpdated = false;
 }
 
 double Dictionnaire::idf(QString mot)
@@ -35,7 +44,7 @@ double Dictionnaire::tf(QString word)
 	
 	if (tfList.contains(word))
 	{
-		if (!tfListUpdated)
+		if (!tfListUpdated || !tfListToUpdate.isEmpty())
 			updateTfList();
 		result = tfList[word];
 	}
@@ -43,29 +52,30 @@ double Dictionnaire::tf(QString word)
 	return result;
 }
 
-/** 
-* TODO a optimiser en utilisant une liste de mot à mettre à jour. Si la valeur maximum change, on doit mettre à jour toute la liste
-*/
 void Dictionnaire::updateTfList()
 {
-	tfList.clear();
-	double result = 0;
-	int max = 0;
-
-	QMapIterator<QString, int> i(nbMots);
-	while (i.hasNext())
+	if (!tfListUpdated)
 	{
-		i.next();
-		max = qMax(max, i.value());
-	}
+		tfList.clear();
 
-	i.toFront();
-	while (i.hasNext())
-	{
-		i.next();
-		double tf = i.value() / (double)max;
-		tfList.insert(i.key(), tf);
+		QMapIterator<QString, int> i(nbMots);
+		while (i.hasNext())
+		{
+			i.next();
+			double tf = i.value() / (double)maxValueNbMots;
+			tfList.insert(i.key(), tf);
+		}
 	}
+	else if (!tfListToUpdate.isEmpty())
+	{
+		for (int i = 0; i < tfListToUpdate.size(); i++)
+		{
+			QString key = tfListToUpdate.at(i);
+			tfList[key] = nbMots[key] / (double)maxValueNbMots;
+		}
+	}
+	tfListUpdated = true;
+	tfListToUpdate.clear();
 }
 
 Dictionnaire::~Dictionnaire()

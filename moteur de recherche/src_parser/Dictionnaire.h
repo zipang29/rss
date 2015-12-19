@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QString>
+#include <QList>
 #include <QMap>
 
 class Dictionnaire
@@ -16,6 +17,10 @@ class Dictionnaire
 		QMap<QString, int> nbMots;
 		QMap<QString, int> id;
 		QMap<QString, double> tfList;
+
+		QList<QString> tfListToUpdate;
+		int maxValueNbMots;
+
 		bool tfListUpdated;
 
 		static int idGenerator;
