@@ -55,7 +55,8 @@ int main(int argc, char *argv[])
     }
 
     if ((!args.isSet(fileOption) && !args.isSet(urlOption) && !args.isSet(csvOption))) {
-		IO* io = new IO(positionalArgs[0]);
+		IO::path = positionalArgs[0];
+		IO* io = IO::getInstance();
         io->readDB();
 		return 0;
     }
@@ -65,7 +66,8 @@ int main(int argc, char *argv[])
 	}
     else {
 		qSetMessagePattern("[%{time dd-MM-yyyy HH:mm:ss} - %{type}]: %{message}");
-		IO* io = new IO(positionalArgs[0]);
+		IO::path = positionalArgs[0];
+		IO* io = IO::getInstance();
         if (args.isSet(fileOption)) {
             QString path = args.value(fileOption);
             io->readFeeds(path);

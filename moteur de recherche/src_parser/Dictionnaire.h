@@ -10,21 +10,14 @@ class Dictionnaire
 		Dictionnaire();
 		void addWord(QString word);
 		double idf(QString mot);
-		double tf(QString word);
 		~Dictionnaire();
 
 	private:
-		QMap<QString, int> nbMots;
+		QMap<QString, int> nbMots;// nombre d'item qui contient ce mot au moins une fois
 		QMap<QString, int> id;
-		QMap<QString, double> tfList;
 
-		QList<QString> tfListToUpdate;
 		int maxValueNbMots;
 
-		bool tfListUpdated;
-
 		static int idGenerator;
-
-		void updateTfList();
 };
 

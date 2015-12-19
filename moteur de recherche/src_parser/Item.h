@@ -40,11 +40,17 @@ public:
 	friend QDebug operator<<(QDebug debug, const Item& item);
 	QString toCSV();
 
+	double tf(QString word);
+
 private:
     QString url_du_flux = NO_URL, url_de_la_page = NO_URL, titre = NO_TITLE, description = NO_DESCRIPTION, contenu = NO_CONTENT, langue = UNDEFINED_LANGUAGE, category = UNCATEGORIZED;
     QDateTime date;
     QString id = NO_ID;
 	QList<QString> words;
+
+	QMap<QString, int> tfList;
+
+	void updateTfList();
 };
 
 #endif // ITEM_H

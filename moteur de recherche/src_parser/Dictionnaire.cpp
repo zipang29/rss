@@ -1,28 +1,18 @@
 #include "Dictionnaire.h"
+#include "IO.h"
 
 int Dictionnaire::idGenerator = 0;
 
 Dictionnaire::Dictionnaire()
 {
-	tfListUpdated = true;
 }
 
+/*!
+*	Ajout un mot au dictionnaire. Le mot ne doit être passé qu'une fois par item.
+*/
 void Dictionnaire::addWord(QString word)
 {
-	if (nbMots.contains(word))
-		nbMots[word]++;
-	else
-		nbMots.insert(word, 1);
-
-	int newMax = qMax(maxValueNbMots, nbMots[word]);
-	if (newMax != maxValueNbMots)
-	{
-		maxValueNbMots = newMax;
-		tfListUpdated = false;
-	}
-	else
-		tfListToUpdate.push_back(word);
-
+	nbMots[word]++;
 	id.insert(word, idGenerator);
 	Dictionnaire::idGenerator++;
 }
@@ -33,49 +23,9 @@ double Dictionnaire::idf(QString mot)
 		return -1.0;
 
 	int ni = nbMots.value(mot);
-	int N = id.size();
-	return -log2(ni / (double)N);
-}
-
-
-double Dictionnaire::tf(QString word)
-{
-	double result = 0;
+	int N = IO::getInstance()->countItemSaved();;
 	
-	if (tfList.contains(word))
-	{
-		if (!tfListUpdated || !tfListToUpdate.isEmpty())
-			updateTfList();
-		result = tfList[word];
-	}
-
-	return result;
-}
-
-void Dictionnaire::updateTfList()
-{
-	if (!tfListUpdated)
-	{
-		tfList.clear();
-
-		QMapIterator<QString, int> i(nbMots);
-		while (i.hasNext())
-		{
-			i.next();
-			double tf = i.value() / (double)maxValueNbMots;
-			tfList.insert(i.key(), tf);
-		}
-	}
-	else if (!tfListToUpdate.isEmpty())
-	{
-		for (int i = 0; i < tfListToUpdate.size(); i++)
-		{
-			QString key = tfListToUpdate.at(i);
-			tfList[key] = nbMots[key] / (double)maxValueNbMots;
-		}
-	}
-	tfListUpdated = true;
-	tfListToUpdate.clear();
+	return -log2(ni / (double)N); // nombre d'item qui contienne le mot au moint une fois / nombre total d'item
 }
 
 Dictionnaire::~Dictionnaire()

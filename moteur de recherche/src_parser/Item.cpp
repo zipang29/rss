@@ -284,3 +284,46 @@ QString Item::toCSV()
 
 	return csv;
 }
+
+double Item::tf(QString word)
+{
+	double result = 0;
+
+	if (words.contains(word))
+	{
+		if (tfList.isEmpty())
+			updateTfList();
+		result = tfList[word];
+	}
+
+	return result;
+}
+
+
+void Item::updateTfList()
+{
+	tfList.clear();
+	QMap<QString, int> nbFoisMots;
+	for (int i = 0; i < words.size(); i++)
+	{
+		QString word = words.at(i);
+		nbFoisMots[word]++;
+	}
+
+	QMapIterator<QString, int> i(nbFoisMots);
+	int max = 0;
+	while (i.hasNext())
+	{
+		i.next();
+		max = qMax(max, i.value());
+	}
+
+	i.toFront();
+	while (i.hasNext())
+	{
+		i.next();
+		double tf = i.value() / (double)max;
+		tfList.insert(i.key(), tf);
+	}
+	
+}

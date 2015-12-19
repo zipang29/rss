@@ -1,6 +1,9 @@
 #include "IO.h"
 #include <QFile>
 
+IO * IO::io = NULL;
+QString IO::path = "";
+
 /*!
  * \class IO
  * \brief Classe de gestion des entrées/sorties
@@ -38,7 +41,7 @@ void IO::write(Item * item)
 			qCritical() << "Erreur à l'écriture dans la BDD :" << db.error().name();
 		}
 		db.set(item->get_id().toStdString(), item->toString().toStdString());
-
+		
 		i->indexing(item);
 
 		ids.append(item->get_id());
@@ -163,4 +166,31 @@ void IO::toCSV(QString bdd_path, QString csv_path)
 	csv_file.close();
 
 	qInfo() << "Ecriture terminee";
+}
+
+int IO::countItemSaved()
+{
+	HashDB db;
+	if (!db.open(path.toStdString(), HashDB::OREADER))
+	{
+		qCritical() << "Erreur à la lecture dans la BDD :" << db.error().name();
+	}
+	return db.count();
+}
+
+IO * IO::getInstance()
+{
+	if (IO::path.isEmpty())
+		return NULL;
+	if (IO::io == NULL)
+	{
+		IO::io = new IO(IO::path);
+	}
+	return IO::io;
+}
+
+void IO::deleteInstance()
+{
+	delete IO::io;
+	IO::io = NULL;
 }

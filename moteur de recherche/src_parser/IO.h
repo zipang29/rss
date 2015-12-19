@@ -17,23 +17,30 @@ class IO : public QObject
     Q_OBJECT
 
     public:
-        IO(QString database_path);
-
 		static QMap<QString, Item*> read(QString path);
         void readFeeds(QString path);
         void readFeed(QUrl url);
+		int countItemSaved();
 
         void readDB();
 		static void toCSV(QString bdd_path, QString csv_path);
+		static IO * getInstance();
+		static void deleteInstance();
+
+		static QString path;
 
 	public slots:
         void write(Item* item);
 
     private:
+		IO(QString database_path);
+
         QList<Parser*> parsers;
 		QList<QString> ids;
-        QString path;
+        //QString path;
 		Indexeur * i;
+
+		static IO * io;
 
 		void loadSavedIds();
 };
