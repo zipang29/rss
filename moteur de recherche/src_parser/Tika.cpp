@@ -176,13 +176,25 @@ void Tika::convertDocument()
 	Item* item = processingItems[oldReply->property("item").toString()];
 
     if (oldReply->error() == QNetworkReply::NoError) {
-        QNetworkRequest request(QUrl("http://localhost:9998/tika"));
-        request.setRawHeader("Accept", "text/plain");
+		if (oldReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 301 || oldReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 302) {
+			//Page déplacée, téléchargement de la nouvelle
+			QUrl url = oldReply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
+			if (url.isRelative())
+				url = oldReply->url().resolved(url);
+			QNetworkRequest request(url);
+			QNetworkReply* reply = accessManager->get(request);
+			reply->setProperty("item", item->get_id());
+			connect(reply, SIGNAL(finished()), this, SLOT(convertDocument()));
+		}
+		else {
+			QNetworkRequest request(QUrl("http://localhost:9998/tika"));
+			request.setRawHeader("Accept", "text/plain");
 
-        QNetworkReply* reply = accessManager->put(request, oldReply->readAll());
-        reply->setProperty("item", item->get_id());
+			QNetworkReply* reply = accessManager->put(request, oldReply->readAll());
+			reply->setProperty("item", item->get_id());
 
-        connect(reply, SIGNAL(finished()), this, SLOT(parseDocument()));
+			connect(reply, SIGNAL(finished()), this, SLOT(parseDocument()));
+		}
     }
     else {
         qWarning() << "Erreur lors du telechargement du contenu :" << oldReply->errorString();

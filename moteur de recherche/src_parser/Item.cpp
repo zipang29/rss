@@ -156,6 +156,15 @@ void Item::set_date(QDateTime date){
 	this->date = date;
 }
 
+void Item::add_word(QString word)
+{
+	word = word.remove('\n');
+	//TODO: un moyen de chopper le dictionnaire de la langue
+	//if (!words.contains(word))
+		//dico.addWord(word);
+	words.append(word);
+}
+
 /*!
  * Permet de récupérer l'item sous forme de string. Les attributs sont séparés par la constante SEPARATOR ;@;
  */
@@ -167,6 +176,9 @@ QString Item::toString()
     ret += this->titre + SEPARATOR;
     ret += this->description + SEPARATOR;
 	ret += this->contenu + SEPARATOR;
+	foreach(const QString& word, words)
+		ret += word + ",";
+	ret += SEPARATOR;
     ret += this->langue + SEPARATOR;
     ret += this->category + SEPARATOR;
     ret += this->date.toString(Qt::ISODate) + SEPARATOR;
@@ -196,9 +208,14 @@ Item * Item::fromString(QString v)
     it->set_titre(list.at(2));
     it->set_description(list.at(3));
 	it->set_contenu(list.at(4));
-    it->set_langue(list.at(5));
-    it->set_category(list.at(6));
-    it->set_date(QDateTime::fromString(list.at(7), Qt::ISODate));
+
+	QStringList wordList = list.at(5).split(',', QString::SkipEmptyParts);
+	foreach(QString word, wordList)
+		it->add_word(word);
+
+    it->set_langue(list.at(6));
+    it->set_category(list.at(7));
+    it->set_date(QDateTime::fromString(list.at(8), Qt::ISODate));
 
     return it;
 }
@@ -256,6 +273,10 @@ QString Item::toCSV()
 	csv.append(date.toString("dd-mm-yyyy HH:mm:ss")).append(";");
 	csv.append(descriptionEchappe).append(";");
 	csv.append(contenuEchappe).append(";");
+	csv.append("{");
+	foreach(const QString& word, words)
+		csv.append(word).append(",");
+	csv.append("};");
 	csv.append(langue).append(";");
 	csv.append(category).append(";");
 	csv.append(url_de_la_page).append(";");

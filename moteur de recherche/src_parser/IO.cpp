@@ -119,10 +119,12 @@ void IO::readDB()
  */
 void IO::loadSavedIds()
 {
-	QMap<QString, Item*> l = IO::read(path);
-	foreach(Item * item, l)
-	{
-		ids.append(item->get_id());
+	if (QFile(path).exists()) {
+		QMap<QString, Item*> l = IO::read(path);
+		foreach(Item * item, l)
+		{
+			ids.append(item->get_id());
+		}
 	}
 }
 
@@ -145,6 +147,7 @@ void IO::toCSV(QString bdd_path, QString csv_path)
 	csv << "Date;";
 	csv << "Description;";
 	csv << "Contenu;";
+	csv << "Stems;";
 	csv << "Langue;";
 	csv << "Categorie;";
 	csv << "Url de la page cible;";

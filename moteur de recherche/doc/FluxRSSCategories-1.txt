@@ -1,0 +1,39 @@
+Sport: http://feeds.bbci.co.uk/sport/0/rss.xml?edition=uk
+Cinema: http://feeds.feedburner.com/cinemablendallthing
+Business: http://www.economist.com/sections/business-finance/rss.xml
+Science: http://feeds.reuters.com/reuters/scienceNews
+Health: http://feeds.reuters.com/reuters/healthNews
+FR :
+Sport: http://www.lequipe.fr/rss/actu_rss.xml
+Cinema: http://feeds.feedburner.com/cinefeed
+Business: http://syndication.lesechos.fr/rss/rss_finance-marches.xml
+Science:http://rss.nouvelobs.com/c/32581/fe.ed/www.sciencesetavenir.fr/rss.xml
+Health: http://www.who.int/feeds/entity/mediacentre/news/fr/rss.xml
+
+Autres sources si besoin
+BUSINESS http://rss.nytimes.com/services/xml/rss/nyt/Business.xml EN
+BUSINESS http://rss.feedsportal.com/c/499/f/413824/index.rss FR
+BUSINESS http://www.thetimes.co.uk/tto/business/rss EN
+BUSINESS http://rss.cnn.com/rss/edition_business.rss EN
+BUSINESS http://www.france24.com/fr/economie/rss FR
+
+SPORT http://rss.lemonde.fr/c/205/f/3058/index.rss FR
+SPORT http://rss.nytimes.com/services/xml/rss/nyt/Sports.xml EN
+SPORT http://www.lequipe.fr/rss/actu_rss.xml FR
+SPORT http://www.thetimes.co.uk/tto/sport/rss EN
+
+
+SANTE www.thetimes.co.uk/tto/health/rss EN
+SANTE http://www.lemonde.fr/sante/rss_full.xml FR
+SANTE http://www.bfmtv.com/rss/societe/sante/ FR
+SANTES http://rss.cnn.com/rss/cnn_health.rss
+
+ART http://rss.lemonde.fr/c/205/f/3060/index.rss FR
+ART www.thetimes.co.uk/tto/arts/rss EN
+ART http://rss.cnn.com/rss/edition_entertainment.rss
+ART http://www.france24.com/fr/culture/rss/
+
+SCIENCE http://www.thetimes.co.uk/tto/science/rss EN
+SCIENCE http://www.lemonde.fr/sciences/rss_full.xml FR
+SCIENCE http://rss.cnn.com/rss/edition_space.rss EN
+SCIENCE http://www.france24.com/fr/actualites/rss/ FR

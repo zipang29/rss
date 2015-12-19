@@ -16,6 +16,7 @@ set(SOURCES
 	Tika.cpp
 	Indexeur.cpp
 	Dictionnaire.cpp
+	Stemmer.cpp
 )
 
 set(HEADERS
@@ -26,6 +27,7 @@ set(HEADERS
 	Tika.h
 	Indexeur.h
 	Dictionnaire.h
+	Stemmer.h
 )
 
 INCLUDE_DIRECTORIES(${kyoto_SOURCE_DIR} ${clucene_SOURCE_DIR}/include ${stemmer_SOURCE_DIR}/include)

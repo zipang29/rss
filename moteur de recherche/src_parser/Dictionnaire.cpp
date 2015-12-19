@@ -17,6 +17,12 @@ void Dictionnaire::addWord(QString word)
 		}
 	}
 	nbMots.insert(word, 1);
+
+	//Peut être simplifié par 
+	//nbMots[word]++;
+	//cf. http://doc.qt.io/qt-5/qmap.html#operator-5b-5d
+
+	//TODO: Si nouveau mot, l'inserer dans la map id avec un nouvel id
 }
 
 double Dictionnaire::idf(QString mot)
@@ -29,10 +35,12 @@ double Dictionnaire::idf(QString mot)
 	return -log2(ni / (double)N);
 }
 
+/*
 double Dictionnaire::tf(QString word)
 {
 
 }
+*/
 
 Dictionnaire::~Dictionnaire()
 {

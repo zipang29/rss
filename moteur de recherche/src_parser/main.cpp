@@ -78,4 +78,16 @@ int main(int argc, char *argv[])
     }
 
     return a.exec();
+	
+
+	/*
+	const char** list = sb_stemmer_list();
+	
+
+	for (int i = 0; i < 10000000000000000; i++) {
+		qDebug() << list[i];
+	}
+
+	return 0;
+	*/
 }

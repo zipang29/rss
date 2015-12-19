@@ -32,6 +32,7 @@ public:
 	void set_langue(QString l);
     void set_category(QString c);
 	void set_date(QDateTime d);
+	void add_word(QString word);
 
     QString toString();
     static Item * fromString(QString v);
@@ -43,6 +44,7 @@ private:
     QString url_du_flux = NO_URL, url_de_la_page = NO_URL, titre = NO_TITLE, description = NO_DESCRIPTION, contenu = NO_CONTENT, langue = UNDEFINED_LANGUAGE, category = UNCATEGORIZED;
     QDateTime date;
     QString id = NO_ID;
+	QList<QString> words;
 };
 
 #endif // ITEM_H

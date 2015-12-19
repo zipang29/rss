@@ -7,6 +7,7 @@
 #include "Constantes.h"
 #include "Item.h"
 #include "Tika.h"
+#include "Stemmer.h"
 #include <QDebug>
 
 using namespace std;
@@ -26,6 +27,7 @@ class Parser : public QObject
         QUrl url;
         QString src;
         Tika* tika;
+		Stemmer stemmer;
 
 		int processingItem;
 		bool timerStarted;

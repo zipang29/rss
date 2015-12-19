@@ -236,6 +236,11 @@ void Parser::readFeed()
 void Parser::completedItem(Item* item)
 {
 	if (item->get_url_du_flux() == url.url()) {
+		if (item->get_langue() == "French")
+			stemmer.stem(item, Stemmer::FRENCH);
+		else if (item->get_langue() == "English")
+			stemmer.stem(item, Stemmer::ENGLISH);
+
 		processingItem--;
 		emit(itemProcessed(item));
 

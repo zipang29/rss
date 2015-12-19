@@ -74,3 +74,8 @@ add_library(kyoto STATIC
 	kcvisex.cc
 )
 
+if (CMAKE_COMPILER_IS_GNUCC)
+	set_property( TARGET main APPEND_STRING PROPERTY COMPILE_FLAGS -W)
+elseif (MSVC)
+	set_property(TARGET kyoto APPEND_STRING PROPERTY COMPILE_FLAGS /W0)
+endif (CMAKE_COMPILER_IS_GNUCC)
