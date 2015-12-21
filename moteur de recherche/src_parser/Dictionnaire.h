@@ -10,13 +10,12 @@ class Dictionnaire
 		Dictionnaire();
 		void addWord(QString word);
 		double idf(QString mot);
+		void save(QString path);
 		~Dictionnaire();
 
 	private:
 		QMap<QString, int> nbMots;// nombre d'item qui contient ce mot au moins une fois
 		QMap<QString, int> id;
-
-		int maxValueNbMots;
 
 		static int idGenerator;
 };
