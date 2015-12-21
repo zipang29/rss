@@ -11,6 +11,8 @@ class Dictionnaire
 		void addWord(QString word);
 		double idf(QString mot);
 		void save(QString path);
+		static Dictionnaire * load(QString path);
+
 		~Dictionnaire();
 
 	private:

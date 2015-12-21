@@ -65,6 +65,50 @@ void Dictionnaire::save(QString path)
 	fileIds.close();
 }
 
+Dictionnaire * Dictionnaire::load(QString path)
+{
+	QFile fileNbMots(path + ".nbmots.txt");
+	if (!fileNbMots.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		qCritical() << "Impossible d'ouvrir le fichier " << path << ".nbmots.txt en lecture. Le fichier n'a pas été lu.";
+		return NULL;
+	}
+	QTextStream fluxNbMots(&fileNbMots);
+
+	QFile fileIds(path + ".id.txt");
+	if (!fileIds.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		qCritical() << "Impossible d'ouvrir le fichier " << path << ".id.txt en lecture. Le fichier n'a pas été lu";
+		return NULL;
+	}
+	QTextStream fluxIds(&fileIds);
+
+	Dictionnaire * dico = new Dictionnaire();
+	QString line;
+	QRegExp reg("\\s+");
+	while (!fluxNbMots.atEnd())
+	{
+		line = fluxNbMots.readLine();
+		QStringList list = line.split(reg);
+		QString key = list.at(0);
+		int value = list.at(1).toInt();
+		dico->nbMots.insert(key, value);
+	}
+	while (!fluxIds.atEnd())
+	{
+		line = fluxIds.readLine();
+		QStringList list = line.split(reg);
+		QString key = list.at(0);
+		int value = list.at(1).toInt();
+		dico->id.insert(key, value);
+		Dictionnaire::idGenerator = qMax(Dictionnaire::idGenerator, value);
+	}
+
+	fileNbMots.close();
+	fileIds.close();
+	return dico;
+}
+
 Dictionnaire::~Dictionnaire()
 {
 }
