@@ -63,5 +63,10 @@
 
 QString getLanguageName(QString identifier);
 
+enum Language {
+	ENGLISH,
+	FRENCH
+};
+
 #endif // CONSTANTES
 

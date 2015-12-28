@@ -1,4 +1,5 @@
 #include "Item.h"
+#include "IO.h"
 #include <QRegularExpression>
 
 /*!
@@ -142,6 +143,16 @@ void Item::set_category(QString c){
   category = c;
 }
 
+QString Item::get_predicted_category()
+{
+	return predicted_category;
+}
+
+void Item::set_predicted_category(QString c)
+{
+	predicted_category = c;
+}
+
 /*!
  * Retourne la date d'ajout de l'item
  */
@@ -156,12 +167,14 @@ void Item::set_date(QDateTime date){
 	this->date = date;
 }
 
-void Item::add_word(QString word)
+void Item::add_word(QString word, Language lang)
 {
 	word = word.remove('\n');
-	//TODO: un moyen de chopper le dictionnaire de la langue
-	//if (!words.contains(word))
-		//dico.addWord(word);
+	if (lang != -1) {
+		Dictionnaire* dico = IO::getInstance()->getDictionary(lang);
+		if (!words.contains(word))
+			dico->addWord(word);
+	}
 	words.append(word);
 }
 
@@ -182,6 +195,7 @@ QString Item::toString()
     ret += this->langue + SEPARATOR;
     ret += this->category + SEPARATOR;
     ret += this->date.toString(Qt::ISODate) + SEPARATOR;
+	ret += this->predicted_category + SEPARATOR;
 
     return ret;
 }
@@ -198,9 +212,9 @@ Item * Item::fromString(QString v)
 {
     Item * it = new Item();
     QStringList list = v.split(SEPARATOR);
-    if (list.size() < 8)
+    if (list.size() < 10)
     {
-        qWarning() << "La chaine n'est pas valide. Celle-ci contient moins de 8 éléments. L'item retourné est vide.";
+        qWarning() << "La chaine n'est pas valide. Celle-ci contient moins de 10 éléments. L'item retourné est vide.";
         return it;
     }
     it->set_url_du_flux(list.at(0));
@@ -208,14 +222,23 @@ Item * Item::fromString(QString v)
     it->set_titre(list.at(2));
     it->set_description(list.at(3));
 	it->set_contenu(list.at(4));
+    it->set_langue(list.at(6));
+
+	short lang;
+	if (it->get_langue() == "French")
+		lang = FRENCH;
+	else if (it->get_langue() == "English")
+		lang = ENGLISH;
+	else
+		lang = -1;
 
 	QStringList wordList = list.at(5).split(',', QString::SkipEmptyParts);
 	foreach(QString word, wordList)
-		it->add_word(word);
+		it->words.append(word);
 
-    it->set_langue(list.at(6));
     it->set_category(list.at(7));
     it->set_date(QDateTime::fromString(list.at(8), Qt::ISODate));
+	it->set_predicted_category(list.at(9));
 
     return it;
 }
@@ -236,6 +259,7 @@ QString Item::toHumanReadable() const
     //ret += "Contenu : " + this->contenu + "\n";
     ret += "Langue : " + this->langue + "\n";
     ret += "Catégorie : " + this->category + "\n";
+	ret += "Catégorie prédite : " + this->predicted_category + "\n";
     ret += "Date : " + this->date.toString() + "\n\n";
     return ret;
 }
@@ -279,6 +303,7 @@ QString Item::toCSV()
 	csv.append("};");
 	csv.append(langue).append(";");
 	csv.append(category).append(";");
+	csv.append(predicted_category).append(";");
 	csv.append(url_de_la_page).append(";");
 	csv.append(url_du_flux).append(";");
 

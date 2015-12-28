@@ -17,6 +17,7 @@ set(SOURCES
 	Indexeur.cpp
 	Dictionnaire.cpp
 	Stemmer.cpp
+	Classifier.cpp
 )
 
 set(HEADERS
@@ -28,9 +29,10 @@ set(HEADERS
 	Indexeur.h
 	Dictionnaire.h
 	Stemmer.h
+	Classifier.h
 )
 
-INCLUDE_DIRECTORIES(${kyoto_SOURCE_DIR} ${clucene_SOURCE_DIR}/include ${stemmer_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(${kyoto_SOURCE_DIR} ${clucene_SOURCE_DIR}/include ${stemmer_SOURCE_DIR}/include ${classifier_SOURCE_DIR})
 
 add_executable(parser
 				main.cpp
@@ -49,6 +51,7 @@ target_link_libraries(parser-lib
 					clucene-core
 					clucene-shared
 					stemmer
-					)
+					classifier
+)
 
 target_link_libraries(parser parser-lib)

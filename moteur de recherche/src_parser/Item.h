@@ -21,6 +21,7 @@ public:
 	QString get_contenu();
 	QString get_langue();
     QString get_category();
+	QString get_predicted_category();
 	QDateTime get_date();
 	
 	void set_id(QString i);
@@ -31,8 +32,9 @@ public:
 	void set_contenu(QString c);
 	void set_langue(QString l);
     void set_category(QString c);
+	void set_predicted_category(QString c);
 	void set_date(QDateTime d);
-	void add_word(QString word);
+	void add_word(QString word, Language lang);
 
     QString toString();
     static Item * fromString(QString v);
@@ -43,7 +45,7 @@ public:
 	double tf(QString word);
 
 private:
-    QString url_du_flux = NO_URL, url_de_la_page = NO_URL, titre = NO_TITLE, description = NO_DESCRIPTION, contenu = NO_CONTENT, langue = UNDEFINED_LANGUAGE, category = UNCATEGORIZED;
+	QString url_du_flux = NO_URL, url_de_la_page = NO_URL, titre = NO_TITLE, description = NO_DESCRIPTION, contenu = NO_CONTENT, langue = UNDEFINED_LANGUAGE, category = UNCATEGORIZED, predicted_category = UNCATEGORIZED;
     QDateTime date;
     QString id = NO_ID;
 	QList<QString> words;

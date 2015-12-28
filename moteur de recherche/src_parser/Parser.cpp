@@ -62,6 +62,19 @@ Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
     requestFeed();
 }
 
+Parser::Parser(QUrl url, QString category, QObject* parent)
+{
+	this->category = category;
+	this->url = url;
+	tika = Tika::getInstance();
+	connect(tika, SIGNAL(completed(Item*)), this, SLOT(completedItem(Item*)));
+
+	timerStarted = false;
+
+	connect(this, SIGNAL(feedRecovered()), this, SLOT(parseFeed()));
+	requestFeed();
+}
+
 /*!
  * Permet de débuter la récupération du code source de l'URL spécifié au constructeur
  */
@@ -175,6 +188,8 @@ void Parser::readItem(QDomElement & elements)
 
     }
     item->set_url_du_flux(url.toString());
+	if (!category.isEmpty())
+		item->set_predicted_category(category);
 
 	//Génération de l'ID
     QString stringHash = item->get_titre() + item->get_description() + item->get_url_de_la_page();
@@ -236,11 +251,6 @@ void Parser::readFeed()
 void Parser::completedItem(Item* item)
 {
 	if (item->get_url_du_flux() == url.url()) {
-		if (item->get_langue() == "French")
-			stemmer.stem(item, Stemmer::FRENCH);
-		else if (item->get_langue() == "English")
-			stemmer.stem(item, Stemmer::ENGLISH);
-
 		processingItem--;
 		emit(itemProcessed(item));
 

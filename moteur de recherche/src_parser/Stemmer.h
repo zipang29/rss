@@ -11,11 +11,6 @@ private:
 	sb_stemmer* english;
 	sb_stemmer* french;
 public:
-	enum Language {
-		ENGLISH,
-		FRENCH
-	};
-
 	Stemmer(QObject* parent = 0);
 	~Stemmer();
 

@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
     args.addHelpOption();
 
     args.addPositionalArgument("Base de donnees", "Chemin d'acces au fichier HashDB (.kch), sera cree en cas de collection d'un ou plusieurs flux. Son contenu ne sera jamais efface");
+	args.addPositionalArgument("Donnees d'entrainement francaises", "Chemin d'acces au fichier HashDB (.kch) contenant les items d'entrainement francais");
+	args.addPositionalArgument("Donnees d'entrainement anglaises", "Chemin d'acces au fichier HashDB (.kch) contenant les items d'entrainement anglaises");
 
     QCommandLineOption fileOption(QStringList() << "f" << "fichier", "Collecte les flux RSS designes dans le fichier (une URL par ligne)", "Chemin d'acces");
     args.addOption(fileOption);
@@ -47,14 +49,18 @@ int main(int argc, char *argv[])
 	QCommandLineOption csvOption(QStringList() << "c" << "csv", "Nom d'un fichier CSV dans lequel le contenu de la base de donnee sera exporte", "Chemin d'acces");
 	args.addOption(csvOption);
 
+	QCommandLineOption trainingOption(QStringList() << "t" << "training", "Lance le parser en mode entrainement pour la classification", "Chemin d'acces");
+	args.addOption(trainingOption);
+
     args.process(a);
 
 	QStringList positionalArgs = args.positionalArguments();
-	if (positionalArgs.size() != 1) {
+	if (positionalArgs.size() < 1) {
+		qDebug() << "toto" << positionalArgs.size();
         args.showHelp(1);
     }
 
-    if ((!args.isSet(fileOption) && !args.isSet(urlOption) && !args.isSet(csvOption))) {
+	if ((!args.isSet(fileOption) && !args.isSet(urlOption) && !args.isSet(csvOption) && !args.isSet(trainingOption))) {
 		IO::path = positionalArgs[0];
 		IO* io = IO::getInstance();
         io->readDB();
@@ -64,10 +70,24 @@ int main(int argc, char *argv[])
 		IO::toCSV(positionalArgs[0], args.value(csvOption));
 		return 0;
 	}
-    else {
+	else if (args.isSet(trainingOption)) {
 		qSetMessagePattern("[%{time dd-MM-yyyy HH:mm:ss} - %{type}]: %{message}");
 		IO::path = positionalArgs[0];
 		IO* io = IO::getInstance();
+		io->collectTrainingData(args.value(trainingOption));
+	}
+    else {
+		qSetMessagePattern("[%{time dd-MM-yyyy HH:mm:ss} - %{type}]: %{message}");
+		IO::path = positionalArgs[0];
+
+		if (positionalArgs.size() == 3) {
+			qDebug() << "training data set";
+			IO::training_data_fr = positionalArgs[1];
+			IO::training_data_en = positionalArgs[2];
+		}
+
+		IO* io = IO::getInstance();
+
         if (args.isSet(fileOption)) {
             QString path = args.value(fileOption);
             io->readFeeds(path);

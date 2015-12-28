@@ -4,8 +4,9 @@
 
 int Dictionnaire::idGenerator = 0;
 
-Dictionnaire::Dictionnaire()
+Dictionnaire::Dictionnaire(Language lang)
 {
+	this->lang = lang;
 }
 
 /*!
@@ -24,7 +25,7 @@ double Dictionnaire::idf(QString mot)
 		return -1.0;
 
 	int ni = nbMots.value(mot);
-	int N = IO::getInstance()->countItemSaved();;
+	int N = IO::getInstance()->countItemSaved();
 	
 	return -log2(ni / (double)N); // nombre d'item qui contienne le mot au moint une fois / nombre total d'item
 }
@@ -109,6 +110,28 @@ Dictionnaire * Dictionnaire::load(QString path)
 	return dico;
 }
 
+short& Dictionnaire::language()
+{
+	return lang;
+}
+
+QList<QString> Dictionnaire::getWords()
+{
+	return nbMots.keys();
+}
+
 Dictionnaire::~Dictionnaire()
 {
+}
+
+QDataStream& operator<<(QDataStream& data, const Dictionnaire& dico)
+{
+	data << dico.lang << dico.nbMots << dico.id << dico.maxValueNbMots << dico.idGenerator;
+	return data;
+}
+
+QDataStream& operator>>(QDataStream& data, Dictionnaire& dico)
+{
+	data >> dico.lang >> dico.nbMots >> dico.id >> dico.maxValueNbMots >> dico.idGenerator;
+	return data;
 }

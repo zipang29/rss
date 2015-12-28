@@ -7,7 +7,6 @@
 #include "Constantes.h"
 #include "Item.h"
 #include "Tika.h"
-#include "Stemmer.h"
 #include <QDebug>
 
 using namespace std;
@@ -17,7 +16,9 @@ class Parser : public QObject
     Q_OBJECT
 
     public:
-        Parser(QUrl url, QObject* parent);
+        Parser(QUrl url, QObject* parent = 0);
+		Parser(QUrl url, QString category, QObject* parent = 0);
+
 
     private:
         void requestFeed();
@@ -25,9 +26,8 @@ class Parser : public QObject
 		void setTimer(int timeToWait = 0);
 
         QUrl url;
-        QString src;
+        QString src, category;
         Tika* tika;
-		Stemmer stemmer;
 
 		int processingItem;
 		bool timerStarted;
