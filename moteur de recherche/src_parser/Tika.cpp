@@ -78,13 +78,13 @@ void Tika::destroy()
  */
 void Tika::processItem(Item* item, QString foundLanguage)
 {
+	while (processingItems.contains(item->get_id())) {
+		qCritical() << "Duplication d'ID";
+		item->set_id(item->get_id() + "bis");
+	}
+	
 	processingItems.insert(item->get_id(), item);
-	waitingForLanguage.append(item->get_id());
-	waitingForDocument.append(item->get_id());
-
 	detectLanguage(item, foundLanguage);
-	downloadLink(item);
-	checkFinishedItem(item->get_id());
 }
 
 /*!
@@ -110,7 +110,7 @@ void Tika::detectLanguage(Item* item, QString foundLanguage)
 		}
 		else {
 			item->set_langue(language);
-			waitingForLanguage.removeOne(item->get_id());
+			downloadLink(item);
 		}
 	}
 }
@@ -144,8 +144,7 @@ void Tika::setLanguage()
 		item->set_langue(UNKNOWN_LANGUAGE);
     }
 
-	waitingForLanguage.removeOne(item->get_id());
-	checkFinishedItem(item->get_id());
+	downloadLink(item);
 }
 
 /*!
@@ -161,7 +160,8 @@ void Tika::downloadLink(Item* item)
 	}
 	else {
 		item->set_contenu(NO_CONTENT);
-		waitingForDocument.removeOne(item->get_id());
+		processingItems.remove(item->get_id());
+		emit(completed(item));
 	}
 }
 
@@ -199,8 +199,8 @@ void Tika::convertDocument()
     else {
         qWarning() << "Erreur lors du telechargement du contenu :" << oldReply->errorString();
 		item->set_contenu(NO_CONTENT);
-		waitingForDocument.removeOne(item->get_id());
-		checkFinishedItem(item->get_id());
+		processingItems.remove(item->get_id());
+		emit(completed(item));
     }
     oldReply->deleteLater();
 }
@@ -230,21 +230,7 @@ void Tika::parseDocument()
 		item->set_contenu(NO_CONTENT);
     }
 
-	waitingForDocument.removeOne(item->get_id());
-	checkFinishedItem(item->get_id());
-
+	processingItems.remove(item->get_id());
+	emit(completed(item));
     reply->deleteLater();
-}
-
-/*!
- * Vérifie si les deux étapes du traitement de l'item \a id (détéction de langue et conversion
- * du document cible en string) sont terminées dans quel cas le signal completed(Item* item) est émit.
- */
-void Tika::checkFinishedItem(QString id)
-{
-	if (!waitingForLanguage.contains(id) && !waitingForDocument.contains(id)) {
-		Item* item = processingItems[id];
-		processingItems.remove(id);
-		emit(completed(item));
-	}
 }

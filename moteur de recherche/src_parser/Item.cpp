@@ -175,7 +175,9 @@ void Item::add_word(QString word, Language lang)
 		if (!words.contains(word))
 			dico->addWord(word);
 	}
-	words.append(word);
+
+	if (++words[word] > word_max_occurences)
+		word_max_occurences = words[word];
 }
 
 /*!
@@ -189,8 +191,10 @@ QString Item::toString()
     ret += this->titre + SEPARATOR;
     ret += this->description + SEPARATOR;
 	ret += this->contenu + SEPARATOR;
-	foreach(const QString& word, words)
-		ret += word + ",";
+	foreach(const QString& word, words.keys()) {
+		for (int i = 0; i < words[word]; i++)
+			ret += word + ",";
+	}
 	ret += SEPARATOR;
     ret += this->langue + SEPARATOR;
     ret += this->category + SEPARATOR;
@@ -233,8 +237,10 @@ Item * Item::fromString(QString v)
 		lang = -1;
 
 	QStringList wordList = list.at(5).split(',', QString::SkipEmptyParts);
-	foreach(QString word, wordList)
-		it->words.append(word);
+	foreach(QString word, wordList) {
+		if (++it->words[word] > it->word_max_occurences)
+			it->word_max_occurences = it->words[word];
+	}
 
     it->set_category(list.at(7));
     it->set_date(QDateTime::fromString(list.at(8), Qt::ISODate));
@@ -298,8 +304,10 @@ QString Item::toCSV()
 	csv.append(descriptionEchappe).append(";");
 	csv.append(contenuEchappe).append(";");
 	csv.append("{");
-	foreach(const QString& word, words)
-		csv.append(word).append(",");
+	foreach(const QString& word, words.keys()) {
+		for (int i = 0; i < words[word]; i++)
+			csv.append(word + ",");
+	}
 	csv.append("};");
 	csv.append(langue).append(";");
 	csv.append(category).append(";");
@@ -314,10 +322,11 @@ double Item::tf(QString word)
 {
 	double result = 0;
 
-	if (words.contains(word))
+	if (tfList.isEmpty())
+		updateTfList();
+
+	if (tfList.contains(word))
 	{
-		if (tfList.isEmpty())
-			updateTfList();
 		result = tfList[word];
 	}
 
@@ -328,27 +337,13 @@ double Item::tf(QString word)
 void Item::updateTfList()
 {
 	tfList.clear();
-	QMap<QString, int> nbFoisMots;
-	for (int i = 0; i < words.size(); i++)
-	{
-		QString word = words.at(i);
-		nbFoisMots[word]++;
+	int sum = 0;
+	foreach(int num, words.values()) {
+		sum += num;
 	}
 
-	QMapIterator<QString, int> i(nbFoisMots);
-	int max = 0;
-	while (i.hasNext())
-	{
-		i.next();
-		max = qMax(max, i.value());
+	foreach(QString word, words.keys()) {
+		//qDebug() << words[word] << word_max_occurences << words[word] / (double)word_max_occurences;
+		tfList.insert(word, words[word] / (double)sum);
 	}
-
-	i.toFront();
-	while (i.hasNext())
-	{
-		i.next();
-		double tf = i.value() / (double)max;
-		tfList.insert(i.key(), tf);
-	}
-	
 }

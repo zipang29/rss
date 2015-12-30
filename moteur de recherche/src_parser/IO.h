@@ -52,6 +52,7 @@ class IO : public QObject
 		Dictionnaire fra, eng;
 
 		bool trainingMode;
+		int trainingDone = 0;
 
 		static IO * io;
 

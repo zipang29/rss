@@ -237,8 +237,23 @@ void Parser::revisite()
 void Parser::readFeed()
 {
     QNetworkReply * reply = qobject_cast<QNetworkReply*>(sender());
-    this->src = reply->readAll();
-    emit feedRecovered();
+	if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 301 || reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 302)
+	{
+		QUrl url = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
+		if (url.isRelative())
+			url = reply->url().resolved(url);
+		QNetworkRequest request(url);
+		QNetworkAccessManager * manager = new QNetworkAccessManager;
+		QNetworkReply* newReply = manager->get(request);
+
+		connect(newReply, SIGNAL(finished()), this, SLOT(readFeed()));
+	}
+	else
+	{
+		this->src = reply->readAll();
+		emit feedRecovered();
+	}
+    
 
 	reply->deleteLater();
 }
@@ -254,6 +269,8 @@ void Parser::completedItem(Item* item)
 		processingItem--;
 		emit(itemProcessed(item));
 
+		//qDebug() << "Item recu" << processingItem << "restants";
+		
 		if (processingItem == 0) {
 			qInfo() << "Traitement du flux" << url.url() << "termine";
 			emit(feedProcessed());

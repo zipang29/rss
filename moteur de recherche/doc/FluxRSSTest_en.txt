@@ -1,0 +1,16 @@
+http://feeds.bbci.co.uk/sport/0/rss.xml?edition=uk
+http://feeds.feedburner.com/cinemablendallthing
+http://www.economist.com/sections/business-finance/rss.xml
+http://feeds.reuters.com/reuters/scienceNews
+http://feeds.reuters.com/reuters/healthNews
+http://rss.nytimes.com/services/xml/rss/nyt/Business.xml
+http://www.thetimes.co.uk/tto/business/rss
+http://rss.cnn.com/rss/edition_business.rss
+http://rss.nytimes.com/services/xml/rss/nyt/Sports.xml
+http://www.thetimes.co.uk/tto/sport/rss
+http://www.thetimes.co.uk/tto/health/rss
+http://rss.cnn.com/rss/cnn_health.rss
+http://www.thetimes.co.uk/tto/arts/rss
+http://rss.cnn.com/rss/edition_entertainment.rss
+http://www.thetimes.co.uk/tto/science/rss
+http://rss.cnn.com/rss/edition_space.rss

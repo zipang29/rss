@@ -1,4 +1,5 @@
 #include "Stemmer.h"
+#include <QRegularExpression>
 
 Stemmer::Stemmer(QObject* parent) : QObject(parent)
 {
@@ -18,21 +19,25 @@ void Stemmer::stem(Item* i, Language lang)
 
 	switch (lang) {
 	case FRENCH:
-		foreach(const QString& mot, mots) {
+		foreach(QString mot, mots) {
 			if (!mot.isEmpty()){
-				const char* stem = (const char*)sb_stemmer_stem(french, (const sb_symbol*)mot.toStdString().c_str(), mot.size());
+				QString motTraite = mot.remove(QRegularExpression("[^a-zA-Z]"));
+				const char* stem = (const char*)sb_stemmer_stem(french, (const sb_symbol*)motTraite.toStdString().c_str(), motTraite.size());
 				QString stem_s_fr(stem);
-				i->add_word(stem_s_fr, FRENCH);
+				if (!stem_s_fr.isEmpty())
+					i->add_word(stem_s_fr, FRENCH);
 			}
 		}
 		break;
 	case ENGLISH:
 	default:
-		foreach(const QString& mot, mots) {
+		foreach(QString mot, mots) {
 			if (!mot.isEmpty()){
-				const char* stem = (const char*) sb_stemmer_stem(english, (const sb_symbol*) mot.toStdString().c_str(), mot.size());
+				QString motTraite = mot.remove(QRegularExpression("[^a-zA-Z]"));
+				const char* stem = (const char*)sb_stemmer_stem(english, (const sb_symbol*)motTraite.toStdString().c_str(), motTraite.size());
 				QString stem_s_en(stem);
-				i->add_word(stem_s_en, ENGLISH);
+				if (!stem_s_en.isEmpty())
+					i->add_word(stem_s_en, ENGLISH);
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 #include "IO.h"
 #include <QFile>
+#include <QCoreApplication>
 
 IO * IO::io = NULL;
 QString IO::path = "";
@@ -82,7 +83,9 @@ void IO::classify()
 			}
 		}
 
-		classifier->classify(&items_fra, &fra);
+		if (items_fra.size() > 0)
+			classifier->classify(&items_fra, &fra);
+		if (items_eng.size() > 0)
 		classifier->classify(&items_eng, &eng);
 
 		HashDB db;
@@ -97,6 +100,11 @@ void IO::classify()
 		foreach(Item* item, items_eng)
 			db.set(item->get_id().toStdString(), item->toString().toStdString());
 	}
+	else if (trainingMode) {
+		trainingDone++;
+		if (trainingDone == parsers.size())
+			qApp->exit();
+	}
 }
 
 /*!
@@ -106,8 +114,6 @@ void IO::classify()
  */
 QMap<QString, Item*> IO::read(QString path)
 {
-	static int count = 0;
-	count++;
     QMap<QString, Item*> items;
     HashDB db;
     if (!db.open(path.toStdString(), HashDB::OREADER))
@@ -164,6 +170,7 @@ void IO::collectTrainingData(QString path)
 		QStringList parts = line.split(';');
 		Parser* p = new Parser(QUrl(parts[0]), parts[1].simplified(), this);
 		connect(p, SIGNAL(itemProcessed(Item*)), this, SLOT(write(Item*)));
+		connect(p, SIGNAL(feedProcessed()), this, SLOT(classify()));
 		parsers.append(p);
 	}
 }

@@ -1,89 +1,179 @@
 #include "Classifier.h"
+#include <QFile>
+#include <QRegularExpression>
+
+const QString Classifier::weka_prog = "java";
+const QStringList Classifier::weka_args = QStringList() << "-cp" << "weka.jar" << "weka.classifiers.bayes.NaiveBayes" << "-t" << "trainingData.arff" << "-T" << "testData.arff" << "-p" << "0";
 
 Classifier::Classifier(QString trainingData_fra, QString trainingData_eng, QObject* parent) : QObject(parent)
 {
 	training_fra = trainingData_fra;
 	training_eng = trainingData_eng;
-	bc = NULL;
+	weka = NULL;
 }
 
 Classifier::~Classifier()
 {
-	if (bc != NULL)
-		delete bc;
 }
 
-void Classifier::init(QList<Item*>* items, Dictionnaire* dico)
+void Classifier::init(Dictionnaire* dico)
 {
-	qDebug() << "Initialisation du classifieur";
 	QMap<QString, Item*> trainingItems;
 	switch (dico->language()) {
 	case FRENCH:
-		trainingItems = IO::read(training_fra);
+		if (trainingData_fr.isEmpty())
+			trainingData_fr = IO::read(training_fra);
+		trainingItems = trainingData_fr;
 		break;
 	case ENGLISH:
 	default:
-		trainingItems = IO::read(training_eng);
+		if (trainingData_en.isEmpty())
+			trainingData_en = IO::read(training_eng);
+		trainingItems = trainingData_en;
 	}
 
-	words = dico->getWords();
-	categories.clear();
-	std::vector<Domain> domains(words.size()+1);
+	qDebug() << "Creation arff d'entrainement";
+	QFile trainingData("trainingData.arff");
+	if (trainingData.open(QFile::WriteOnly | QFile::Truncate | QIODevice::Text)) {
+		QTextStream stream(&trainingData);
+		stream << "@relation test\n";
 
-	//Création des domaines
-	qDebug() << "Création des domaines";
-	for (int i = 0; i < words.size(); i++) {
-		domains[i].setMin(0);
-		domains[i].setMax(trainingItems.size() + items->size());
-		domains[i].setNumberOfValues(trainingItems.size() + items->size() - 1);
-	}
-
-	//Définition du domaine pour les categories
-	qDebug() << "Définition du domaine pour les categories";
-	foreach(Item* i, trainingItems.values()) {
-		if (!categories.contains(i->get_predicted_category()))
-			categories.append(i->get_predicted_category());
-	}
-	domains[domains.size() - 1].setMin(0);
-	domains[domains.size() - 1].setMax(categories.size()-1);
-	domains[domains.size() - 1].setNumberOfValues(categories.size() - 1);
-
-	//Création du classifier Bayesien et apprentissage
-	qDebug() << "Création du classifier Bayesien et apprentissage";
-	if (bc != NULL) {
-		qDebug() << "Supression ancien classifier";
-		delete bc;
-		qDebug() << "Suppression réussie";
-	}
-	bc = new BayesianClassifier(domains);
-	int count = 0;
-	foreach(Item* i, trainingItems.values()) {
-		qDebug() << "Apprentissage item" << count;
-		RawTrainingData training_data(domains.size());
-		for (int j = 0; j < words.size(); j++) {
-			training_data[j] = i->tf(words[j]) * dico->idf(words[j]);
+		qDebug() << "Creation liste des attributs";
+		words = dico->getWords();
+		foreach(const QString& word, words) {
+			if (word.isEmpty() || word == " ")
+				qDebug() << "mot=" << word;
+			stream << "@attribute " << word << " numeric\n";
 		}
-		training_data[training_data.size() - 1] = categories.indexOf(i->get_predicted_category());
+		stream << "@attribute cate {";
 
-		bc->addRawTrainingData(training_data);
-		count++;
+		qDebug() << "Creation liste des categories";
+		categories.clear();
+		bool first = true;
+		foreach(Item* item, trainingItems.values()) {
+			if (!categories.contains(item->get_predicted_category())) {
+				categories.append(item->get_predicted_category());
+
+				if (!first)
+					stream << "," << item->get_predicted_category();
+				else {
+					stream << item->get_predicted_category();
+					first = false;
+				}
+			}
+		}
+		stream << "}\n\n";
+
+
+		qDebug() << "Creation liste des donnees";
+		stream << "@data\n";
+		int count = 0;
+		int max = trainingItems.size();
+		foreach(Item* item, trainingItems.values()) {
+			qDebug() << "Item" << count << "de" << max;
+			first = true;
+			foreach(const QString& word, words) {
+				if (!first)
+					stream << "," << dico->idf(word) * item->tf(word);
+				else {
+					stream << dico->idf(word) * item->tf(word);
+					first = false;
+				}
+			}
+			stream << "," << item->get_predicted_category() << "\n";
+			count++;
+			/*
+			if (count == 10)
+				break; //TODO: valeur de debug; à supprimer
+				*/
+		}
+
+		qDebug() << "Donnees d'entrainement terminees";
+
+		trainingData.close();
 	}
-	qDebug() << "Fin apprentissage";
+	else{
+		qCritical() << "Echec de l'ouverture du fichier" << trainingData.fileName();
+	}
+}
+
+void Classifier::createTestFile(QList<Item*>* items, Dictionnaire* dico)
+{
+	qDebug() << "Creation des donnees de tests";
+	QFile testData("testData.arff");
+	if (testData.open(QFile::WriteOnly | QFile::Truncate | QFile::Text)) {
+		QTextStream stream(&testData);
+		stream << "@relation test\n";
+
+		qDebug() << "Creation liste des attributs";
+		words = dico->getWords();
+		foreach(const QString& word, words) {
+			stream << "@attribute " << word << " numeric\n";
+		}
+		stream << "@attribute cate {";
+
+		qDebug() << "Creation liste des categories";
+		bool first = true;
+		foreach(const QString& category, categories) {
+			if (!first)
+				stream << "," << category;
+			else {
+				stream << category;
+				first = false;
+			}
+		}
+		stream << "}\n\n";
+
+		qDebug() << "Creation liste des donnees";
+		stream << "@data\n";
+		int count = 0;
+		int max = items->size();
+		foreach(Item* item, *items) {
+			qDebug() << "Item" << count << "de" << max;
+			first = true;
+			foreach(const QString& word, words) {
+				if (!first)
+					stream << "," << dico->idf(word) * item->tf(word);
+				else {
+					stream << dico->idf(word) * item->tf(word);
+					first = false;
+				}
+			}
+			stream << ",?\n";
+			count++;
+		}
+
+		testData.close();
+		qDebug() << "Creation fichier test termine";
+	}
+	else {
+		qCritical() << "Impossible d'ouvrir le fichier" << testData.fileName();
+	}
+}
+
+void Classifier::interrogateWeka(QList<Item*>* items)
+{
+	qDebug() << "Interrogation de weka";
+	weka = new QProcess(this);
+	weka->start(weka_prog, weka_args);
+	weka->waitForFinished();
+
+	QByteArray ret(weka->readAllStandardOutput());
+	QString retString(ret);
+
+	QStringList lines = retString.split('\n');
+	for (int i = 5; i < lines.size() - 2; i++) {
+		QStringList parts = lines[i].split(QRegularExpression("\\s{1,}"));
+		(*items)[parts[1].toInt()-1]->set_predicted_category(parts[3].split(':')[1]);
+
+		qDebug() << "Item n" << parts[1].toInt() - 1 << ":" << parts[3].split(':')[1];
+	}
+	qDebug() << "Classification terminee";
 }
 
 void Classifier::classify(QList<Item*>* items, Dictionnaire* dico)
 {
-	qDebug() << "Lancement de la classification";
-	init(items, dico);
-
-	qDebug() << "Lancement de la catégorisation, nbitems=" << items->size();
-	foreach(Item* i, *items) {
-		qDebug() << "catégorisation de" << i->get_id();
-		std::vector<float> input(words.size());
-		for (int j = 0; j < words.size(); j++) {
-			input[j] = dico->idf(words[j]) * i->tf(words[j]);
-		}
-		i->set_predicted_category(categories[bc->calculateOutput(input)]);
-		qDebug() << "catégorisé en" << i->get_predicted_category();
-	}
+	init(dico);
+	createTestFile(items, dico);
+	interrogateWeka(items);
 }

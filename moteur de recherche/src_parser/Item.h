@@ -48,9 +48,10 @@ private:
 	QString url_du_flux = NO_URL, url_de_la_page = NO_URL, titre = NO_TITLE, description = NO_DESCRIPTION, contenu = NO_CONTENT, langue = UNDEFINED_LANGUAGE, category = UNCATEGORIZED, predicted_category = UNCATEGORIZED;
     QDateTime date;
     QString id = NO_ID;
-	QList<QString> words;
+	QMap<QString, int> words;
+	int word_max_occurences = 0;
 
-	QMap<QString, int> tfList;
+	QMap<QString, double> tfList;
 
 	void updateTfList();
 };

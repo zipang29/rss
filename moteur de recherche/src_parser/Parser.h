@@ -30,6 +30,7 @@ class Parser : public QObject
         Tika* tika;
 
 		int processingItem;
+		int timeToWait;
 		bool timerStarted;
 
 	private slots:

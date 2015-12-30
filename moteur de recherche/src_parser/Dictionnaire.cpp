@@ -25,9 +25,9 @@ double Dictionnaire::idf(QString mot)
 		return -1.0;
 
 	int ni = nbMots.value(mot);
-	int N = IO::getInstance()->countItemSaved();
+	int N = IO::getInstance()->countItemSaved(); //TODO: compter que les items de la langue du dico
 	
-	return -log2(ni / (double)N); // nombre d'item qui contienne le mot au moint une fois / nombre total d'item
+	return log(N / (double)ni); // nombre total d'item / nombre d'item qui contienne le mot au moins une fois
 }
 
 void Dictionnaire::save(QString path)

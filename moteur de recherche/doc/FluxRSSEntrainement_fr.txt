@@ -1,0 +1,11 @@
+http://www.lequipe.fr/rss/actu_rss.xml;Sport
+http://syndication.lesechos.fr/rss/rss_finance-marches.xml;Business
+http://rss.nouvelobs.com/c/32581/fe.ed/www.sciencesetavenir.fr/rss.xml;Science
+http://www.who.int/feeds/entity/mediacentre/news/fr/rss.xml;Health
+http://www.france24.com/fr/economie/rss;Business
+http://www.lemonde.fr/sante/rss_full.xml;Sante
+http://www.bfmtv.com/rss/societe/sante/;Sante
+http://rss.lemonde.fr/c/205/f/3060/index.rss;Art
+http://www.france24.com/fr/culture/rss/;Art
+http://www.lemonde.fr/sciences/rss_full.xml;Science
+http://www.france24.com/fr/actualites/rss/;Science
