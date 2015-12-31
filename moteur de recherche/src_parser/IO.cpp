@@ -67,6 +67,9 @@ void IO::write(Item * item)
 	item->deleteLater();
 }
 
+/*!
+* Lance la classification
+*/
 void IO::classify()
 {
 	if (classifier != NULL) {
@@ -190,6 +193,9 @@ void IO::readDB()
     }
 }
 
+/*!
+* Charge les dictionnaires fr.dico et en.dico à partir du répertoire d'exécution
+*/
 void IO::loadDictionaries()
 {
 	QFile fr("fr.dico");
@@ -225,6 +231,9 @@ void IO::loadSavedIds()
 	}
 }
 
+/*!
+* Sauvegarde les dictionnaires sur le disque (fr et en). Produit un fichier fr.dico et en.dico dans le répertoire d'exécution.
+*/
 void IO::saveDictionaries()
 {
 	QFile fr("fr.dico");
@@ -278,6 +287,9 @@ void IO::toCSV(QString bdd_path, QString csv_path)
 	qInfo() << "Ecriture terminee";
 }
 
+/*!
+* Compte le nombre d'item sauvegardé dans la BDD
+*/
 int IO::countItemSaved()
 {
 	HashDB db;
@@ -288,6 +300,9 @@ int IO::countItemSaved()
 	return db.count();
 }
 
+/*!
+* Retourne le dictionnaire pour la \a lang demandée. Retourne NULL si le dictionnaire n'existe pas.
+*/
 Dictionnaire* IO::getDictionary(Language lang)
 {
 	switch (lang) {
@@ -300,6 +315,9 @@ Dictionnaire* IO::getDictionary(Language lang)
 	}
 }
 
+/*!
+* Renvoie une instancede IO. Si il n'en existe pas, celle-ci sera créée automatiquement. Retourne NULL si path n'a pas été renseigné préalablement
+*/
 IO * IO::getInstance()
 {
 	if (path.isEmpty())
@@ -311,6 +329,9 @@ IO * IO::getInstance()
 	return io;
 }
 
+/*!
+* Supprime l'instance d'IO si elle existe
+*/
 void IO::deleteInstance()
 {
 	if (io != NULL) {
