@@ -1,6 +1,13 @@
 #include "Dictionnaire.h"
 #include "IO.h"
 #include <QFile>
+/*!
+* \class Dictionnaire
+* \brief Classe gérant un dictionnaire pour une langue
+* \inmodule INDEXER-SEARCHER
+*
+* S'occupe de gérer un dictionnaire (pour une seule langue) et permet de calculer les idfs des mots. 
+*/
 
 int Dictionnaire::idGenerator = 0;
 
