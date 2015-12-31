@@ -163,6 +163,9 @@ void IO::readFeed(QUrl url)
     parsers.append(p);
 }
 
+/*!
+* Collecte les données d'entrainement de \a path
+*/
 void IO::collectTrainingData(QString path)
 {
 	trainingMode = true;
