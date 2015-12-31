@@ -52,6 +52,7 @@
  */
 Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
 {
+	manager = new QNetworkAccessManager;
     this->url = url;
     tika = Tika::getInstance();
     connect(tika, SIGNAL(completed(Item*)), this, SLOT(completedItem(Item*)));
@@ -70,6 +71,7 @@ Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
  */
 Parser::Parser(QUrl url, QString category, QObject* parent)
 {
+	manager = new QNetworkAccessManager;
 	this->category = category;
 	this->url = url;
 	tika = Tika::getInstance();
@@ -88,7 +90,6 @@ void Parser::requestFeed()
 {
 	qInfo() << "Lancement du traitement du flux" << this->url.toString();
 
-    QNetworkAccessManager * manager = new QNetworkAccessManager;
     QNetworkReply * reply = manager->get(QNetworkRequest(this->url));
     connect(reply, SIGNAL(finished()), this, SLOT(readFeed()));
 }
@@ -242,17 +243,23 @@ void Parser::revisite()
  */
 void Parser::readFeed()
 {
+	static int redirection = 0;
     QNetworkReply * reply = qobject_cast<QNetworkReply*>(sender());
 	if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 301 || reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 302)
 	{
+		if (redirection > 3)
+		{
+			emit feedProcessed();
+			redirection = 0;
+			return;
+		}
 		QUrl url = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
 		if (url.isRelative())
 			url = reply->url().resolved(url);
 		QNetworkRequest request(url);
-		QNetworkAccessManager * manager = new QNetworkAccessManager;
 		QNetworkReply* newReply = manager->get(request);
-
 		connect(newReply, SIGNAL(finished()), this, SLOT(readFeed()));
+		redirection++;
 	}
 	else
 	{
