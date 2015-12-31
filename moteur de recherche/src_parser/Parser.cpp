@@ -52,7 +52,7 @@
  */
 Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
 {
-	manager = new QNetworkAccessManager;
+	manager = new QNetworkAccessManager(this);
     this->url = url;
     tika = Tika::getInstance();
     connect(tika, SIGNAL(completed(Item*)), this, SLOT(completedItem(Item*)));
