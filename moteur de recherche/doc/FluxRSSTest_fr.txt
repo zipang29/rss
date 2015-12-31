@@ -9,4 +9,3 @@ http://rss.lemonde.fr/c/205/f/3060/index.rss
 http://www.france24.com/fr/culture/rss/
 http://www.lemonde.fr/sciences/rss_full.xml
 http://www.france24.com/fr/actualites/rss/
-http://feeds.feedburner.com/cinefeed
