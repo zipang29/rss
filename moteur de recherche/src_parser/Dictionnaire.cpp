@@ -4,13 +4,16 @@
 
 int Dictionnaire::idGenerator = 0;
 
+/*!
+* Constructeur prenant en paramètre la \a lang (français ou anglais)
+*/
 Dictionnaire::Dictionnaire(Language lang)
 {
 	this->lang = lang;
 }
 
 /*!
-*	Ajout un mot au dictionnaire. Le mot ne doit être passé qu'une fois par item.
+* Ajoute un mot au dictionnaire. Le mot ne doit être passé qu'une fois par item.
 */
 void Dictionnaire::addWord(QString word)
 {
@@ -19,6 +22,10 @@ void Dictionnaire::addWord(QString word)
 	Dictionnaire::idGenerator++;
 }
 
+/*!
+* Retourne l'idf d'un \a mot. Les idfs doivent avoir étés mis à jours avec la méthode updateIdfs() de préférence une fois pour toute
+* après que les mots aient tous étés ajoutés au dictionnaire.
+*/
 double Dictionnaire::idf(QString mot)
 {
 	/*if (!nbMots.contains(mot))
@@ -33,6 +40,9 @@ double Dictionnaire::idf(QString mot)
 	return listIdfs[mot];
 }
 
+/*!
+* Met à jours les idf de tout les mots du dictionnaire
+*/
 void Dictionnaire::updateIdfs()
 {
 	listIdfs.clear();
@@ -46,6 +56,9 @@ void Dictionnaire::updateIdfs()
 	}
 }
 
+/*!
+* Sauvegarde à l'emplacement \a path le dictionnaire. Un fichier path.nbmots.txt et path.id.txt seront créés
+*/
 void Dictionnaire::save(QString path)
 {
 	// Enregistrement de la QMap nbMots
@@ -82,6 +95,10 @@ void Dictionnaire::save(QString path)
 	fileIds.close();
 }
 
+/*!
+* Charge un dictionnaire à partir du \a path indiqué. Le path doit être une adresse absolue ou relative avec le nom du dictionnaire sans les extensions de fichiers.
+* .nbmots.txt et .id.txt sont automatiquement rajoutés au \a path.
+*/
 Dictionnaire * Dictionnaire::load(QString path)
 {
 	QFile fileNbMots(path + ".nbmots.txt");
@@ -126,26 +143,41 @@ Dictionnaire * Dictionnaire::load(QString path)
 	return dico;
 }
 
+/*!
+* Retourne la langue du dictionnaire
+*/
 short& Dictionnaire::language()
 {
 	return lang;
 }
 
+/*!
+* Retourne la liste des mots actuellement dans le dictionnaire.
+*/
 QList<QString> Dictionnaire::getWords()
 {
 	return nbMots.keys();
 }
 
+/*! 
+* Destructeur
+*/
 Dictionnaire::~Dictionnaire()
 {
 }
 
+/*!
+* Surcharge d'opérateur pour la sérilisation
+*/
 QDataStream& operator<<(QDataStream& data, const Dictionnaire& dico)
 {
 	data << dico.lang << dico.nbMots << dico.id << dico.maxValueNbMots << dico.idGenerator;
 	return data;
 }
 
+/*!
+* Surcharge d'opérateur pour la désérialisation
+*/
 QDataStream& operator>>(QDataStream& data, Dictionnaire& dico)
 {
 	data >> dico.lang >> dico.nbMots >> dico.id >> dico.maxValueNbMots >> dico.idGenerator;
