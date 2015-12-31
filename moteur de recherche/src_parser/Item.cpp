@@ -143,11 +143,17 @@ void Item::set_category(QString c){
   category = c;
 }
 
+/*!
+* Retourne la catégorie prédite
+*/
 QString Item::get_predicted_category()
 {
 	return predicted_category;
 }
 
+/*!
+* Définit la catégorie prédite \a c
+*/
 void Item::set_predicted_category(QString c)
 {
 	predicted_category = c;
@@ -167,6 +173,10 @@ void Item::set_date(QDateTime date){
 	this->date = date;
 }
 
+/*!
+* Ajoute un mot \a word au dictionnaire prévu à cet effet en fonction de la \a lang. Si \a lang vaut -1 ou que le mot existe déjà dans le dictionnaire,
+* celui ci ne sera pas ajouté.
+*/
 void Item::add_word(QString word, Language lang)
 {
 	word = word.remove('\n');
@@ -318,6 +328,9 @@ QString Item::toCSV()
 	return csv;
 }
 
+/*!
+* Retourne le tf en fonction d'un mot \a word. La mise à jour des tf est faite automatiquement si besoin.
+*/
 double Item::tf(QString word)
 {
 	double result = 0;
@@ -333,7 +346,9 @@ double Item::tf(QString word)
 	return result;
 }
 
-
+/*!
+* Met à jour la liste des tf
+*/
 void Item::updateTfList()
 {
 	tfList.clear();
