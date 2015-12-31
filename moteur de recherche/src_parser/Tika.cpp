@@ -79,8 +79,7 @@ void Tika::destroy()
 void Tika::processItem(Item* item, QString foundLanguage)
 {
 	while (processingItems.contains(item->get_id())) {
-		qCritical() << "Duplication d'ID";
-		item->set_id(item->get_id() + "bis");
+		item->set_id(item->get_id() + "0");
 	}
 	
 	processingItems.insert(item->get_id(), item);
