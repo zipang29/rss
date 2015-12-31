@@ -5,7 +5,6 @@
  */
 QString getLanguageName(QString identifier)
 {
-    //TODO : moche, à optimiser
     if (identifier == "af") {
         return QString("Afrikaans");
     }

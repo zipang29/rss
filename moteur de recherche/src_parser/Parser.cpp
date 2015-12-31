@@ -52,6 +52,7 @@
  */
 Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
 {
+	manager = new QNetworkAccessManager(this);
     this->url = url;
     tika = Tika::getInstance();
     connect(tika, SIGNAL(completed(Item*)), this, SLOT(completedItem(Item*)));
@@ -62,8 +63,15 @@ Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
     requestFeed();
 }
 
+/*!
+ * Lance le parser en mode de collecte d'items d'entrainement pour le classifier, 
+ * dans ce mode, tous les items du flux \a url voient sur catégorie prédite systématiquement assignée à \a category.
+ * 
+ * Prend optionellement un objet \a parent pour simplifier la géstion mémoire.
+ */
 Parser::Parser(QUrl url, QString category, QObject* parent)
 {
+	manager = new QNetworkAccessManager(this);
 	this->category = category;
 	this->url = url;
 	tika = Tika::getInstance();
@@ -82,7 +90,6 @@ void Parser::requestFeed()
 {
 	qInfo() << "Lancement du traitement du flux" << this->url.toString();
 
-    QNetworkAccessManager * manager = new QNetworkAccessManager;
     QNetworkReply * reply = manager->get(QNetworkRequest(this->url));
     connect(reply, SIGNAL(finished()), this, SLOT(readFeed()));
 }
@@ -236,17 +243,23 @@ void Parser::revisite()
  */
 void Parser::readFeed()
 {
+	static int redirection = 0;
     QNetworkReply * reply = qobject_cast<QNetworkReply*>(sender());
 	if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 301 || reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 302)
 	{
+		if (redirection > 3)
+		{
+			emit feedProcessed();
+			redirection = 0;
+			return;
+		}
 		QUrl url = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
 		if (url.isRelative())
 			url = reply->url().resolved(url);
 		QNetworkRequest request(url);
-		QNetworkAccessManager * manager = new QNetworkAccessManager;
 		QNetworkReply* newReply = manager->get(request);
-
 		connect(newReply, SIGNAL(finished()), this, SLOT(readFeed()));
+		redirection++;
 	}
 	else
 	{
@@ -268,8 +281,6 @@ void Parser::completedItem(Item* item)
 	if (item->get_url_du_flux() == url.url()) {
 		processingItem--;
 		emit(itemProcessed(item));
-
-		//qDebug() << "Item recu" << processingItem << "restants";
 		
 		if (processingItem == 0) {
 			qInfo() << "Traitement du flux" << url.url() << "termine";

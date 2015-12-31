@@ -45,7 +45,6 @@ class IO : public QObject
 
         QList<Parser*> parsers;
 		QList<QString> ids;
-        //QString path;
 		Indexeur * i;
 		Classifier* classifier;
 		Stemmer stemmer;

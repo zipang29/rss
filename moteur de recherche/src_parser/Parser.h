@@ -33,6 +33,8 @@ class Parser : public QObject
 		int timeToWait;
 		bool timerStarted;
 
+		QNetworkAccessManager * manager;
+
 	private slots:
 		void parseFeed();
 		void readFeed();

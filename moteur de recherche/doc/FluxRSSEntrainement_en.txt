@@ -3,14 +3,11 @@ http://feeds.feedburner.com/cinemablendallthing;Cinema
 http://www.economist.com/sections/business-finance/rss.xml;Business
 http://feeds.reuters.com/reuters/scienceNews;Science
 http://feeds.reuters.com/reuters/healthNews;Health
-http://rss.nytimes.com/services/xml/rss/nyt/Business.xml;Business
 http://www.thetimes.co.uk/tto/business/rss;Business
 http://rss.cnn.com/rss/edition_business.rss;Business
-http://rss.nytimes.com/services/xml/rss/nyt/Sports.xml;Sport
 http://www.thetimes.co.uk/tto/sport/rss;Sport
 http://www.thetimes.co.uk/tto/health/rss;Sante
 http://rss.cnn.com/rss/cnn_health.rss;Sante
 http://www.thetimes.co.uk/tto/arts/rss;Art
 http://rss.cnn.com/rss/edition_entertainment.rss;Art
 http://www.thetimes.co.uk/tto/science/rss;Science
-http://rss.cnn.com/rss/edition_space.rss;Science

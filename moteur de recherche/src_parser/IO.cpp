@@ -12,14 +12,18 @@ QString IO::training_data_en = "";
  * \brief Classe de gestion des entrées/sorties
  * \inmodule FEED_COLLECTOR
  *
- * S'occupe des opérations sur les bases NoSQL HashDB (KyotoCabinet) et de la gestion 
- * des \l{Parser}{Parsers RSS}
+ * S'occupe des opérations sur les bases NoSQL HashDB (KyotoCabinet), sauvegarde et charge les dictionnaires et de la gestion 
+ * des \l{Parser}{Parsers RSS}.
+ *
+ * Implémente le pattern Singleton depuis la version 3.
  */
 
 /*!
  * Constructeur prenant en paramètre \a database_path correspondant au chemin vers la BDD.
  *
- * Charge la liste des identifiants des items déjà présents dans la BDD afin de ne pas creer de duplicata
+ * Charge la liste des identifiants des items déjà présents dans la BDD afin de ne pas creer de duplicata.
+ *
+ * Charge également en mémoire les dictionnaires de mots francais et anglais (fr.dico et en.dico respectivement).
  */
 IO::IO(QString database_path, QString training_data_fr, QString training_data_en)
 {
@@ -40,6 +44,8 @@ IO::IO(QString database_path, QString training_data_fr, QString training_data_en
  * Ecrit un \a item dans la BDD, l'index puis le détruit.
  *
  * L'item sera traité uniquement si il n'est pas déjà dans la BDD.
+ *
+ * Par ailleurs, un item n'est pas indexé si le parser est en mode de collecte de données d'entrainement.
  */
 void IO::write(Item * item)
 {
@@ -68,8 +74,10 @@ void IO::write(Item * item)
 }
 
 /*!
-* Lance la classification
-*/
+ * Lance la classification des items si le parser n'est pas en mode de récolte de données d'apprentissage.
+ *
+ * Dans le cas contraire, cette méthode ferme le logiciel quand tous les flux ont terminé un traitement complet de leur items.
+ */
 void IO::classify()
 {
 	if (classifier != NULL) {
@@ -89,12 +97,12 @@ void IO::classify()
 		if (items_fra.size() > 0)
 			classifier->classify(&items_fra, &fra);
 		if (items_eng.size() > 0)
-		classifier->classify(&items_eng, &eng);
+			classifier->classify(&items_eng, &eng);
 
 		HashDB db;
 		if (!db.open(path.toStdString(), HashDB::OWRITER | HashDB::OCREATE))
 		{
-			qCritical() << "Erreur à l'écriture dans la BDD :" << db.error().name();
+			qCritical() << "Erreur à l'écriture dans la BDD des items classifies :" << db.error().name();
 		}
 
 		foreach(Item* item, items_fra)
@@ -163,6 +171,13 @@ void IO::readFeed(QUrl url)
     parsers.append(p);
 }
 
+/*!
+ * Lance la collecte d'items d'entrainement depuis la liste de flux dans le fichier \a path.
+ *
+ * Ce fichier doit comporter un flux par ligne de la sorte :
+ *
+ * url du flux;Catégorie
+ */
 void IO::collectTrainingData(QString path)
 {
 	trainingMode = true;
@@ -194,8 +209,8 @@ void IO::readDB()
 }
 
 /*!
-* Charge les dictionnaires fr.dico et en.dico à partir du répertoire d'exécution
-*/
+ * Charge les dictionnaires fr.dico et en.dico à partir du répertoire d'exécution
+ */
 void IO::loadDictionaries()
 {
 	QFile fr("fr.dico");
@@ -232,8 +247,8 @@ void IO::loadSavedIds()
 }
 
 /*!
-* Sauvegarde les dictionnaires sur le disque (fr et en). Produit un fichier fr.dico et en.dico dans le répertoire d'exécution.
-*/
+ * Sauvegarde les dictionnaires sur le disque (fr et en). Produit un fichier fr.dico et en.dico dans le répertoire d'exécution.
+ */
 void IO::saveDictionaries()
 {
 	QFile fr("fr.dico");
@@ -288,8 +303,8 @@ void IO::toCSV(QString bdd_path, QString csv_path)
 }
 
 /*!
-* Compte le nombre d'item sauvegardé dans la BDD
-*/
+ * Compte le nombre d'item sauvegardé dans la BDD
+ */
 int IO::countItemSaved()
 {
 	HashDB db;
@@ -301,8 +316,8 @@ int IO::countItemSaved()
 }
 
 /*!
-* Retourne le dictionnaire pour la \a lang demandée. Retourne NULL si le dictionnaire n'existe pas.
-*/
+ * Retourne le dictionnaire pour la \a lang demandée. Retourne NULL si le dictionnaire n'existe pas.
+ */
 Dictionnaire* IO::getDictionary(Language lang)
 {
 	switch (lang) {
@@ -316,8 +331,8 @@ Dictionnaire* IO::getDictionary(Language lang)
 }
 
 /*!
-* Renvoie une instancede IO. Si il n'en existe pas, celle-ci sera créée automatiquement. Retourne NULL si path n'a pas été renseigné préalablement
-*/
+ * Renvoie une instance de IO. Si il n'en existe pas, celle-ci sera créée automatiquement. Retourne NULL si path n'a pas été renseigné préalablement
+ */
 IO * IO::getInstance()
 {
 	if (path.isEmpty())
@@ -330,8 +345,8 @@ IO * IO::getInstance()
 }
 
 /*!
-* Supprime l'instance d'IO si elle existe
-*/
+ * Supprime l'instance d'IO si elle existe
+ */
 void IO::deleteInstance()
 {
 	if (io != NULL) {

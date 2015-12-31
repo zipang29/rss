@@ -144,16 +144,16 @@ void Item::set_category(QString c){
 }
 
 /*!
-* Retourne la catégorie prédite
-*/
+ * Retourne la catégorie prédite par le classifier ou définie manuellement si il s'agit d'un item d'entrainement.
+ */
 QString Item::get_predicted_category()
 {
 	return predicted_category;
 }
 
 /*!
-* Définit la catégorie prédite \a c
-*/
+ * Définit la catégorie prédite \a c
+ */
 void Item::set_predicted_category(QString c)
 {
 	predicted_category = c;
@@ -174,9 +174,10 @@ void Item::set_date(QDateTime date){
 }
 
 /*!
-* Ajoute un mot \a word au dictionnaire prévu à cet effet en fonction de la \a lang. Si \a lang vaut -1 ou que le mot existe déjà dans le dictionnaire,
-* celui ci ne sera pas ajouté.
-*/
+ * Ajout un mot stemmé (\a word) à la liste des mots de l'item, l'ajoute également au dictionnaire de la \a lang si il n'y est pas déjà.
+ *
+ * Les mots sont stockés dans une QMap qui compte leur occurences dans l'item.
+ */
 void Item::add_word(QString word, Language lang)
 {
 	word = word.remove('\n');
@@ -186,8 +187,7 @@ void Item::add_word(QString word, Language lang)
 			dico->addWord(word);
 	}
 
-	if (++words[word] > word_max_occurences)
-		word_max_occurences = words[word];
+	words[word]++;
 }
 
 /*!
@@ -218,7 +218,7 @@ QString Item::toString()
  * Construit un item à partir d'une chaine
  *
  * - \a v : La chaine pour construire l'item. Les éléments de la chaine doivent être séparés par le symbole SEPARATOR (;@;) définit dans Constantes.h
- * L'ordre des champs suit l'ordre des attributs de la classe à savoir comme ceci : url_du_flux, url_de_la_page, titre, description, contenu, langue, category, date
+ * L'ordre des champs suit l'ordre des attributs de la classe à savoir comme ceci : url_du_flux, url_de_la_page, titre, description, contenu, langue, liste de mots stemmés, category, date, catégorie prédite
  * 
  * Retourne : L'item construit à partir de la chaine. L'id (hash) n'est pas ajouté à l'item via cette méthode, il faut l'ajouter séparément. Si la chaine n'est pas valide l'item retourné sera vide.
  */
@@ -247,10 +247,8 @@ Item * Item::fromString(QString v)
 		lang = -1;
 
 	QStringList wordList = list.at(5).split(',', QString::SkipEmptyParts);
-	foreach(QString word, wordList) {
-		if (++it->words[word] > it->word_max_occurences)
-			it->word_max_occurences = it->words[word];
-	}
+	foreach(QString word, wordList)
+		it->words[word]++;
 
     it->set_category(list.at(7));
     it->set_date(QDateTime::fromString(list.at(8), Qt::ISODate));
@@ -271,8 +269,6 @@ QString Item::toHumanReadable() const
     ret += "Url du flux : " + this->url_du_flux + "\n";
     ret += "Url de la page : " + this->url_de_la_page + "\n";
     ret += "Titre : " + this->titre + "\n";
-    //ret += "Description : " + this->description + "\n";
-    //ret += "Contenu : " + this->contenu + "\n";
     ret += "Langue : " + this->langue + "\n";
     ret += "Catégorie : " + this->category + "\n";
 	ret += "Catégorie prédite : " + this->predicted_category + "\n";
@@ -291,7 +287,7 @@ QDebug operator<<(QDebug debug, const Item& item)
 
 /*!
  * Renvoie le contenu de l'item sous forme de QString formatté au format CSV
- * (Id; Titre; Date; Description; Contenu; Langue; Catégorie; URL de la page; URL du flux)
+ * (Id; Titre; Date; Description; Contenu; Liste de mots stemmés; Langue; Catégorie; Catégorie prédite; URL de la page; URL du flux)
  */
 QString Item::toCSV()
 {
@@ -329,8 +325,8 @@ QString Item::toCSV()
 }
 
 /*!
-* Retourne le tf en fonction d'un mot \a word. La mise à jour des tf est faite automatiquement si besoin.
-*/
+ * Retourne le tf en fonction d'un mot \a word. La mise à jour des tf est faite automatiquement si besoin.
+ */
 double Item::tf(QString word)
 {
 	double result = 0;
@@ -347,8 +343,8 @@ double Item::tf(QString word)
 }
 
 /*!
-* Met à jour la liste des tf
-*/
+ * Met à jour la liste des tf
+ */
 void Item::updateTfList()
 {
 	tfList.clear();
@@ -358,7 +354,6 @@ void Item::updateTfList()
 	}
 
 	foreach(QString word, words.keys()) {
-		//qDebug() << words[word] << word_max_occurences << words[word] / (double)word_max_occurences;
 		tfList.insert(word, words[word] / (double)sum);
 	}
 }

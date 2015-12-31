@@ -2,9 +2,50 @@
 #include <QFile>
 #include <QRegularExpression>
 
+/*!
+ * \class Classifier
+ * \brief Classe de classification d'items
+ * \inmodule CLASSIFIER
+ *
+ * Classifie les items rss français et anglais dans diverses catégories. 
+ * Ces catégories sont déterminées grâces aux données d'entrainement qui auront été précédement récupérées et stockées dans des BDD HashDB (.kch).
+ * 
+ * La classification se fait de manière séquencielle et peut en conséquence prendre quelques minutes en cas d'un grand nombre d'items à traiter, aussi bien dans la phase d'entrainement de l'algorithme
+ * que dans le phase de classification.
+ *
+ * La classification se déroule ainsi :
+ * \list
+ *	\li Entrainement de l'algorithme
+ *		\list
+ *			\li Récupération des items d'entrainement
+ *			\li Calcul des IFiDF de ces items et répertoriage des catégories
+ *			\li Génération d'un fichier .arff (trainingData.arff)
+ *		\endlist
+ *	\li Classification des items
+ *		\list
+ *			\li Calcul des TFiDF des items
+ *			\li Génération d'un fichier .arff (testData.arff)
+ *			\li Interrogation de Weka en utilisant un classifieur Bayesien naif
+ *			\li Traitement du retour de Weka
+ *		\endlist
+ * \endlist
+ *
+ * Due à la possibilité d'ajout d'un mot au dictionnaire à chaque nouvel item téléchargé, ce processus est réalisé à chaque lancement d'une classification.
+ * (Actuellement, une classification à chaque fin de traitement d'un flux).
+ *
+ * Le jar de Weka doit se trouver dans le même dossier que l'exécutable et s'appeler \e weka.jar
+ */
+
 const QString Classifier::weka_prog = "java";
 const QStringList Classifier::weka_args = QStringList() << "-cp" << "weka.jar" << "weka.classifiers.bayes.NaiveBayes" << "-t" << "trainingData.arff" << "-T" << "testData.arff" << "-p" << "0";
 
+/*!
+ * Crée un nouveau classifieur.
+ *
+ * Le classifieur utilisera lors de la phase d'entrainement les items des BDD HashDB \a trainingData_fra et \a trainingData_eng pour les items en français et anglais respectivement.
+ *
+ * Optionellement, un attribut \a parent peut être indiqué afin de faciliter la gestion mémoire.
+ */
 Classifier::Classifier(QString trainingData_fra, QString trainingData_eng, QObject* parent) : QObject(parent)
 {
 	training_fra = trainingData_fra;
@@ -12,10 +53,11 @@ Classifier::Classifier(QString trainingData_fra, QString trainingData_eng, QObje
 	weka = NULL;
 }
 
-Classifier::~Classifier()
-{
-}
-
+/*!
+ * Initialise le classifieur, procède à la génération du fichier .arff contenant les données d'entrainement.
+ *
+ * Se base sur le \a dico pour le calcul des TFiDF
+ */
 void Classifier::init(Dictionnaire* dico)
 {
 	dico->updateIdfs();
@@ -33,22 +75,18 @@ void Classifier::init(Dictionnaire* dico)
 		trainingItems = trainingData_en;
 	}
 
-	qDebug() << "Creation arff d'entrainement";
+	qInfo() << "Creation .arff d'entrainement (" << trainingItems.size() << "items)";
 	QFile trainingData("trainingData.arff");
 	if (trainingData.open(QFile::WriteOnly | QFile::Truncate | QIODevice::Text)) {
 		QTextStream stream(&trainingData);
 		stream << "@relation test\n";
 
-		qDebug() << "Creation liste des attributs";
 		words = dico->getWords();
 		foreach(const QString& word, words) {
-			if (word.isEmpty() || word == " ")
-				qDebug() << "mot=" << word;
 			stream << "@attribute " << word << " numeric\n";
 		}
 		stream << "@attribute cate {";
 
-		qDebug() << "Creation liste des categories";
 		categories.clear();
 		bool first = true;
 		foreach(Item* item, trainingItems.values()) {
@@ -65,13 +103,8 @@ void Classifier::init(Dictionnaire* dico)
 		}
 		stream << "}\n\n";
 
-
-		qDebug() << "Creation liste des donnees";
 		stream << "@data\n";
-		int count = 0;
-		int max = trainingItems.size();
 		foreach(Item* item, trainingItems.values()) {
-			qDebug() << "Item" << count << "de" << max;
 			first = true;
 			foreach(const QString& word, words) {
 				if (!first)
@@ -82,15 +115,9 @@ void Classifier::init(Dictionnaire* dico)
 				}
 			}
 			stream << "," << item->get_predicted_category() << "\n";
-			count++;
-			
-			/*
-			if (count == 10)
-				break; //TODO: valeur de debug; à supprimer
-				*/
 		}
 
-		qDebug() << "Donnees d'entrainement terminees";
+		qInfo() << "Generation terminee";
 
 		trainingData.close();
 	}
@@ -99,22 +126,23 @@ void Classifier::init(Dictionnaire* dico)
 	}
 }
 
+/*!
+ * Crée le fichier .arff contenant les données à classifier pour les \a items et le \a dico passé en paramètre.
+ */
 void Classifier::createTestFile(QList<Item*>* items, Dictionnaire* dico)
 {
-	qDebug() << "Creation des donnees de tests";
+	qInfo() << "Generation du fichier .arff d'items a classifier (" << items->size() << "items)";
 	QFile testData("testData.arff");
 	if (testData.open(QFile::WriteOnly | QFile::Truncate | QFile::Text)) {
 		QTextStream stream(&testData);
 		stream << "@relation test\n";
 
-		qDebug() << "Creation liste des attributs";
 		words = dico->getWords();
 		foreach(const QString& word, words) {
 			stream << "@attribute " << word << " numeric\n";
 		}
 		stream << "@attribute cate {";
 
-		qDebug() << "Creation liste des categories";
 		bool first = true;
 		foreach(const QString& category, categories) {
 			if (!first)
@@ -126,12 +154,8 @@ void Classifier::createTestFile(QList<Item*>* items, Dictionnaire* dico)
 		}
 		stream << "}\n\n";
 
-		qDebug() << "Creation liste des donnees";
 		stream << "@data\n";
-		int count = 0;
-		int max = items->size();
 		foreach(Item* item, *items) {
-			qDebug() << "Item" << count << "de" << max;
 			first = true;
 			foreach(const QString& word, words) {
 				if (!first)
@@ -142,20 +166,22 @@ void Classifier::createTestFile(QList<Item*>* items, Dictionnaire* dico)
 				}
 			}
 			stream << ",?\n";
-			count++;
 		}
 
 		testData.close();
-		qDebug() << "Creation fichier test termine";
+		qInfo() << "Generation terminee";
 	}
 	else {
 		qCritical() << "Impossible d'ouvrir le fichier" << testData.fileName();
 	}
 }
 
+/*!
+ * Lance le traitement des deux fichiers .arff par weka, récupère le résultat et met à jours les \a items en conséquence.
+ */
 void Classifier::interrogateWeka(QList<Item*>* items)
 {
-	qDebug() << "Interrogation de weka";
+	qInfo() << "Interrogation de weka";
 	weka = new QProcess(this);
 	weka->start(weka_prog, weka_args);
 	weka->waitForFinished();
@@ -167,11 +193,13 @@ void Classifier::interrogateWeka(QList<Item*>* items)
 	for (int i = 5; i < lines.size() - 2; i++) {
 		QStringList parts = lines[i].split(QRegularExpression("\\s{1,}"));
 		(*items)[parts[1].toInt()-1]->set_predicted_category(parts[3].split(':')[1]);
-		qDebug() << "Item n" << parts[1].toInt() - 1 << ":" << parts[3].split(':')[1];
 	}
-	qDebug() << "Classification terminee";
+	qInfo() << "Classification terminee";
 }
 
+/*!
+ * Lance le processus de classification pour les \a items donnés en utilisant le \a dico de mots fourni pour les calculs de TFiDF
+ */
 void Classifier::classify(QList<Item*>* items, Dictionnaire* dico)
 {
 	init(dico);

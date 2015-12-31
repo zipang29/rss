@@ -49,7 +49,6 @@ private:
     QDateTime date;
     QString id = NO_ID;
 	QMap<QString, int> words;
-	int word_max_occurences = 0;
 
 	QMap<QString, double> tfList;
 
