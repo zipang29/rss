@@ -62,6 +62,12 @@ Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
     requestFeed();
 }
 
+/*!
+ * Lance le parser en mode de collecte d'items d'entrainement pour le classifier, 
+ * dans ce mode, tous les items du flux \a url voient sur catégorie prédite systématiquement assignée à \a category.
+ * 
+ * Prend optionellement un objet \a parent pour simplifier la géstion mémoire.
+ */
 Parser::Parser(QUrl url, QString category, QObject* parent)
 {
 	this->category = category;
@@ -268,8 +274,6 @@ void Parser::completedItem(Item* item)
 	if (item->get_url_du_flux() == url.url()) {
 		processingItem--;
 		emit(itemProcessed(item));
-
-		//qDebug() << "Item recu" << processingItem << "restants";
 		
 		if (processingItem == 0) {
 			qInfo() << "Traitement du flux" << url.url() << "termine";

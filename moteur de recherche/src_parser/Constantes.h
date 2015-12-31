@@ -2,16 +2,15 @@
 #define CONSTANTES_H
 #include <QString>
 
-/**
+/*
   * Symbole de séparation pour l'enregistrement dans la BDD
   */
 #define SEPARATOR ";@;"
 
 
-/**
+/*
   * Valeurs par défauts des attributs de la classe items
   */
-
 #define UNCATEGORIZED "Sans catégorie"
 
 #define NO_DESCRIPTION "Pas de description"
@@ -28,7 +27,7 @@
 
 #define NO_ID "Pas de hash"
 
-/**
+/*
   * Définition des constantes pour le parsing
   */
 #define RSS "rss"

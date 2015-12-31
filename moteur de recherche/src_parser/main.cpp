@@ -10,6 +10,8 @@
  * \l {FEED_COLLECTOR} {Sous projet FEED-collector}
  *
  * \l {INDEXER-SEARCHER} {Sous projet INDEXER-SEARCHER}
+ *
+ * \l {CLASSIFIER} {Sous projet CLASSIFIER}
  */
 
 /*!
@@ -24,6 +26,14 @@
  * \module INDEXER-SEARCHER
  * \title Projet RSS-Intelligence - Nailya Bogrova, Guillaume Claudic et Louis Ormières
  * \subtitle Sous projet INDEXER-SEARCHER
+ *
+ * \l {index} {Retour à la liste des sous projets}
+ */
+
+/*!
+ * \module CLASSIFIER
+ * \title Projet RSS-Intelligence - Nailya Bogrova, Guillaume Claudic et Louis Ormières
+ * \subtitle Sous projet CLASSIFIER
  *
  * \l {index} {Retour à la liste des sous projets}
  */
@@ -56,7 +66,6 @@ int main(int argc, char *argv[])
 
 	QStringList positionalArgs = args.positionalArguments();
 	if (positionalArgs.size() < 1) {
-		qDebug() << "toto" << positionalArgs.size();
         args.showHelp(1);
     }
 
@@ -81,7 +90,6 @@ int main(int argc, char *argv[])
 		IO::path = positionalArgs[0];
 
 		if (positionalArgs.size() == 3) {
-			qDebug() << "training data set";
 			IO::training_data_fr = positionalArgs[1];
 			IO::training_data_en = positionalArgs[2];
 		}
@@ -100,16 +108,4 @@ int main(int argc, char *argv[])
     }
 
     return a.exec();
-	
-
-	/*
-	const char** list = sb_stemmer_list();
-	
-
-	for (int i = 0; i < 10000000000000000; i++) {
-		qDebug() << list[i];
-	}
-
-	return 0;
-	*/
 }
