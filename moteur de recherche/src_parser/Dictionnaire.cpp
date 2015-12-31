@@ -21,13 +21,29 @@ void Dictionnaire::addWord(QString word)
 
 double Dictionnaire::idf(QString mot)
 {
-	if (!nbMots.contains(mot))
+	/*if (!nbMots.contains(mot))
 		return -1.0;
 
 	int ni = nbMots.value(mot);
 	int N = IO::getInstance()->countItemSaved(); //TODO: compter que les items de la langue du dico
 	
-	return log(N / (double)ni); // nombre total d'item / nombre d'item qui contienne le mot au moins une fois
+	return log(N / (double)ni); // nombre total d'item / nombre d'item qui contienne le mot au moins une fois*/
+	if (!listIdfs.contains(mot))
+		return -1.0;
+	return listIdfs[mot];
+}
+
+void Dictionnaire::updateIdfs()
+{
+	listIdfs.clear();
+	QList<QString> words = getWords();
+	int N = IO::getInstance()->countItemSaved(); //TODO: compter que les items de la langue du dico
+	for (int i = 0; i < words.size(); i++)
+	{
+		int ni = nbMots.value(words.at(i));
+
+		listIdfs[words.at(i)] = log(N / (double)ni); // nombre total d'item / nombre d'item qui contienne le mot au moins une fois
+	}
 }
 
 void Dictionnaire::save(QString path)

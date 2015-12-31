@@ -18,6 +18,7 @@ Classifier::~Classifier()
 
 void Classifier::init(Dictionnaire* dico)
 {
+	dico->updateIdfs();
 	QMap<QString, Item*> trainingItems;
 	switch (dico->language()) {
 	case FRENCH:
@@ -82,6 +83,7 @@ void Classifier::init(Dictionnaire* dico)
 			}
 			stream << "," << item->get_predicted_category() << "\n";
 			count++;
+			
 			/*
 			if (count == 10)
 				break; //TODO: valeur de debug; à supprimer
@@ -165,7 +167,6 @@ void Classifier::interrogateWeka(QList<Item*>* items)
 	for (int i = 5; i < lines.size() - 2; i++) {
 		QStringList parts = lines[i].split(QRegularExpression("\\s{1,}"));
 		(*items)[parts[1].toInt()-1]->set_predicted_category(parts[3].split(':')[1]);
-
 		qDebug() << "Item n" << parts[1].toInt() - 1 << ":" << parts[3].split(':')[1];
 	}
 	qDebug() << "Classification terminee";

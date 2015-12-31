@@ -14,6 +14,7 @@ class Dictionnaire
 		double idf(QString mot);
 		void save(QString path);
 		static Dictionnaire * load(QString path);
+		void updateIdfs();
 
 		short& language();
 		QList<QString> getWords();
@@ -24,6 +25,7 @@ class Dictionnaire
 	private:
 		QMap<QString, int> nbMots;// nombre d'item qui contient ce mot au moins une fois
 		QMap<QString, int> id;
+		QMap<QString, double> listIdfs;
 
 		int maxValueNbMots;
 		short lang;
