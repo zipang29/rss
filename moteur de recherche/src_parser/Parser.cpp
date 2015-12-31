@@ -71,7 +71,7 @@ Parser::Parser(QUrl url, QObject * parent) : QObject(parent)
  */
 Parser::Parser(QUrl url, QString category, QObject* parent)
 {
-	manager = new QNetworkAccessManager;
+	manager = new QNetworkAccessManager(this);
 	this->category = category;
 	this->url = url;
 	tika = Tika::getInstance();
